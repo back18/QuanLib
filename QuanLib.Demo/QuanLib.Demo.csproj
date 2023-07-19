@@ -19,9 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuanLib.BDF\QuanLib.BDF.csproj" />
-    <ProjectReference Include="..\QuanLib.Commands.Consoles\QuanLib.Commands.Consoles.csproj" />
-    <ProjectReference Include="..\QuanLib.Commands\QuanLib.Commands.csproj" />
-    <ProjectReference Include="..\QuanLib.Consoles\QuanLib.Consoles.csproj" />
     <ProjectReference Include="..\QuanLib.Excel\QuanLib.Excel.csproj" />
     <ProjectReference Include="..\QuanLib.Java\QuanLib.Java.csproj" />
     <ProjectReference Include="..\QuanLib\QuanLib.csproj" />
