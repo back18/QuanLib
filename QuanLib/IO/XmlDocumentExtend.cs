@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using QuanLib.Verification;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace QuanLib.IO
 {

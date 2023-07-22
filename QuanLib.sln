@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.BDF", "QuanLib.BDF\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.ConsoleUtil", "QuanLib.ConsoleUtil\QuanLib.ConsoleUtil.csproj", "{C2F99193-2BCF-4032-8220-52E4157C6764}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.ExceptionHelper", "QuanLib.ExceptionHelper\QuanLib.ExceptionHelper.csproj", "{CA13D7EF-DB23-47BA-9894-E4CBBFBD7BB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA13D7EF-DB23-47BA-9894-E4CBBFBD7BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA13D7EF-DB23-47BA-9894-E4CBBFBD7BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA13D7EF-DB23-47BA-9894-E4CBBFBD7BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA13D7EF-DB23-47BA-9894-E4CBBFBD7BB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
