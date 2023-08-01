@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Event;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,19 +12,24 @@ namespace QuanLib.FileListeners
         public TextFileListener(string path, Encoding encoding) : base(path)
         {
             _encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
-            OnWriteByte += TextFileListener_OnWriteByte;
+
+            WriteLineText += OnWriteLineText;
         }
 
         private readonly Encoding _encoding;
 
-        public event Action<string> OnWriteLine = (obj) => { };
+        public event EventHandler<TextFileListener, TextEventArgs> WriteLineText;
 
-        private void TextFileListener_OnWriteByte(byte[] bytes)
+        protected virtual void OnWriteLineText(TextFileListener sender, TextEventArgs e) { }
+
+        protected override void OnWriteBytes(FileListener sender, BytesEventArgs e)
         {
-            string str = _encoding.GetString(bytes);
+            base.OnWriteBytes(sender, e);
+
+            string str = _encoding.GetString(e.Bytes);
             string[] lines = str.Split(Environment.NewLine);
             foreach (string line in lines)
-                OnWriteLine.Invoke(line.TrimEnd('\r'));
+                WriteLineText.Invoke(this, new(line.TrimEnd('\r')));
         }
     }
 }

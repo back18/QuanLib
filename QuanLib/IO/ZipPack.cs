@@ -12,26 +12,26 @@ namespace QuanLib.IO
     {
         public ZipPack(string path)
         {
-            archive = ZipFile.OpenRead(path);
-            entrys = new();
-            foreach (var entrie in archive.Entries)
-                entrys.Add(entrie.FullName, entrie);
+            _archive = ZipFile.OpenRead(path);
+            _entrys = new();
+            foreach (var entrie in _archive.Entries)
+                _entrys.Add(entrie.FullName, entrie);
         }
 
-        private readonly ZipArchive archive;
+        private readonly ZipArchive _archive;
 
-        private readonly Dictionary<string, ZipArchiveEntry> entrys;
+        private readonly Dictionary<string, ZipArchiveEntry> _entrys;
 
-        public ReadOnlyCollection<ZipArchiveEntry> Entries => archive.Entries;
+        public ReadOnlyCollection<ZipArchiveEntry> Entries => _archive.Entries;
 
-        public ZipArchiveEntry? GetEntry(string path) => archive.GetEntry(path);
+        public ZipArchiveEntry? GetEntry(string path) => _archive.GetEntry(path);
 
         public bool ExistsEntry(string? path)
         {
             if (path is null)
                 return false;
 
-            return entrys.ContainsKey(path);
+            return _entrys.ContainsKey(path);
         }
 
         public bool ExistsDirectory(string? path)
@@ -42,19 +42,19 @@ namespace QuanLib.IO
             if (path[^1] != '/')
                 path += '/';
 
-            return entrys.ContainsKey(path);
+            return _entrys.ContainsKey(path);
         }
 
         public ZipArchiveEntry[] GetEntrys(string path)
         {
-            if (path is null)
-                return Array.Empty<ZipArchiveEntry>();
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
 
             if (path[^1] != '/')
                 path += '/';
 
             List<ZipArchiveEntry> result = new();
-            foreach (var entry in entrys)
+            foreach (var entry in _entrys)
             {
                 if (entry.Key.StartsWith(path))
                 {
@@ -69,9 +69,8 @@ namespace QuanLib.IO
 
         public void Dispose()
         {
-            archive.Dispose();
+            _archive.Dispose();
             GC.SuppressFinalize(this);
-            throw new NotImplementedException();
         }
     }
 }

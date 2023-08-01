@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QuanLib.Event;
+using QuanLib.ExceptionHelpe;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,18 +13,24 @@ namespace QuanLib.FileListeners
         public FileListener(string path)
         {
             if (!File.Exists(path))
-                throw new ArgumentException("文件不存在", nameof(path));
+                throw new FileNotFoundException("监听文件不存在", path);
 
             Path = path;
-            _isrun = false;
             _TimeInterval = 500;
+            _runing = false;
 
-            OnLastWriteTime += FileListener_OnLastWriteTime;
+            Started += OnStarted;
+            Stopped += OnStopped;
+            ListenerException += OnListenerException;
+            FileInfoChanged += OnFileInfoChanged;
+            WriteBytes += OnWriteBytes;
+            FileReset += OnFileReset;
+            FileDeleted += OnFileDeleted;
         }
 
-        private bool _isrun;
+        private bool _runing;
 
-        public bool IsRun => _isrun;
+        public bool Runing => _runing;
 
         public string Path { get; }
 
@@ -31,87 +39,101 @@ namespace QuanLib.FileListeners
             get => _TimeInterval;
             set
             {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException(nameof(value), value, "参数不能小于0");
+                ThrowHelper.TryThrowArgumentOutOfMinException(0, value, nameof(value));
                 _TimeInterval = value;
             }
         }
         private int _TimeInterval;
 
-        public event Action OnListenerStart = () => { };
+        public event EventHandler<FileListener, EventArgs> Started;
 
-        public event Action OnListenerStop = () => { };
+        public event EventHandler<FileListener, EventArgs> Stopped;
 
-        public event Action<Exception> OnListenerException = (obj) => { };
+        public event EventHandler<FileListener, ExceptionEventArgs> ListenerException;
 
-        public event Action<FileInfo, FileInfo> OnLastWriteTime;
+        public event EventHandler<FileListener, FileInfoChangedEventArge> FileInfoChanged;
 
-        public event Action<byte[]> OnWriteByte = (obj) => { };
+        public event EventHandler<FileListener, BytesEventArgs> WriteBytes;
 
-        public event Action OnFileDelete = () => { };
+        public event EventHandler<FileListener, EventArgs> FileReset;
 
-        private void FileListener_OnLastWriteTime(FileInfo oldFile, FileInfo newFile)
+        public event EventHandler<FileListener, EventArgs> FileDeleted;
+
+        protected virtual void OnStarted(FileListener sender, EventArgs e) { }
+
+        protected virtual void OnStopped(FileListener sender, EventArgs e) { }
+
+        protected virtual void OnListenerException(FileListener sender, ExceptionEventArgs e) { }
+
+        protected virtual void OnFileInfoChanged(FileListener sender, FileInfoChangedEventArge e)
         {
-            if (newFile.Length > oldFile.Length)
+            if (e.NewFileInfo.Length > e.OldFileInfo.Length)
             {
                 FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                fs.Seek(oldFile.Length, SeekOrigin.Begin);
-                byte[] buffer = new byte[newFile.Length - oldFile.Length - 1];
+                fs.Seek(e.OldFileInfo.Length, SeekOrigin.Begin);
+                byte[] buffer = new byte[e.NewFileInfo.Length - e.OldFileInfo.Length - 1];
                 fs.Read(buffer, 0, buffer.Length);
                 fs.Close();
-                OnWriteByte.Invoke(buffer);
+                WriteBytes.Invoke(this, new(buffer));
             }
-            else if (newFile.Length < oldFile.Length / 2)
+            else if (e.NewFileInfo.Length < e.NewFileInfo.Length / 2)
             {
-                Console.WriteLine("检测到监视的文件重置，将从新读取全部文件内容");
                 FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                byte[] buffer = new byte[newFile.Length];
+                byte[] buffer = new byte[e.NewFileInfo.Length];
                 fs.Read(buffer, 0, buffer.Length);
                 fs.Close();
-                OnWriteByte.Invoke(buffer);
+                FileReset.Invoke(this, EventArgs.Empty);
+                WriteBytes.Invoke(this, new(buffer));
             }
         }
 
+        protected virtual void OnWriteBytes(FileListener sender, BytesEventArgs e) { }
+
+        protected virtual void OnFileReset(FileListener sender, EventArgs e) { }
+
+        protected virtual void OnFileDeleted(FileListener sender, EventArgs e) { }
+
         public void Start()
         {
-            _isrun = true;
-            OnListenerStart.Invoke();
+            if (_runing)
+                return;
+
+            _runing = true;
+            Started.Invoke(this, EventArgs.Empty);
 
             FileInfo oldFile = new(Path);
-            while (_isrun)
+            while (_runing)
             {
                 try
                 {
                     FileInfo newFile = new(Path);
                     if (!newFile.Exists)
                     {
-                        OnFileDelete.Invoke();
+                        FileDeleted.Invoke(this, EventArgs.Empty);
                         continue;
                     }
 
                     if (newFile.LastWriteTime > oldFile.LastWriteTime)
                     {
-                        OnLastWriteTime.Invoke(oldFile, newFile);
+                        FileInfoChanged.Invoke(this, new(oldFile, newFile));
+                        oldFile = newFile;
                     }
-                    else
-                    {
-                        Thread.Sleep(IntervalTime);
-                    }
-                    oldFile = newFile;
+
+                    Thread.Sleep(IntervalTime);
                 }
                 catch (Exception ex)
                 {
-                    OnListenerException.Invoke(ex);
+                    ListenerException.Invoke(this, new(ex));
                     continue;
                 }
             }
 
-            OnListenerStop.Invoke();
+            Stopped.Invoke(this, EventArgs.Empty);
         }
 
         public void Stop()
         {
-            _isrun = false;
+            _runing = false;
         }
     }
 }
