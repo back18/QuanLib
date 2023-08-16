@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.FileListeners
 {
-    public class TextFileListener : FileListener
+    public class TextFileListener : FileListener, ITextListener
     {
         public TextFileListener(string path, Encoding encoding) : base(path)
         {
@@ -18,9 +18,9 @@ namespace QuanLib.FileListeners
 
         private readonly Encoding _encoding;
 
-        public event EventHandler<TextFileListener, TextEventArgs> WriteLineText;
+        public event EventHandler<ITextListener, TextEventArgs> WriteLineText;
 
-        protected virtual void OnWriteLineText(TextFileListener sender, TextEventArgs e) { }
+        protected virtual void OnWriteLineText(ITextListener sender, TextEventArgs e) { }
 
         protected override void OnWriteBytes(FileListener sender, BytesEventArgs e)
         {
