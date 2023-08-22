@@ -102,7 +102,7 @@ namespace QuanLib.BDF
                 throw new ArgumentNullException(nameof(value));
 
             int width = 0;
-            int height = 0;
+            int height = Height;
             foreach (var c in value)
             {
                 width += _fonts[c].Width;
