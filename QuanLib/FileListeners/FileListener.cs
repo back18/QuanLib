@@ -13,7 +13,7 @@ namespace QuanLib.FileListeners
         public FileListener(string path)
         {
             if (!File.Exists(path))
-                throw new FileNotFoundException("监听文件不存在", path);
+                throw new FileNotFoundException("要倾听的文件不存在", path);
 
             Path = path;
             _TimeInterval = 500;
@@ -97,8 +97,8 @@ namespace QuanLib.FileListeners
         {
             if (_runing)
                 return;
-
             _runing = true;
+
             Started.Invoke(this, EventArgs.Empty);
 
             FileInfo oldFile = new(Path);
@@ -110,7 +110,7 @@ namespace QuanLib.FileListeners
                     if (!newFile.Exists)
                     {
                         FileDeleted.Invoke(this, EventArgs.Empty);
-                        continue;
+                        break;
                     }
 
                     if (newFile.LastWriteTime > oldFile.LastWriteTime)
@@ -128,6 +128,7 @@ namespace QuanLib.FileListeners
                 }
             }
 
+            _runing = false;
             Stopped.Invoke(this, EventArgs.Empty);
         }
 

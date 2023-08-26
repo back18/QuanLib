@@ -16,7 +16,7 @@ namespace QuanLib.Java
 
         public NameValueCollection GetManifest()
         {
-            if (!ExistsEntry(ManifestPath))
+            if (!ExistsFile(ManifestPath))
                 throw new FileNotFoundException("META-INF/MANIFEST.MF 文件不存在");
             return JarUtil.ParseManifest(GetEntry(ManifestPath)!.Open());
         }
