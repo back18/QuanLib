@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib", "QuanLib\QuanLib.csproj", "{1973BEDD-CB71-4707-BF84-A310F119D72B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Demo", "QuanLib.Demo\QuanLib.Demo.csproj", "{873FA4FA-7A84-40AC-90CB-3EC5544EABE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Excel", "QuanLib.Excel\QuanLib.Excel.csproj", "{434342A3-E08F-472C-8BF0-9B8DEA08DB4F}"
@@ -15,16 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.BDF", "QuanLib.BDF\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.ConsoleUtil", "QuanLib.ConsoleUtil\QuanLib.ConsoleUtil.csproj", "{C2F99193-2BCF-4032-8220-52E4157C6764}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Core", "QuanLib.Core\QuanLib.Core.csproj", "{5BCC56AD-D552-402D-A5CC-18265771E704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1973BEDD-CB71-4707-BF84-A310F119D72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1973BEDD-CB71-4707-BF84-A310F119D72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1973BEDD-CB71-4707-BF84-A310F119D72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1973BEDD-CB71-4707-BF84-A310F119D72B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{873FA4FA-7A84-40AC-90CB-3EC5544EABE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{873FA4FA-7A84-40AC-90CB-3EC5544EABE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{873FA4FA-7A84-40AC-90CB-3EC5544EABE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2F99193-2BCF-4032-8220-52E4157C6764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BCC56AD-D552-402D-A5CC-18265771E704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BCC56AD-D552-402D-A5CC-18265771E704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

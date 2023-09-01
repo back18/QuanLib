@@ -1,4 +1,4 @@
-﻿using QuanLib.Extensions;
+﻿using QuanLib.Core.Extension;
 using System.Collections.Specialized;
 using System.Text;
 

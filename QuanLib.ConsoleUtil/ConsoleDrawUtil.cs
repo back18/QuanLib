@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Text;
 
 namespace QuanLib.ConsoleUtil
@@ -19,7 +20,7 @@ namespace QuanLib.ConsoleUtil
         /// </summary>
         /// <param name="value">字符</param>
         /// <param name="count">符号数量</param>
-        public static void Fill(char value, int count) => System.Console.Write(StringUtil.Copy(value, count));
+        public static void Fill(char value, int count) => System.Console.Write(new string(value, count));
 
         /// <summary>
         /// 输出指定数量的字符串

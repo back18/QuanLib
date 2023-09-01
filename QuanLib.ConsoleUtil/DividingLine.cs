@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Text;
 
 namespace QuanLib.ConsoleUtil
@@ -89,7 +90,7 @@ namespace QuanLib.ConsoleUtil
             else SymbolCount = (int)Math.Round((Width - ConsoleUtil.GetWidth(Title)) / 2.0 / DividingLineSymbolWidth, MidpointRounding.ToNegativeInfinity);
 
             //子分界线
-            string subDividingLine = StringUtil.Copy(DividingLineSymbol, SymbolCount);
+            string subDividingLine = new(DividingLineSymbol, SymbolCount);
             //完整分界线
             StringBuilder dividingLine = new(subDividingLine + Title + subDividingLine);
 

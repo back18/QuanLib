@@ -21,7 +21,6 @@
     <ProjectReference Include="..\QuanLib.BDF\QuanLib.BDF.csproj" />
     <ProjectReference Include="..\QuanLib.Excel\QuanLib.Excel.csproj" />
     <ProjectReference Include="..\QuanLib.Java\QuanLib.Java.csproj" />
-    <ProjectReference Include="..\QuanLib\QuanLib.csproj" />
   </ItemGroup>
 
 </Project>

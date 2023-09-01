@@ -18,8 +18,4 @@
     </COMReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\QuanLib\QuanLib.csproj" />
-  </ItemGroup>
-
 </Project>

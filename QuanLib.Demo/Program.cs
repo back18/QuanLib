@@ -1,4 +1,4 @@
-﻿using QuanLib.IO;
+﻿using QuanLib.Core.IO;
 
 namespace QuanLib.Demo
 {
