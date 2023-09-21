@@ -10,14 +10,38 @@ namespace QuanLib.Core.IO
     {
         public DirectoryManager(string directory)
         {
-            Directory = directory ?? throw new ArgumentNullException(nameof(directory));
+            FullPath = directory ?? throw new ArgumentNullException(nameof(directory));
         }
 
-        public string Directory { get; }
+        public string FullPath { get; }
 
         public string Combine(string path)
         {
-            return Path.Combine(Directory, path);
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
+
+            return Path.Combine(FullPath, path);
+        }
+
+        public bool Exists()
+        {
+            return Directory.Exists(FullPath);
+        }
+
+        public void CreateIfNotExists()
+        {
+            if (Directory.Exists(FullPath))
+                Directory.CreateDirectory(FullPath);
+        }
+
+        public void Delete()
+        {
+            Directory.Delete(FullPath);
+        }
+
+        public void Delete(bool recursive)
+        {
+            Directory.Delete(FullPath, recursive);
         }
 
         public bool ExistsFile(string name)
@@ -33,32 +57,32 @@ namespace QuanLib.Core.IO
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
 
-            return System.IO.Directory.Exists(Combine(name));
+            return Directory.Exists(Combine(name));
         }
 
         public string[] GetFiles()
         {
-            return System.IO.Directory.GetFiles(Directory);
+            return Directory.GetFiles(FullPath);
         }
 
         public string[] GetFiles(string searchPattern)
         {
-            return System.IO.Directory.GetFiles(Directory, searchPattern);
+            return Directory.GetFiles(FullPath, searchPattern);
         }
 
         public string[] GetDirectorys()
         {
-            return System.IO.Directory.GetDirectories(Directory);
+            return Directory.GetDirectories(FullPath);
         }
 
         public string[] GetDirectorys(string searchPattern)
         {
-            return System.IO.Directory.GetDirectories(Directory, searchPattern);
+            return Directory.GetDirectories(FullPath, searchPattern);
         }
 
         public override string ToString()
         {
-            return Directory;
+            return FullPath;
         }
     }
 }
