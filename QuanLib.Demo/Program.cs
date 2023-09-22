@@ -10,26 +10,7 @@ namespace QuanLib.Demo
     {
         private static void Main(string[] args)
         {
-            Process process = new()
-            {
-                StartInfo = new("java", "-jar fabric-server-mc.1.20.1-loader.0.14.22-launcher.0.11.2.jar nogui")
-                {
-                    RedirectStandardOutput = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    WorkingDirectory = "D:\\程序\\HMCL\\fabric-server-mc.1.20.1-loader.0.14.22-launcher.0.11.2"
-                }
-            };
-
-            process.Start();
-
-            while (true)
-            {
-                Console.ReadLine();
-                string s = process.StandardOutput.ReadLine();
-                Console.WriteLine(s);
-            }
+            string hash = HashUtil.GetHashString("E:\\下载\\谷歌浏览器\\client.jar", HashType.SHA1);
         }
     }
 }

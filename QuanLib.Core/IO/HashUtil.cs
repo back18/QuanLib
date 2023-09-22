@@ -13,114 +13,70 @@ namespace QuanLib.Core.IO
     /// </summary>
     public static class HashUtil
     {
-        /// <summary>
-        /// 获取字节指定数组的哈希值
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
-        public static byte[] GetHash(byte[] bytes, HashType hashType)
+        public static byte[] GetHashValue(byte[] bytes, HashType hashType)
         {
-            return HashAlgorithm.Create(hashType.ToString()).ComputeHash(bytes);
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
+
+            return HashManager.Get(hashType).ComputeHash(bytes);
         }
 
-        /// <summary>
-        /// 获取指定流的哈希值
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
-        public static byte[] GetHash(Stream stream, HashType hashType)
+        public static byte[] GetHashValue(Stream stream, HashType hashType)
         {
-            return HashAlgorithm.Create(hashType.ToString()).ComputeHash(stream);
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
+
+            return HashManager.Get(hashType).ComputeHash(stream);
         }
 
-        /// <summary>
-        /// 获取指定路径目标文件的哈希值
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
-        public static byte[] GetHash(string path, HashType hashType)
+        public static byte[] GetHashValue(string path, HashType hashType)
         {
-            FileStream fileStream = new(path, FileMode.Open);
-            byte[] result = GetHash(fileStream, hashType);
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
+
+            using FileStream fileStream = new(path, FileMode.Open);
+            byte[] result = GetHashValue(fileStream, hashType);
             fileStream.Close();
             return result;
         }
 
-        /// <summary>
-        /// 获取字节指定数组的哈希值字符串
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
         public static string GetHashString(byte[] bytes, HashType hashType)
         {
-            byte[] hash = GetHash(bytes, hashType);
+            byte[] hash = GetHashValue(bytes, hashType);
             return BytesToHexString(hash);
         }
 
-        /// <summary>
-        /// 获取指定路径目标文件的哈希值字符串
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
         public static string GetHashString(Stream stream, HashType hashType)
         {
-            byte[] hash = GetHash(stream, hashType);
+            byte[] hash = GetHashValue(stream, hashType);
             return BytesToHexString(hash);
         }
 
-        /// <summary>
-        /// 获取指定路径目标文件的哈希值字符串
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
         public static string GetHashString(string path, HashType hashType)
         {
-            byte[] hash = GetHash(path, hashType);
+            byte[] hash = GetHashValue(path, hashType);
             return BytesToHexString(hash);
         }
 
-        /// <summary>
-        /// 确定两个流的哈希值是否相对
-        /// </summary>
-        /// <param name="stream1"></param>
-        /// <param name="stream2"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
         public static bool Equals(Stream stream1, Stream stream2, HashType hashType)
         {
-            return GetHash(stream1, hashType).SequenceEqual(GetHash(stream2, hashType));
+            return GetHashValue(stream1, hashType).SequenceEqual(GetHashValue(stream2, hashType));
         }
 
-        /// <summary>
-        /// 确定两个路径目标文件的哈希值是否相等
-        /// </summary>
-        /// <param name="path1"></param>
-        /// <param name="path2"></param>
-        /// <param name="hashType"></param>
-        /// <returns></returns>
         public static bool Equals(string path1, string path2, HashType hashType)
         {
-            FileStream fileStream1 = new(path1, FileMode.Open);
-            FileStream fileStream2 = new(path2, FileMode.Open);
-            bool result = Equals(fileStream1, fileStream2, hashType);
-            fileStream1.Close();
-            fileStream2.Close();
-            return result;
+            return GetHashValue(path1, hashType).SequenceEqual(GetHashValue(path2, hashType));
         }
 
         private static string BytesToHexString(byte[] bytes)
         {
-            string[] hashString = new string[bytes.Length];
-            for (int i = 0; i < bytes.Length; i++)
-                hashString[i] = Convert.ToString(bytes[i], 16);
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
 
-            return string.Join(' ', hashString);
+            StringBuilder result = new();
+            for (int i = 0; i < bytes.Length; i++)
+                result.Append(bytes[i].ToString("x2"));
+            return result.ToString();
         }
     }
 }

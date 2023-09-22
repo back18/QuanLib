@@ -30,7 +30,7 @@ namespace QuanLib.Core.IO
 
         public void CreateIfNotExists()
         {
-            if (Directory.Exists(FullPath))
+            if (!Directory.Exists(FullPath))
                 Directory.CreateDirectory(FullPath);
         }
 

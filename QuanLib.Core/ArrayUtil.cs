@@ -162,7 +162,7 @@ namespace QuanLib.Core
         /// <param name="array"></param>
         /// <param name="padding"></param>
         /// <returns></returns>
-        public static T[] PadLeft<T>(T[] array, T padding)
+        public static T[] PadLeft<T>(this T[] array, T padding)
         {
             T[] newArray = new T[array.Length + 1];
 
@@ -179,7 +179,7 @@ namespace QuanLib.Core
         /// <param name="array"></param>
         /// <param name="padding"></param>
         /// <returns></returns>
-        public static T[] PadRight<T>(T[] array, T padding)
+        public static T[] PadRight<T>(this T[] array, T padding)
         {
             T[] newArray = new T[array.Length + 1];
 
