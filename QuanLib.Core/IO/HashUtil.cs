@@ -13,12 +13,26 @@ namespace QuanLib.Core.IO
     /// </summary>
     public static class HashUtil
     {
+        private static HashAlgorithm Create(HashType hashType)
+        {
+            return hashType switch
+            {
+                HashType.SHA1 => SHA1.Create(),
+                HashType.SHA256 => SHA256.Create(),
+                HashType.SHA384 => SHA384.Create(),
+                HashType.SHA512 => SHA512.Create(),
+                HashType.MD5 => MD5.Create(),
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
         public static byte[] GetHashValue(byte[] bytes, HashType hashType)
         {
             if (bytes is null)
                 throw new ArgumentNullException(nameof(bytes));
 
-            return HashManager.Get(hashType).ComputeHash(bytes);
+            using HashAlgorithm hashAlgorithm = Create(hashType);
+            return hashAlgorithm.ComputeHash(bytes);
         }
 
         public static byte[] GetHashValue(Stream stream, HashType hashType)
@@ -26,7 +40,8 @@ namespace QuanLib.Core.IO
             if (stream is null)
                 throw new ArgumentNullException(nameof(stream));
 
-            return HashManager.Get(hashType).ComputeHash(stream);
+            using HashAlgorithm hashAlgorithm = Create(hashType);
+            return hashAlgorithm.ComputeHash(stream);
         }
 
         public static byte[] GetHashValue(string path, HashType hashType)
