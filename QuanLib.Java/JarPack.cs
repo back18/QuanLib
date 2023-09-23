@@ -10,7 +10,9 @@ namespace QuanLib.Java
 {
     public class JarPack : ZipPack
     {
-        public JarPack(string path) : base(path) { }
+        public JarPack(string path, Encoding? encoding = null) : base(path, encoding) { }
+
+        public JarPack(Stream stream) : base(stream) { }
 
         public const string ManifestPath = "META-INF/MANIFEST.MF";
 
@@ -18,7 +20,7 @@ namespace QuanLib.Java
         {
             if (!ExistsFile(ManifestPath))
                 throw new FileNotFoundException("META-INF/MANIFEST.MF 文件不存在");
-            return JarUtil.ParseManifest(GetEntry(ManifestPath)!.Open());
+            return JarUtil.ParseManifest(base[ManifestPath]!.Open());
         }
     }
 }
