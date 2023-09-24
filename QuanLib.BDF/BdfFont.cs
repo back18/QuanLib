@@ -1,4 +1,5 @@
 ﻿using QuanLib.Core;
+using QuanLib.Core.Extension;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -14,11 +15,11 @@ namespace QuanLib.BDF
     {
         private BdfFont(ConcurrentDictionary<char, FontData> fonts)
         {
-            _fonts = fonts ?? throw new ArgumentNullException(nameof(fonts));
+            _items = fonts ?? throw new ArgumentNullException(nameof(fonts));
 
             Dictionary<int, int> widths = new();
             Dictionary<int, int> heights = new();
-            foreach (var font in _fonts.Values)
+            foreach (var font in _items.Values)
             {
                 widths.TryAdd(font.Width, 0);
                 heights.TryAdd(font.Height, 0);
@@ -61,7 +62,7 @@ namespace QuanLib.BDF
             Height = heightlist.Count > 0 ? heightlist[0].Key : 0;
         }
 
-        private readonly ConcurrentDictionary<char, FontData> _fonts;
+        private readonly ConcurrentDictionary<char, FontData> _items;
 
         public int HalfWidth { get; }
 
@@ -69,32 +70,32 @@ namespace QuanLib.BDF
 
         public int Height { get; }
 
-        public FontData this[char key] => _fonts[key];
+        public FontData this[char key] => _items[key];
 
-        public IEnumerable<char> Keys => _fonts.Keys;
+        public IEnumerable<char> Keys => _items.Keys;
 
-        public IEnumerable<FontData> Values => _fonts.Values;
+        public IEnumerable<FontData> Values => _items.Values;
 
-        public int Count => _fonts.Count;
+        public int Count => _items.Count;
 
         public bool ContainsKey(char key)
         {
-            return _fonts.ContainsKey(key);
+            return _items.ContainsKey(key);
         }
 
         public bool TryGetValue(char key, [MaybeNullWhen(false)] out FontData value)
         {
-            return _fonts.TryGetValue(key, out value);
+            return _items.TryGetValue(key, out value);
         }
 
         public IEnumerator<KeyValuePair<char, FontData>> GetEnumerator()
         {
-            return _fonts.GetEnumerator();
+            return _items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_fonts).GetEnumerator();
+            return ((IEnumerable)_items).GetEnumerator();
         }
 
         public Size GetTotalSize(string value)
@@ -106,79 +107,21 @@ namespace QuanLib.BDF
             int height = Height;
             foreach (var c in value)
             {
-                width += _fonts[c].Width;
-                if (_fonts[c].Height > height)
-                    height = _fonts[c].Height;
+                width += _items[c].Width;
+                if (_items[c].Height > height)
+                    height = _items[c].Height;
             }
             return new(width, height);
         }
 
-        public int GetLeftLayoutMaxCount(int maxWidth, string value)
+        public static BdfFont Load(Stream stream)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
 
-            int width = 0;
-            for (int i = 0; i < value.Length; i++)
-            {
-                width += _fonts[value[i]].Width;
-                if (width == maxWidth)
-                    return i + 1;
-                else if (width > maxWidth)
-                    return i;
-            }
-            return width;
-        }
+            string[] lines = stream.ToUtf8TextLines();
 
-        public int GetRightLayoutMaxCount(int maxWidth, string value)
-        {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-
-            int width = 0;
-            for (int i = value.Length - 1; i >= 0; i--)
-            {
-                width += _fonts[value[i]].Width;
-                if (width == maxWidth)
-                    return value.Length - i + 1;
-                else if (width > maxWidth)
-                    return value.Length - i;
-            }
-            return width;
-        }
-
-        public int GetTopLayoutMaxCount(int maxHeight, string value)
-        {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-
-            int height = 0;
-            for (int i = 0; i < value.Length; i++)
-            {
-                height += _fonts[value[i]].Height;
-                if (height == maxHeight)
-                    return i + 1;
-                else if (height > maxHeight)
-                    return i;
-            }
-            return height;
-        }
-
-        public int GetBottomLayoutMaxCount(int maxHeight, string value)
-        {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
-
-            int height = 0;
-            for (int i = value.Length - 1; i >= 0; i--)
-            {
-                height += _fonts[value[i]].Height;
-                if (height == maxHeight)
-                    return value.Length - i + 1;
-                else if (height > maxHeight)
-                    return value.Length - i;
-            }
-            return height;
+            return Load(lines);
         }
 
         public static BdfFont Load(string path)
@@ -187,6 +130,14 @@ namespace QuanLib.BDF
                 throw new ArgumentNullException(nameof(path));
 
             string[] lines = File.ReadAllLines(path);
+
+            return Load(lines);
+        }
+
+        private static BdfFont Load(string[] lines)
+        {
+            if (lines is null)
+                throw new ArgumentNullException(nameof(lines));
 
             ConcurrentDictionary<char, FontData> fonts = new();
             List<(int start, int end)> ranges = new();
