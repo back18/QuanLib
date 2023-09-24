@@ -23,7 +23,9 @@ namespace QuanLib.Core.Extension
             if (encoding is null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            stream.Seek(0, SeekOrigin.Begin);
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+
             using StreamReader reader = new(stream, encoding);
             return reader.ReadToEnd();
         }
@@ -33,7 +35,9 @@ namespace QuanLib.Core.Extension
             if (encoding is null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            stream.Seek(0, SeekOrigin.Begin);
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+
             using StreamReader reader = new(stream, Encoding.UTF8);
             List<string> lines = new();
             while (!reader.EndOfStream)
