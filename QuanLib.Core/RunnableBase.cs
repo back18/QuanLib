@@ -1,4 +1,5 @@
-﻿using QuanLib.Core.Event;
+﻿using log4net.Core;
+using QuanLib.Core.Event;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,65 @@ namespace QuanLib.Core
 
         protected abstract void Run();
 
+        public virtual bool Start(string threadName, LogImpl logger)
+        {
+            if (string.IsNullOrEmpty(threadName))
+                throw new ArgumentException($"“{nameof(threadName)}”不能为 null 或空。", nameof(threadName));
+            if (logger is null)
+                throw new ArgumentNullException(nameof(logger));
+
+            Started += OnStarted;
+            Stopped += OnStopped;
+            ThrowException += OnThrowException;
+
+            if (Start(threadName))
+            {
+                return true;
+            }
+            else
+            {
+                Started -= OnStarted;
+                Stopped -= OnStopped;
+                ThrowException -= OnThrowException;
+                return false;
+            }
+
+            void OnStarted(IRunnable sender, EventArgs e)
+            {
+                logger.Info($"线程“{Thread?.Name}”已启动");
+            }
+
+            void OnStopped(IRunnable sender, EventArgs e)
+            {
+                logger.Info($"线程“{Thread?.Name}”已停止");
+
+                Started -= OnStarted;
+                Stopped -= OnStopped;
+                ThrowException -= OnThrowException;
+            }
+
+            void OnThrowException(IRunnable sender, ExceptionEventArgs e)
+            {
+                logger.Error($"线程“{Thread?.Name}”抛出了异常", e.Exception);
+            }
+        }
+
+        public virtual bool Start(string threadName)
+        {
+            if (string.IsNullOrEmpty(threadName))
+                throw new ArgumentException($"“{nameof(threadName)}”不能为 null 或空。", nameof(threadName));
+
+            if (Start() && Thread is not null)
+            {
+                Thread.Name = threadName;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public virtual bool Start()
         {
             lock (_lock)
@@ -89,8 +149,6 @@ namespace QuanLib.Core
 
                         }
                     }
-
-                    Thread = null;
                 }
             }
         }
@@ -130,7 +188,6 @@ namespace QuanLib.Core
                         IsRuning = false;
                         _stopSemaphore.Release();
                         _stopTask = GetStopTask();
-                        Thread = null;
                     }
                 }
                 Stopped.Invoke(this, EventArgs.Empty);
