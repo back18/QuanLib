@@ -1,4 +1,5 @@
-﻿using QuanLib.Core;
+﻿using log4net.Core;
+using QuanLib.Core;
 using QuanLib.Core.Event;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace QuanLib.Core.FileListeners
 {
     public class PollingTextFileListener : PollingFileListener, ITextListener
     {
-        public PollingTextFileListener(string path, Encoding encoding) : base(path)
+        public PollingTextFileListener(string path, Encoding encoding, Func<Type, LogImpl> logger) : base(path, logger)
         {
             Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
             _temp = new();
