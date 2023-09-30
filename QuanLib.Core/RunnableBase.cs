@@ -108,6 +108,8 @@ namespace QuanLib.Core
                         if (i >= 5)
                         {
                             Logger.Warn($"即将强行停止线程({Thread?.Name})");
+                            _stopSemaphore.Release();
+                            _stopTask = GetStopTask();
                             try
                             {
                                 Thread.Abort();
