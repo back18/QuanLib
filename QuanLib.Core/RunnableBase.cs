@@ -97,29 +97,28 @@ namespace QuanLib.Core
                 if (IsRuning)
                 {
                     IsRuning = false;
-                    _stopSemaphore.Release();
-                    _stopTask = GetStopTask();
-
                     int i = 0;
-                    while (Thread is not null && Thread.IsAlive)
+                    while (Thread is not null)
                     {
-                        try
+                        Thread.Join(1000);
+                        if (!Thread.IsAlive)
+                            break;
+                        i++;
+                        Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
+                        if (i >= 5)
                         {
-                            Thread.Join(1000);
-                            i++;
-                            Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
-                            if (i >= 5)
+                            Logger.Warn($"即将强行停止线程({Thread?.Name})");
+                            try
                             {
-                                Logger.Warn($"即将强行停止线程({Thread?.Name})");
                                 Thread.Abort();
                                 break;
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            if (Thread.IsAlive)
-                                Logger.Error($"无法停止进程({Thread?.Name})", ex);
-                            break;
+                            catch (Exception ex)
+                            {
+                                if (Thread.IsAlive)
+                                    Logger.Error($"无法停止进程({Thread?.Name})", ex);
+                                break;
+                            }
                         }
                     }
                 }
@@ -154,15 +153,9 @@ namespace QuanLib.Core
             }
             finally
             {
-                lock (_lock)
-                {
-                    if (IsRuning)
-                    {
-                        IsRuning = false;
-                        _stopSemaphore.Release();
-                        _stopTask = GetStopTask();
-                    }
-                }
+                IsRuning = false;
+                _stopSemaphore.Release();
+                _stopTask = GetStopTask();
                 Stopped.Invoke(this, EventArgs.Empty);
             }
         }
