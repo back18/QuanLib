@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.ExceptionHelper
+namespace QuanLib.Core
 {
     public static class ThrowHelper
     {

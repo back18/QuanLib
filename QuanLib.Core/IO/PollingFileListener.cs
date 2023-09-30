@@ -1,13 +1,12 @@
 ﻿using log4net.Core;
 using QuanLib.Core.Events;
-using QuanLib.Core.ExceptionHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.FileListeners
+namespace QuanLib.Core.IO
 {
     public class PollingFileListener : RunnableBase
     {

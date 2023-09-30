@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.FileListeners
+namespace QuanLib.Core.IO
 {
     public interface ITextListener
     {
