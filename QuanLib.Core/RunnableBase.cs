@@ -1,6 +1,6 @@
 ﻿using log4net.Core;
 using log4net.Repository.Hierarchy;
-using QuanLib.Core.Event;
+using QuanLib.Core.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
 ﻿using QuanLib.Core;
-using QuanLib.Core.Extension;
+using QuanLib.Core.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;

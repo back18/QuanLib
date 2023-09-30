@@ -1,5 +1,5 @@
 ﻿using log4net.Core;
-using QuanLib.Core.Event;
+using QuanLib.Core.Events;
 using QuanLib.Core.ExceptionHelper;
 using System;
 using System.Collections.Generic;

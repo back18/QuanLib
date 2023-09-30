@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.Event
+namespace QuanLib.Core.Events
 {
     public class ExceptionEventArgs : EventArgs
     {

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.Extension
+namespace QuanLib.Core.Extensions
 {
     public static class StreamExtension
     {
         public static string ToUtf8Text(this Stream stream)
         {
-            return ToText(stream, Encoding.UTF8);
+            return stream.ToText(Encoding.UTF8);
         }
 
         public static string[] ToUtf8TextLines(this Stream stream)
         {
-            return ToTextLines(stream, Encoding.UTF8);
+            return stream.ToTextLines(Encoding.UTF8);
         }
 
         public static string ToText(this Stream stream, Encoding encoding)
