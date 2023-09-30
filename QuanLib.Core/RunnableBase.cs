@@ -51,17 +51,17 @@ namespace QuanLib.Core
 
         protected virtual void OnStarted(IRunnable sender, EventArgs e)
         {
-            Logger.Info($"线程“{Thread?.Name}”已启动");
+            Logger.Info($"线程({Thread?.Name ?? "null"})已启动");
         }
 
         protected virtual void OnStopped(IRunnable sender, EventArgs e)
         {
-            Logger.Info($"线程“{Thread?.Name}”已停止");
+            Logger.Info($"线程({Thread?.Name ?? "null"})已停止");
         }
 
         protected virtual void OnThrowException(IRunnable sender, ExceptionEventArgs e)
         {
-            Logger.Error($"线程“{Thread?.Name}”抛出了异常", e.Exception);
+            Logger.Error($"线程({Thread?.Name ?? "null"})抛出了异常", e.Exception);
         }
 
         protected abstract void Run();
@@ -107,10 +107,10 @@ namespace QuanLib.Core
                         {
                             Thread.Join(1000);
                             i++;
-                            Logger.Warn($"正在等待线程“{Thread?.Name}”停止，已等待{i}秒");
+                            Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
                             if (i >= 5)
                             {
-                                Logger.Warn($"即将强行停止线程“{Thread?.Name}”");
+                                Logger.Warn($"即将强行停止线程({Thread?.Name})");
                                 Thread.Abort();
                                 break;
                             }
@@ -118,7 +118,7 @@ namespace QuanLib.Core
                         catch (Exception ex)
                         {
                             if (Thread.IsAlive)
-                                Logger.Error($"无法停止进程“{Thread?.Name}”", ex);
+                                Logger.Error($"无法停止进程({Thread?.Name})", ex);
                             break;
                         }
                     }
