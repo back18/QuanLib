@@ -98,30 +98,29 @@ namespace QuanLib.Core
                 {
                     IsRunning = false;
                     int i = 0;
-                    while (Thread is not null)
+                    try
                     {
-                        Thread.Join(1000);
-                        if (!Thread.IsAlive)
-                            break;
-                        i++;
-                        Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
-                        if (i >= 5)
+                        while (Thread is not null)
                         {
-                            Logger.Warn($"即将强行停止线程({Thread?.Name})");
-                            _stopSemaphore.Release();
-                            _stopTask = GetStopTask();
-                            try
+                            Thread.Join(1000);
+                            if (!Thread.IsAlive)
+                                break;
+                            i++;
+                            Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
+                            if (i >= 5)
                             {
+                                Logger.Warn($"即将强行停止线程({Thread?.Name})");
+                                _stopSemaphore.Release();
+                                _stopTask = GetStopTask();
                                 Thread.Abort();
                                 break;
                             }
-                            catch (Exception ex)
-                            {
-                                if (Thread.IsAlive)
-                                    Logger.Error($"无法停止进程({Thread?.Name})", ex);
-                                break;
-                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (Thread is not null && Thread.IsAlive)
+                            Logger.Error($"无法停止进程({Thread?.Name})", ex);
                     }
                 }
             }
