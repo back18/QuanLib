@@ -87,7 +87,7 @@ namespace QuanLib.Core.IO
         protected override void Run()
         {
             FileInfo oldFile = new(Path);
-            while (IsRuning)
+            while (IsRunning)
             {
                 FileInfo newFile = new(Path);
                 if (!newFile.Exists)

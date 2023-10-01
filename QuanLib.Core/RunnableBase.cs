@@ -19,7 +19,7 @@ namespace QuanLib.Core
 
             Type type = GetType();
             Logger = logger(type);
-            IsRuning = false;
+            IsRunning = false;
             ThreadName = type.FullName ?? type.Name;
             _stopSemaphore = new(0);
             _stopTask = GetStopTask();
@@ -41,7 +41,7 @@ namespace QuanLib.Core
 
         public virtual string ThreadName { get; protected set; }
 
-        public virtual bool IsRuning { get; protected set; }
+        public virtual bool IsRunning { get; protected set; }
 
         public event EventHandler<IRunnable, EventArgs> Started;
 
@@ -79,10 +79,10 @@ namespace QuanLib.Core
         {
             lock (_lock)
             {
-                if (IsRuning)
+                if (IsRunning)
                     return false;
 
-                IsRuning = true;
+                IsRunning = true;
                 Thread = new(ThreadStart);
                 Thread.Name = ThreadName;
                 Thread.Start();
@@ -94,9 +94,9 @@ namespace QuanLib.Core
         {
             lock (_lock)
             {
-                if (IsRuning)
+                if (IsRunning)
                 {
-                    IsRuning = false;
+                    IsRunning = false;
                     int i = 0;
                     while (Thread is not null)
                     {
@@ -155,7 +155,7 @@ namespace QuanLib.Core
             }
             finally
             {
-                IsRuning = false;
+                IsRunning = false;
                 _stopSemaphore.Release();
                 _stopTask = GetStopTask();
                 Stopped.Invoke(this, EventArgs.Empty);
