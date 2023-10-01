@@ -150,9 +150,6 @@ namespace QuanLib.Core
             }
             catch (Exception ex)
             {
-                IsRunning = false;
-                _stopSemaphore.Release();
-                _stopTask = GetStopTask();
                 ThrowException.Invoke(this, new(ex));
             }
             finally
