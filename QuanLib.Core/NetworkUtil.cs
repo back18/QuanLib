@@ -10,7 +10,7 @@ namespace QuanLib.Core
 {
     public static class NetworkUtil
     {
-        public static bool TestTcpConnection(IPAddress address, int port)
+        public static bool TestTcpConnectivity(IPAddress address, int port)
         {
             TcpClient client = new();
             try
@@ -28,7 +28,7 @@ namespace QuanLib.Core
             }
         }
 
-        public static async Task<bool> TestTcpConnectionAsync(IPAddress address, int port)
+        public static async Task<bool> TestTcpConnectivityAsync(IPAddress address, int port)
         {
             TcpClient client = new();
             try
