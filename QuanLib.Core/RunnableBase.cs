@@ -120,7 +120,7 @@ namespace QuanLib.Core
                     catch (Exception ex)
                     {
                         if (Thread is not null && Thread.IsAlive)
-                            Logger.Error($"无法停止进程({Thread?.Name})", ex);
+                            Logger.Error($"无法停止线程({Thread?.Name})", ex);
                     }
                 }
             }
