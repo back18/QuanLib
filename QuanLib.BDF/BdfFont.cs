@@ -120,7 +120,6 @@ namespace QuanLib.BDF
                 throw new ArgumentNullException(nameof(stream));
 
             string[] lines = stream.ToUtf8TextLines();
-
             return Load(lines);
         }
 
@@ -130,7 +129,6 @@ namespace QuanLib.BDF
                 throw new ArgumentNullException(nameof(path));
 
             string[] lines = File.ReadAllLines(path);
-
             return Load(lines);
         }
 

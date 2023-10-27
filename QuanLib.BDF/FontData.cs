@@ -18,7 +18,7 @@ namespace QuanLib.BDF
             _data = data;
         }
 
-        public bool[][] _data { get; }
+        private readonly bool[][] _data;
 
         public char Char { get; }
 
@@ -30,7 +30,7 @@ namespace QuanLib.BDF
 
         public int YOffset { get; }
 
-        public bool[,] GetBitMap()
+        public bool[,] GetBinary()
         {
             bool[,] result = new bool[Width, Height];
             for (int y = 0; y < Height; y++)
