@@ -8,10 +8,10 @@ namespace QuanLib.Core
 {
     public static class Foreach
     {
-        public static void Start<TValue1, Tvalue2>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<Tvalue2> enumerable2,
-            Action<TValue1, Tvalue2> body)
+        public static void Start<T1, T2>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            Action<T1, T2> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
@@ -31,10 +31,10 @@ namespace QuanLib.Core
             }
         }
 
-        public static void Start<TValue1, Tvalue2>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<Tvalue2> enumerable2,
-            Func<TValue1, Tvalue2, bool> body)
+        public static void Start<T1, T2>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            Func<T1, T2, bool> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
@@ -55,11 +55,11 @@ namespace QuanLib.Core
             }
         }
 
-        public static void Start<TValue1, TValue2, TValue3>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<TValue2> enumerable2,
-            IEnumerable<TValue3> enumerable3,
-            Action<TValue1, TValue2, TValue3> body)
+        public static void Start<T1, T2, T3>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            IEnumerable<T3> enumerable3,
+            Action<T1, T2, T3> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
@@ -83,11 +83,11 @@ namespace QuanLib.Core
             }
         }
 
-        public static void Start<TValue1, TValue2, TValue3>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<TValue2> enumerable2,
-            IEnumerable<TValue3> enumerable3,
-            Func<TValue1, TValue2, TValue3, bool> body)
+        public static void Start<T1, T2, T3>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            IEnumerable<T3> enumerable3,
+            Func<T1, T2, T3, bool> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
@@ -112,12 +112,12 @@ namespace QuanLib.Core
             }
         }
 
-        public static void Start<TValue1, TValue2, TValue3, TValue4>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<TValue2> enumerable2,
-            IEnumerable<TValue3> enumerable3,
-            IEnumerable<TValue4> enumerable4,
-            Action<TValue1, TValue2, TValue3, TValue4> body)
+        public static void Start<T1, T2, T3, T4>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            IEnumerable<T3> enumerable3,
+            IEnumerable<T4> enumerable4,
+            Action<T1, T2, T3, T4> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
@@ -145,12 +145,12 @@ namespace QuanLib.Core
             }
         }
 
-        public static void Start<TValue1, TValue2, TValue3, TValue4>(
-            IEnumerable<TValue1> enumerable1,
-            IEnumerable<TValue2> enumerable2,
-            IEnumerable<TValue3> enumerable3,
-            IEnumerable<TValue4> enumerable4,
-            Func<TValue1, TValue2, TValue3, TValue4, bool> body)
+        public static void Start<T1, T2, T3, T4>(
+            IEnumerable<T1> enumerable1,
+            IEnumerable<T2> enumerable2,
+            IEnumerable<T3> enumerable3,
+            IEnumerable<T4> enumerable4,
+            Func<T1, T2, T3, T4, bool> body)
         {
             if (enumerable1 is null)
                 throw new ArgumentNullException(nameof(enumerable1));
