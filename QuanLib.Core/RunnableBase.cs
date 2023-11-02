@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public abstract class RunnableBase : IRunnable, ILogable
+    public abstract class RunnableBase : IRunnable, ILoggable
     {
         protected RunnableBase(Func<Type, LogImpl> logger)
         {

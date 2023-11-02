@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface ILogable
+    public interface ILoggable
     {
         public LogImpl Logger { get; }
     }
