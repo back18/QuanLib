@@ -22,8 +22,6 @@ namespace QuanLib.Core
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext())
             {
@@ -45,8 +43,6 @@ namespace QuanLib.Core
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext())
             {
@@ -73,9 +69,6 @@ namespace QuanLib.Core
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
             using var enumerator3 = enumerable3.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
-            enumerator3.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext() && enumerator3.MoveNext())
             {
@@ -101,9 +94,6 @@ namespace QuanLib.Core
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
             using var enumerator3 = enumerable3.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
-            enumerator3.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext() && enumerator3.MoveNext())
             {
@@ -134,10 +124,6 @@ namespace QuanLib.Core
             using var enumerator2 = enumerable2.GetEnumerator();
             using var enumerator3 = enumerable3.GetEnumerator();
             using var enumerator4 = enumerable4.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
-            enumerator3.Reset();
-            enumerator4.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext() && enumerator3.MoveNext() && enumerator4.MoveNext())
             {
@@ -167,10 +153,6 @@ namespace QuanLib.Core
             using var enumerator2 = enumerable2.GetEnumerator();
             using var enumerator3 = enumerable3.GetEnumerator();
             using var enumerator4 = enumerable4.GetEnumerator();
-            enumerator1.Reset();
-            enumerator2.Reset();
-            enumerator3.Reset();
-            enumerator4.Reset();
 
             while (enumerator1.MoveNext() && enumerator2.MoveNext() && enumerator3.MoveNext() && enumerator4.MoveNext())
             {
