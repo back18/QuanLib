@@ -148,15 +148,13 @@ namespace QuanLib.BDF
                     ranges.Add((start, i - 1));
             }
 
-            int count = 0;
-            Parallel.ForEach(ranges, range =>
+            ParallelLoopResult parallelLoopResult = Parallel.ForEach(ranges, range =>
             {
                 FontData font = Parse(range.start, range.end);
                 while (!fonts.TryAdd(font.Char, font)) ;
-                Interlocked.Increment(ref count);
             });
 
-            while (count < ranges.Count)
+            while (!parallelLoopResult.IsCompleted)
                 Thread.Sleep(10);
 
             return new(fonts);
