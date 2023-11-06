@@ -23,10 +23,12 @@ namespace QuanLib.Core
         {
             lock (_lock)
             {
-                if (IsDisposed || !disposing)
+                if (IsDisposed)
                     return;
 
-                DisposeUnmanaged();
+                if (disposing)
+                    DisposeUnmanaged();
+
                 IsDisposed = true;
             }
         }
