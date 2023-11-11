@@ -19,6 +19,11 @@ namespace QuanLib.Core
 
         protected abstract void DisposeUnmanaged();
 
+        protected virtual void NotDisposeUnmanaged()
+        {
+
+        }
+
         protected void Dispose(bool disposing)
         {
             lock (_lock)
@@ -28,6 +33,8 @@ namespace QuanLib.Core
 
                 if (disposing)
                     DisposeUnmanaged();
+                else
+                    NotDisposeUnmanaged();
 
                 IsDisposed = true;
             }
