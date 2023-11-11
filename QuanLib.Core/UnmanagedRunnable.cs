@@ -14,6 +14,8 @@ namespace QuanLib.Core
             IsDisposed = false;
         }
 
+        private readonly object _lock = new();
+
         public bool IsDisposed { get; protected set; }
 
         public override bool Start()

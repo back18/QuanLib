@@ -29,11 +29,11 @@ namespace QuanLib.Core
             ThrowException += OnThrowException;
         }
 
-        protected readonly object _lock = new();
+        private readonly object _lock = new();
 
-        protected readonly SemaphoreSlim _stopSemaphore;
+        private readonly SemaphoreSlim _stopSemaphore;
 
-        protected Task _stopTask;
+        private Task _stopTask;
 
         public LogImpl Logger { get; }
 
@@ -126,17 +126,17 @@ namespace QuanLib.Core
             }
         }
 
-        public virtual void WaitForStop()
+        public void WaitForStop()
         {
             _stopTask.Wait();
         }
 
-        public virtual async Task WaitForStopAsync()
+        public async Task WaitForStopAsync()
         {
             await _stopTask;
         }
 
-        protected virtual async Task GetStopTask()
+        protected async Task GetStopTask()
         {
             await _stopSemaphore.WaitAsync();
         }
