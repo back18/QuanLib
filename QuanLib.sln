@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.ConsoleUtil", "Quan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Core", "QuanLib.Core\QuanLib.Core.csproj", "{5BCC56AD-D552-402D-A5CC-18265771E704}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.GenericVector", "QuanLib.GenericVector\QuanLib.GenericVector.csproj", "{D746C865-2BBD-428E-956E-04CD1D81678A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D746C865-2BBD-428E-956E-04CD1D81678A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D746C865-2BBD-428E-956E-04CD1D81678A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D746C865-2BBD-428E-956E-04CD1D81678A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D746C865-2BBD-428E-956E-04CD1D81678A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
