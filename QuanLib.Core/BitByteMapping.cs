@@ -6,21 +6,19 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public static class BoolArrayMap
+    public static class BitByteMapping
     {
-        static BoolArrayMap()
+        static BitByteMapping()
         {
-            _bytes = new();
+            _bytes = [];
             for (int i = byte.MinValue; i <= byte.MaxValue; i++)
-            {
-                _bytes.Add((byte)i, NumberUtil.ToBoolArray((byte)i));
-            }
+                _bytes.Add((byte)i, NumberUtil.ToBitArray((byte)i));
 
-            _lowers = new();
+            _lowers = [];
             for (int i = byte.MinValue; i <= byte.MaxValue; i++)
                 _lowers.Add(i.ToString("x2"), _bytes[(byte)i]);
 
-            _uppers = new();
+            _uppers = [];
             for (int i = byte.MinValue; i <= byte.MaxValue; i++)
                 _uppers.Add(i.ToString("X2"), _bytes[(byte)i]);
         }

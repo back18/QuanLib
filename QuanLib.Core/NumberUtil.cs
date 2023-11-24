@@ -8,18 +8,17 @@ namespace QuanLib.Core
 {
     public static class NumberUtil
     {
-        public static bool[] ToBoolArray(byte value)
+        public static bool[] ToBitArray(byte value)
         {
             bool[] result = new bool[8];
-            int b = 7;
-            for (int i = 0; i < 8; i++)
-                result[i] = (value & 1 << b--) != 0;
+            for (int b = 0; b < 8; b++)
+                result[b] = (value & (1 << (7 - b))) != 0;
             return result;
         }
 
-        public static bool[] ToBoolArray(string value)
+        public static bool[] ToBitArray(string value)
         {
-            return ToBoolArray(Convert.ToByte(value, 16));
+            return ToBitArray(Convert.ToByte(value, 16));
         }
     }
 }
