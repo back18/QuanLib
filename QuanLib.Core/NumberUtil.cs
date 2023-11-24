@@ -30,10 +30,13 @@ namespace QuanLib.Core
         public static int DivisionCeiling(int left, int right)
         {
             //return (int)Math.Ceiling((double)left / right);
-            if (left % right == 0)
-                return left / right;
-            else
+            int remainder = left % right;
+            if (remainder > 0)
                 return left / right + 1;
+            else if (remainder < 0)
+                return left / right - 1;
+            else
+                return left / right;
         }
     }
 }
