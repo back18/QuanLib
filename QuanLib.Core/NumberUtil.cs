@@ -20,5 +20,20 @@ namespace QuanLib.Core
         {
             return ToBitArray(Convert.ToByte(value, 16));
         }
+
+        public static int DivisionFloor(int left, int right)
+        {
+            //return (int)Math.Floor((double)left / right);
+            return left / right;
+        }
+
+        public static int DivisionCeiling(int left, int right)
+        {
+            //return (int)Math.Ceiling((double)left / right);
+            if (left % right == 0)
+                return left / right;
+            else
+                return left / right + 1;
+        }
     }
 }
