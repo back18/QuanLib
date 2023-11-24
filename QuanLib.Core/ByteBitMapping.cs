@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public static class BitByteMapping
+    public static class ByteBitMapping
     {
-        static BitByteMapping()
+        static ByteBitMapping()
         {
             _bytes = [];
             for (int i = byte.MinValue; i <= byte.MaxValue; i++)
@@ -29,10 +29,17 @@ namespace QuanLib.Core
 
         private static readonly Dictionary<string, bool[]> _uppers;
 
-        public static bool[] FromByte(byte b) => _bytes[b];
+        public static bool[] FromByte(byte b) => Clone(_bytes[b]);
 
-        public static bool[] FromLiwer(string s) => _lowers[s];
+        public static bool[] FromLiwer(string s) => Clone(_lowers[s]);
 
-        public static bool[] FromUpper(string s) => _uppers[s];
+        public static bool[] FromUpper(string s) => Clone(_uppers[s]);
+
+        private static bool[] Clone(bool[] source)
+        {
+            bool[] result = new bool[source.Length];
+            source.CopyTo(result, 0);
+            return result;
+        }
     }
 }
