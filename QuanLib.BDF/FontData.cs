@@ -31,28 +31,30 @@ namespace QuanLib.BDF
 
         public int YOffset { get; }
 
-        public bool[,] GetBitArray()
+        public bool[,] GetBitArray(bool isNegative = false)
         {
+            Func<int, int, bool> func = isNegative ? ((x, y) => !_data[y][x]) : ((x, y) => _data[y][x]);
             bool[,] result = new bool[Width, Height];
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
-                    result[x, y] = _data[y][x];
+                    result[x, y] = func(x, y);
             return result;
         }
 
-        public bool[,] GetBitArray(int pixelSize)
+        public bool[,] GetBitArray(int pixelSize, bool isNegative = false)
         {
             ThrowHelper.ArgumentOutOfMin(1, pixelSize, nameof(pixelSize));
 
             if (pixelSize == 1)
-                return GetBitArray();
+                return GetBitArray(isNegative);
 
+            Func<int, int, bool> func = isNegative ? ((x, y) => !_data[y][x]) : ((x, y) => _data[y][x]);
             Size size = new(Width * pixelSize, Height * pixelSize);
             bool[,] result = new bool[size.Width, size.Height];
             for (int y1 = 0, y2 = 0; y1 < Height; y1++, y2 += pixelSize)
                 for (int x1 = 0, x2 = 0; x1 < Width; x1++, x2 += pixelSize)
                 {
-                    if (_data[y1][x1])
+                    if (func(x1, y1))
                     {
                         int yend = y2 + pixelSize;
                         int xend = x2 + pixelSize;
