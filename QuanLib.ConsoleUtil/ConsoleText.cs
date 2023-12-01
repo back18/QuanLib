@@ -16,13 +16,17 @@ namespace QuanLib.ConsoleUtil
 
         public ConsoleText(string text)
         {
-            Text = text ?? throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text, nameof(text));
+
+            Text = text;
             Color = TextColor.Now;
         }
 
         public ConsoleText(string text, TextColor color)
         {
-            Text = text ?? throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text, nameof(text));
+
+            Text = text;
             Color = color;
         }
 

@@ -63,10 +63,12 @@ namespace QuanLib.ConsoleUtil
 
         public void Update(string text)
         {
+            ArgumentNullException.ThrowIfNull(text, nameof(text));
+
             if (text == Text && text != string.Empty)
                 return;
 
-            Text = text ?? throw new ArgumentNullException(nameof(text));
+            Text = text;
             _items = new(
                 from item in _alls
                 where item.StartsWith(text)

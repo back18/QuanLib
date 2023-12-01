@@ -15,7 +15,9 @@ namespace QuanLib.BDF
     {
         private BdfFont(ConcurrentDictionary<char, FontData> fonts)
         {
-            _items = fonts ?? throw new ArgumentNullException(nameof(fonts));
+            ArgumentNullException.ThrowIfNull(fonts, nameof(fonts));
+
+            _items = fonts;
 
             Dictionary<int, int> widths = new();
             Dictionary<int, int> heights = new();
