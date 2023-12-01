@@ -11,15 +11,16 @@ namespace QuanLib.Core
     {
         public StreamWriteQueue(Stream stream, Func<Type, LogImpl> logger) : base(logger)
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             _func = () => stream;
         }
 
         public StreamWriteQueue(Func<Stream> stream, Func<Type, LogImpl> logger) : base(logger)
         {
-            _func = stream ?? throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+
+            _func = stream;
         }
 
         private readonly Func<Stream> _func;

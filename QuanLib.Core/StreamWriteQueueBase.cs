@@ -24,8 +24,7 @@ namespace QuanLib.Core
 
         public void Submit(byte[] bytes)
         {
-            if (bytes is null)
-                throw new ArgumentNullException(nameof(bytes));
+            ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
 
             _queue.Enqueue(bytes);
             _enqueue.Set();

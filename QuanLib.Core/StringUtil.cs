@@ -19,8 +19,7 @@ namespace QuanLib.Core
         /// <returns></returns>
         public static string Copy(string value, int count)
         {
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentException($"“{nameof(value)}”不能为 null 或空。", nameof(value));
+            ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));
             if (count < 0)
                 throw new ArgumentException("字符串数量小于0");
             else if (count == 0)
@@ -40,8 +39,7 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static string ExtractLetter(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             StringBuilder Result = new();
             foreach (char c in value)
@@ -58,8 +56,7 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static string ExtractNumber(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             StringBuilder Result = new();
             bool isMinus = false;
@@ -101,8 +98,7 @@ namespace QuanLib.Core
         /// <exception cref="IndexOutOfRangeException"></exception>
         public static string SplitAt(string value, char separator, int index)
         {
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentException($"“{nameof(value)}”不能为 null 或空。", nameof(value));
+            ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));
             if (index < 0)
                 throw new IndexOutOfRangeException("下标不能小于0");
 
@@ -120,8 +116,7 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static int[] ToInts(string[] value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             if (value.Length == 0)
                 return Array.Empty<int>();
@@ -142,8 +137,7 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static string[] ToString<T>(T[] array)
         {
-            if (array is null)
-                throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
 
             if (array.Length == 0)
                 return Array.Empty<string>();

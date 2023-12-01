@@ -19,8 +19,7 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static void Initialize<T>(T[] array) where T : class, new()
         {
-            if (array is null)
-                throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
 
             for (int i = 0; i < array.Length; i++)
                 array[i] = new();
@@ -35,10 +34,8 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static void Fill<T>(T[,] array, T value)
         {
-            if (array is null)
-                throw new ArgumentNullException(nameof(array));
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int dimension0 = array.GetLength(0);
             int dimension1 = array.GetLength(1);
@@ -56,10 +53,8 @@ namespace QuanLib.Core
         /// <exception cref="ArgumentNullException"></exception>
         public static void Fill<T>(T[,,] array, T value)
         {
-            if (array is null)
-                throw new ArgumentNullException(nameof(array));
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int dimension0 = array.GetLength(0);
             int dimension1 = array.GetLength(1);
@@ -72,8 +67,7 @@ namespace QuanLib.Core
 
         public static T[] FillToNewArray<T>(int dimension0, T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             if (dimension0 < 0)
                 throw new ArithmeticException("数组长度不能小于0");
 
@@ -84,8 +78,7 @@ namespace QuanLib.Core
 
         public static T[,] FillToNewArray<T>(int dimension0, int dimension1, T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             if (dimension0 < 0 || dimension1 < 0)
                 throw new ArithmeticException("数组长度不能小于0");
 
@@ -96,8 +89,7 @@ namespace QuanLib.Core
 
         public static T[,,] FillToNewArray<T>(int dimension0, int dimension1, int dimension2, T value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
             if (dimension0 < 0 || dimension1 < 0 || dimension2 < 0)
                 throw new ArithmeticException("数组长度不能小于0");
 

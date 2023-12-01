@@ -12,7 +12,10 @@ namespace QuanLib.Core.IO
     {
         public PollingTextFileListener(string path, Encoding encoding, Func<Type, LogImpl> logger) : base(path, logger)
         {
-            Encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
+            ArgumentNullException.ThrowIfNull(path, nameof(path));
+            ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
+
+            Encoding = encoding;
             _temp = new();
 
             WriteText += OnWriteText;

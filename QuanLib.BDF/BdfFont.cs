@@ -100,8 +100,7 @@ namespace QuanLib.BDF
 
         public Size GetTotalSize(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int width = 0;
             int height = Height;
@@ -116,8 +115,7 @@ namespace QuanLib.BDF
 
         public static BdfFont Load(Stream stream)
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             string[] lines = stream.ToUtf8TextLines();
             return Load(lines);
@@ -125,8 +123,7 @@ namespace QuanLib.BDF
 
         public static BdfFont Load(string path)
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path, nameof(path));
 
             string[] lines = File.ReadAllLines(path);
             return Load(lines);
@@ -134,8 +131,7 @@ namespace QuanLib.BDF
 
         private static BdfFont Load(string[] lines)
         {
-            if (lines is null)
-                throw new ArgumentNullException(nameof(lines));
+            ArgumentNullException.ThrowIfNull(lines, nameof(lines));
 
             ConcurrentDictionary<char, FontData> fonts = new();
             List<(int start, int end)> ranges = new();

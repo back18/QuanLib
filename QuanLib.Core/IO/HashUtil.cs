@@ -28,8 +28,7 @@ namespace QuanLib.Core.IO
 
         public static byte[] GetHashValue(byte[] bytes, HashType hashType)
         {
-            if (bytes is null)
-                throw new ArgumentNullException(nameof(bytes));
+            ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
 
             using HashAlgorithm hashAlgorithm = Create(hashType);
             return hashAlgorithm.ComputeHash(bytes);
@@ -37,8 +36,7 @@ namespace QuanLib.Core.IO
 
         public static byte[] GetHashValue(Stream stream, HashType hashType)
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             using HashAlgorithm hashAlgorithm = Create(hashType);
             return hashAlgorithm.ComputeHash(stream);
@@ -46,8 +44,7 @@ namespace QuanLib.Core.IO
 
         public static byte[] GetHashValue(string path, HashType hashType)
         {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             using FileStream fileStream = new(path, FileMode.Open);
             byte[] result = GetHashValue(fileStream, hashType);
@@ -85,8 +82,7 @@ namespace QuanLib.Core.IO
 
         private static string BytesToHexString(byte[] bytes)
         {
-            if (bytes is null)
-                throw new ArgumentNullException(nameof(bytes));
+            ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
 
             StringBuilder result = new();
             for (int i = 0; i < bytes.Length; i++)

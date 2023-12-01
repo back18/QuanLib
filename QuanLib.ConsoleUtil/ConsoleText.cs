@@ -50,8 +50,7 @@ namespace QuanLib.ConsoleUtil
 
         public static void WriteAll(ConsoleText[] texts)
         {
-            if (texts is null)
-                throw new ArgumentNullException(nameof(texts));
+            ArgumentNullException.ThrowIfNull(texts, nameof(texts));
 
             TextColor def = TextColor.Now;
             foreach (ConsoleText text in texts)
@@ -70,8 +69,7 @@ namespace QuanLib.ConsoleUtil
 
         public static void WriteAll(ConsoleText[] texts, char separator)
         {
-            if (texts is null)
-                throw new ArgumentNullException(nameof(texts));
+            ArgumentNullException.ThrowIfNull(texts, nameof(texts));
 
             if (texts.Length == 0)
                 return;

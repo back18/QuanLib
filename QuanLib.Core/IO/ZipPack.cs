@@ -83,8 +83,7 @@ namespace QuanLib.Core.IO
 
         public ZipArchiveEntry[] GetFiles(string path)
         {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             if (!path.EndsWith(SEPARATOR))
                 path += SEPARATOR;
@@ -118,8 +117,7 @@ namespace QuanLib.Core.IO
 
         public string[] GetDirectorys(string path)
         {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             if (!path.EndsWith(SEPARATOR))
                 path += SEPARATOR;

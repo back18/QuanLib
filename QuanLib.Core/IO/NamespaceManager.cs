@@ -35,8 +35,7 @@ namespace QuanLib.Core.IO
 
         public T AddNamespace<T>(string name) where T : NamespaceManager
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             Type type = typeof(T);
             ConstructorInfo[] constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
@@ -58,8 +57,7 @@ namespace QuanLib.Core.IO
 
         public string Combine(string path)
         {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException($"“{nameof(path)}”不能为 null 或空。", nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             return Namespace.Combine(FullName, path);
         }

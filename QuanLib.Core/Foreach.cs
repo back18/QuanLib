@@ -13,12 +13,9 @@ namespace QuanLib.Core
             IEnumerable<T2> enumerable2,
             Action<T1, T2> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
@@ -34,12 +31,9 @@ namespace QuanLib.Core
             IEnumerable<T2> enumerable2,
             Func<T1, T2, bool> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
@@ -57,14 +51,10 @@ namespace QuanLib.Core
             IEnumerable<T3> enumerable3,
             Action<T1, T2, T3> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (enumerable3 is null)
-                throw new ArgumentNullException(nameof(enumerable3));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(enumerable3, nameof(enumerable3));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
@@ -82,14 +72,10 @@ namespace QuanLib.Core
             IEnumerable<T3> enumerable3,
             Func<T1, T2, T3, bool> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (enumerable3 is null)
-                throw new ArgumentNullException(nameof(enumerable3));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(enumerable3, nameof(enumerable3));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
@@ -109,16 +95,11 @@ namespace QuanLib.Core
             IEnumerable<T4> enumerable4,
             Action<T1, T2, T3, T4> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (enumerable3 is null)
-                throw new ArgumentNullException(nameof(enumerable3));
-            if (enumerable4 is null)
-                throw new ArgumentNullException(nameof(enumerable4));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(enumerable3, nameof(enumerable3));
+            ArgumentNullException.ThrowIfNull(enumerable4, nameof(enumerable4));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();
@@ -138,16 +119,11 @@ namespace QuanLib.Core
             IEnumerable<T4> enumerable4,
             Func<T1, T2, T3, T4, bool> body)
         {
-            if (enumerable1 is null)
-                throw new ArgumentNullException(nameof(enumerable1));
-            if (enumerable2 is null)
-                throw new ArgumentNullException(nameof(enumerable2));
-            if (enumerable3 is null)
-                throw new ArgumentNullException(nameof(enumerable3));
-            if (enumerable4 is null)
-                throw new ArgumentNullException(nameof(enumerable4));
-            if (body is null)
-                throw new ArgumentNullException(nameof(body));
+            ArgumentNullException.ThrowIfNull(enumerable1, nameof(enumerable1));
+            ArgumentNullException.ThrowIfNull(enumerable2, nameof(enumerable2));
+            ArgumentNullException.ThrowIfNull(enumerable3, nameof(enumerable3));
+            ArgumentNullException.ThrowIfNull(enumerable4, nameof(enumerable4));
+            ArgumentNullException.ThrowIfNull(body, nameof(body));
 
             using var enumerator1 = enumerable1.GetEnumerator();
             using var enumerator2 = enumerable2.GetEnumerator();

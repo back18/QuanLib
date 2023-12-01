@@ -20,8 +20,7 @@ namespace QuanLib.Core.Extensions
 
         public static string ToText(this Stream stream, Encoding encoding)
         {
-            if (encoding is null)
-                throw new ArgumentNullException(nameof(encoding));
+            ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);
@@ -32,8 +31,7 @@ namespace QuanLib.Core.Extensions
 
         public static string[] ToTextLines(this Stream stream, Encoding encoding)
         {
-            if (encoding is null)
-                throw new ArgumentNullException(nameof(encoding));
+            ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);

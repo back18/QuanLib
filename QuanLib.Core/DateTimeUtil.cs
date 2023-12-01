@@ -41,8 +41,7 @@ namespace QuanLib.Core
         /// <returns></returns>
         public static DateTime ParseNumber(string timeNumber)
         {
-            if (string.IsNullOrEmpty(timeNumber))
-                throw new ArgumentException($"“{nameof(timeNumber)}”不能为 null 或空。", nameof(timeNumber));
+            ArgumentException.ThrowIfNullOrEmpty(timeNumber, nameof(timeNumber));
 
             switch (timeNumber.Length)
             {
@@ -88,8 +87,7 @@ namespace QuanLib.Core
         /// <returns></returns>
         public static DateTime ParseTicks(string ticks)
         {
-            if (string.IsNullOrEmpty(ticks))
-                throw new ArgumentException($"“{nameof(ticks)}”不能为 null 或空。", nameof(ticks));
+            ArgumentException.ThrowIfNullOrEmpty(ticks, nameof(ticks));
 
             return new DateTime(long.Parse(ticks));
         }

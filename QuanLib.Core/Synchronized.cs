@@ -17,8 +17,7 @@ namespace QuanLib.Core
 
         public void Invoke(Action action)
         {
-            if (action is null)
-                throw new ArgumentNullException(nameof(action));
+            ArgumentNullException.ThrowIfNull(action, nameof(action));
 
             _semaphore.Wait();
             try
@@ -37,8 +36,7 @@ namespace QuanLib.Core
 
         public async Task InvokeAsync(Func<Task> func)
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            ArgumentNullException.ThrowIfNull(func, nameof(func));
 
             await _semaphore.WaitAsync();
             try
@@ -57,8 +55,7 @@ namespace QuanLib.Core
 
         public async ValueTask InvokeAsync(Func<ValueTask> func)
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            ArgumentNullException.ThrowIfNull(func, nameof(func));
 
             await _semaphore.WaitAsync();
             try
@@ -77,8 +74,7 @@ namespace QuanLib.Core
 
         public T Invoke<T>(Func<T> func)
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            ArgumentNullException.ThrowIfNull(func, nameof(func));
 
             _semaphore.Wait();
             try
@@ -97,8 +93,7 @@ namespace QuanLib.Core
 
         public async Task<T> InvokeAsync<T>(Func<Task<T>> func)
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            ArgumentNullException.ThrowIfNull(func, nameof(func));
 
             await _semaphore.WaitAsync();
             try
@@ -117,8 +112,7 @@ namespace QuanLib.Core
 
         public async ValueTask<T> InvokeAsync<T>(Func<ValueTask<T>> func)
         {
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            ArgumentNullException.ThrowIfNull(func, nameof(func));
 
             await _semaphore.WaitAsync();
             try

@@ -11,8 +11,7 @@ namespace QuanLib.ConsoleUtil
     {
         public ConsoleComboBox(IEnumerable<string> items)
         {
-            if (items is null)
-                throw new ArgumentNullException(nameof(items));
+            ArgumentNullException.ThrowIfNull(items, nameof(items));
 
             Text = string.Empty;
             Prompt = string.Empty;

@@ -14,8 +14,7 @@ namespace QuanLib.Core
     {
         protected RunnableBase(Func<Type, LogImpl> logger)
         {
-            if (logger is null)
-                throw new ArgumentNullException(nameof(logger));
+            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
             Type type = GetType();
             Logger = logger(type);
@@ -68,8 +67,7 @@ namespace QuanLib.Core
 
         public virtual bool Start(string threadName)
         {
-            if (string.IsNullOrEmpty(threadName))
-                throw new ArgumentException($"“{nameof(threadName)}”不能为 null 或空。", nameof(threadName));
+            ArgumentException.ThrowIfNullOrEmpty(threadName, nameof(threadName));
 
             ThreadName = threadName;
             return Start();

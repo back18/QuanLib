@@ -13,8 +13,7 @@ namespace QuanLib.Core.IO
     {
         public DirectoryManager(string directory)
         {
-            if (string.IsNullOrEmpty(directory))
-                throw new ArgumentException($"“{nameof(directory)}”不能为 null 或空。", nameof(directory));
+            ArgumentException.ThrowIfNullOrEmpty(directory, nameof(directory));
 
             FullPath = Path.GetFullPath(directory);
             DictionaryName = Path.GetFileName(directory);
@@ -38,8 +37,7 @@ namespace QuanLib.Core.IO
 
         public T AddDirectory<T>(string name) where T : DirectoryManager
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             Type type = typeof(T);
             ConstructorInfo[] constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
@@ -61,8 +59,7 @@ namespace QuanLib.Core.IO
 
         public string Combine(string path)
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path, nameof(path));
 
             return Path.Combine(FullPath, path);
         }
@@ -90,16 +87,14 @@ namespace QuanLib.Core.IO
 
         public bool ExistsFile(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             return File.Exists(Combine(name));
         }
 
         public bool ExistsDirectory(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             return Directory.Exists(Combine(name));
         }

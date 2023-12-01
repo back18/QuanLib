@@ -92,8 +92,7 @@ namespace QuanLib.ConsoleUtil
 
         public void AddRow(string[] item)
         {
-            if (item is null)
-                throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
             if (item.Length != Columns)
                 throw new ArgumentException("添加的行数据子项数量与列数限制不一致");
 

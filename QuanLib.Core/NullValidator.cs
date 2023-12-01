@@ -11,8 +11,7 @@ namespace QuanLib.Core
     {
         public static bool TryValidateObject(object instance, out FieldInfo[] nullFields, out PropertyInfo[] nullProperties)
         {
-            if (instance is null)
-                throw new ArgumentNullException(nameof(instance));
+            ArgumentNullException.ThrowIfNull(instance, nameof(instance));
 
             Type type = instance.GetType();
             FieldInfo[] fields = type.GetFields(BindingFlags.Instance);
@@ -43,10 +42,8 @@ namespace QuanLib.Core
 
         public static void ValidateObject(object instance, string name)
         {
-            if (instance is null)
-                throw new ArgumentNullException(nameof(instance));
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentNullException.ThrowIfNull(instance, nameof(instance));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             if (TryValidateObject(instance, out var nullFields, out var nullProperties))
                 return;
@@ -63,8 +60,7 @@ namespace QuanLib.Core
 
         public static bool TryValidateObject<T>(IEnumerable<T> enumerable, out int[] nullValueIndexs)
         {
-            if (enumerable is null)
-                throw new ArgumentNullException(nameof(enumerable));
+            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
 
             List<int> nullValueIndexList = new();
             int index = 0;
@@ -81,10 +77,8 @@ namespace QuanLib.Core
 
         public static void ValidateObject<T>(IEnumerable<T> enumerable, string name)
         {
-            if (enumerable is null)
-                throw new ArgumentNullException(nameof(enumerable));
-            if (string.IsNullOrEmpty(name))
-                throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
             if (TryValidateObject(enumerable, out var nullValueIndexs))
                 return;

@@ -10,8 +10,7 @@ namespace QuanLib.BDF
     {
         public static int GetLeftLayoutMaxCount(this BdfFont source, int maxWidth, string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int width = 0;
             for (int i = 0; i < value.Length; i++)
@@ -27,8 +26,7 @@ namespace QuanLib.BDF
 
         public static int GetRightLayoutMaxCount(this BdfFont source, int maxWidth, string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int width = 0;
             for (int i = value.Length - 1; i >= 0; i--)
@@ -44,8 +42,7 @@ namespace QuanLib.BDF
 
         public static int GetTopLayoutMaxCount(this BdfFont source, int maxHeight, string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int height = 0;
             for (int i = 0; i < value.Length; i++)
@@ -61,8 +58,7 @@ namespace QuanLib.BDF
 
         public static int GetBottomLayoutMaxCount(this BdfFont source, int maxHeight, string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int height = 0;
             for (int i = value.Length - 1; i >= 0; i--)
