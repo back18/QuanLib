@@ -13,8 +13,7 @@ namespace QuanLib.Core.IO
     {
         public NamespaceManager(string @namespace)
         {
-            if (string.IsNullOrEmpty(@namespace))
-                throw new ArgumentException($"“{nameof(@namespace)}”不能为 null 或空。", nameof(@namespace));
+            ArgumentException.ThrowIfNullOrEmpty(@namespace, nameof(@namespace));
 
             FullName = @namespace;
 
