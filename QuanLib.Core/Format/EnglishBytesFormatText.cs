@@ -10,18 +10,18 @@ namespace QuanLib.Core.Format
     {
         public static readonly EnglishBytesFormatText Default = new();
 
-        public override string B => "Byte";
+        public override string B => "Bytes";
 
-        public override string KB => "KiloByte";
+        public override string KB => "KiloBytes";
 
-        public override string MB => "MegaByte";
+        public override string MB => "MegaBytes";
 
-        public override string GB => "Gigabyte";
+        public override string GB => "Gigabytes";
 
-        public override string TB => "TeraByte";
+        public override string TB => "TeraBytes";
 
-        public override string PB => "PetaByte";
+        public override string PB => "PetaBytes";
 
-        public override string EB => "ExaByte";
+        public override string EB => "ExaBytes";
     }
 }

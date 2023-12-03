@@ -10,22 +10,22 @@ namespace QuanLib.Core.Format
     {
         public static readonly EnglishTimeSpanFormatText Default = new();
 
-        public override string Tikc => "tick";
+        public override string Tikc => "Tikcs";
 
-        public override string Microsecond => "microsecond";
+        public override string Microsecond => "Microseconds";
 
-        public override string Millisecond => "millisecond";
+        public override string Millisecond => "Milliseconds";
 
-        public override string Second => "second";
+        public override string Second => "Seconds";
 
-        public override string Minute => "minute";
+        public override string Minute => "Minutes";
 
-        public override string Hour => "hour";
+        public override string Hour => "Hours";
 
-        public override string Day => "day";
+        public override string Day => "Days";
 
-        public override string Month => "month";
+        public override string Month => "Months";
 
-        public override string Year => "year";
+        public override string Year => "Years";
     }
 }
