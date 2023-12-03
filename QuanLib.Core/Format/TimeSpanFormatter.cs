@@ -47,14 +47,14 @@ namespace QuanLib.Core.Format
             for (int i = 0; i < UnitCount; i++)
             {
                 if (timeUnit == TimeUnit.Month)
-                    timeUnit++;
+                    timeUnit--;
 
                 sb.Append(Format(value, timeUnit));
 
                 if (timeUnit == MinUnit)
                     break;
                 else
-                    timeUnit++;
+                    timeUnit--;
             }
 
             return sb.ToString();

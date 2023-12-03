@@ -11,22 +11,22 @@ namespace QuanLib.Core
     /// </summary>
     public enum TimeUnit
     {
-        Year,
-
-        Month,
-
-        Day,
-
-        Hour,
-
-        Minute,
-
-        Second,
-
-        Millisecond,
+        Tikc,
 
         Microsecond,
 
-        Tikc
+        Millisecond,
+
+        Second,
+
+        Minute,
+
+        Hour,
+
+        Day,
+
+        Month,
+
+        Year,
     }
 }
