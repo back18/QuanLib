@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace QuanLib.Core
 {
     public abstract class UnmanagedRunnable : RunnableBase, IDisposable
     {
-        protected UnmanagedRunnable(Func<Type, LogImpl> logger) : base(logger)
+        protected UnmanagedRunnable(ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             IsDisposed = false;
         }

@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace QuanLib.Core
 {
     public abstract class StreamWriteQueueBase : RunnableBase
     {
-        public StreamWriteQueueBase(Func<Type, LogImpl> logger) : base(logger)
+        public StreamWriteQueueBase(ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             _queue = new();
             _enqueue = new(false);

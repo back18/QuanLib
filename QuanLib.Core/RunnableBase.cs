@@ -1,6 +1,4 @@
-﻿using log4net.Core;
-using log4net.Repository.Hierarchy;
-using QuanLib.Core.Events;
+﻿using QuanLib.Core.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public abstract class RunnableBase : IRunnable, ILoggable
+    public abstract class RunnableBase : IRunnable
     {
-        protected RunnableBase(Func<Type, LogImpl> logger)
+        protected RunnableBase(ILogbuilder? logbuilder = null)
         {
-            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-
             Type type = GetType();
-            Logger = logger(type);
+            if (logbuilder is not null)
+                _logger = logbuilder.GetLogger(type);
+
             IsRunning = false;
             ThreadName = type.FullName ?? type.Name;
             _stopSemaphore = new(0);
@@ -30,11 +28,11 @@ namespace QuanLib.Core
 
         private readonly object _lock = new();
 
+        private readonly ILogger? _logger;
+
         private readonly SemaphoreSlim _stopSemaphore;
 
         private Task _stopTask;
-
-        public LogImpl Logger { get; }
 
         public virtual Thread? Thread { get; protected set; }
 
@@ -50,17 +48,17 @@ namespace QuanLib.Core
 
         protected virtual void OnStarted(IRunnable sender, EventArgs e)
         {
-            Logger.Info($"线程({Thread?.Name ?? "null"})已启动");
+            _logger?.Info($"线程({Thread?.Name ?? "null"})已启动");
         }
 
         protected virtual void OnStopped(IRunnable sender, EventArgs e)
         {
-            Logger.Info($"线程({Thread?.Name ?? "null"})已停止");
+            _logger?.Info($"线程({Thread?.Name ?? "null"})已停止");
         }
 
         protected virtual void OnThrowException(IRunnable sender, ExceptionEventArgs e)
         {
-            Logger.Error($"线程({Thread?.Name ?? "null"})抛出了异常", e.Exception);
+            _logger?.Error($"线程({Thread?.Name ?? "null"})抛出了异常", e.Exception);
         }
 
         protected abstract void Run();
@@ -104,10 +102,10 @@ namespace QuanLib.Core
                             if (!Thread.IsAlive)
                                 break;
                             i++;
-                            Logger.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
+                            _logger?.Warn($"正在等待线程({Thread?.Name})停止，已等待{i}秒");
                             if (i >= 5)
                             {
-                                Logger.Warn($"即将强行停止线程({Thread?.Name})");
+                                _logger?.Warn($"即将强行停止线程({Thread?.Name})");
                                 _stopSemaphore.Release();
                                 _stopTask = GetStopTask();
                                 Thread.Abort();
@@ -118,7 +116,7 @@ namespace QuanLib.Core
                     catch (Exception ex)
                     {
                         if (Thread is not null && Thread.IsAlive)
-                            Logger.Error($"无法停止线程({Thread?.Name})", ex);
+                            _logger?.Error($"无法停止线程({Thread?.Name})", ex);
                     }
                 }
             }

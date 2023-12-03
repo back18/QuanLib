@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using QuanLib.Core.Events;
+﻿using QuanLib.Core.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace QuanLib.Core.IO
 {
     public class PollingFileListener : RunnableBase
     {
-        public PollingFileListener(string path, Func<Type, LogImpl> logger) : base(logger)
+        public PollingFileListener(string path, ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException("需要倾听的文件不存在", path);

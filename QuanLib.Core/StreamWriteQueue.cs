@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,14 +8,14 @@ namespace QuanLib.Core
 {
     public class StreamWriteQueue : StreamWriteQueueBase
     {
-        public StreamWriteQueue(Stream stream, Func<Type, LogImpl> logger) : base(logger)
+        public StreamWriteQueue(Stream stream, ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
             _func = () => stream;
         }
 
-        public StreamWriteQueue(Func<Stream> stream, Func<Type, LogImpl> logger) : base(logger)
+        public StreamWriteQueue(Func<Stream> stream, ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
