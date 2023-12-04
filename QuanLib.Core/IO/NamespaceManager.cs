@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.IO
 {
-    public class NamespaceManager : IReadOnlyDictionary<string, NamespaceManager>
+    public class NamespaceManager
     {
         public NamespaceManager(string @namespace)
         {
@@ -24,13 +24,7 @@ namespace QuanLib.Core.IO
 
         private readonly Dictionary<string, NamespaceManager> _items;
 
-        public NamespaceManager this[string key] => _items[key];
-
-        public IEnumerable<string> Keys => _items.Keys;
-
-        public IEnumerable<NamespaceManager> Values => _items.Values;
-
-        public int Count => _items.Count;
+        public NamespaceManager this[string name] => _items[name];
 
         public T AddNamespace<T>(string name) where T : NamespaceManager
         {
@@ -59,26 +53,6 @@ namespace QuanLib.Core.IO
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             return Namespace.Combine(FullName, path);
-        }
-
-        public bool ContainsKey(string key)
-        {
-            return _items.ContainsKey(key);
-        }
-
-        public bool TryGetValue(string key, [MaybeNullWhen(false)] out NamespaceManager value)
-        {
-            return _items.TryGetValue(key, out value);
-        }
-
-        public IEnumerator<KeyValuePair<string, NamespaceManager>> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_items).GetEnumerator();
         }
     }
 }
