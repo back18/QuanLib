@@ -10,4 +10,8 @@
     <PackageReference Include="Downloader" Version="3.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuanLib.Core\QuanLib.Core.csproj" />
+  </ItemGroup>
+
 </Project>
