@@ -20,12 +20,21 @@ namespace QuanLib.Downloader
                 builder.WithConfiguration(configuration);
 
             Download = builder.Build();
+            Download.DownloadProgressChanged += Download_DownloadProgressChanged;
         }
 
         public IDownload Download { get; }
 
         public Task<Stream> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
         private Task<Stream>? _Task;
+
+        public DownloadProgressChangedEventArgs DownloadProgressChangedEventArgs => _DownloadProgressChangedEventArgs ?? throw new InvalidOperationException("下载任务未开始");
+        private DownloadProgressChangedEventArgs? _DownloadProgressChangedEventArgs;
+
+        private void Download_DownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
+        {
+            _DownloadProgressChangedEventArgs = e;
+        }
 
         public async Task<Stream> StartAsync()
         {
