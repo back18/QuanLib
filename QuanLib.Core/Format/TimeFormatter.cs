@@ -64,15 +64,15 @@ namespace QuanLib.Core.Format
         {
             return timeUnit switch
             {
-                TimeUnit.Year => GetYears(value) + FormatText.Year,
-                TimeUnit.Month => throw new InvalidOperationException("不支持月份单位"),
-                TimeUnit.Day => value.Days + FormatText.Day,
-                TimeUnit.Hour => value.Hours + FormatText.Hour,
+                TimeUnit.Tikc => GetTicks(value) + FormatText.Tikc,
+                TimeUnit.Microsecond => value.Microseconds + FormatText.Microsecond,
+                TimeUnit.Millisecond => value.Milliseconds + FormatText.Millisecond,
                 TimeUnit.Minute => value.Minutes + FormatText.Minute,
                 TimeUnit.Second => value.Seconds + FormatText.Second,
-                TimeUnit.Millisecond => value.Milliseconds + FormatText.Millisecond,
-                TimeUnit.Microsecond => value.Microseconds + FormatText.Microsecond,
-                TimeUnit.Tikc => GetTicks(value) + FormatText.Tikc,
+                TimeUnit.Hour => value.Hours + FormatText.Hour,
+                TimeUnit.Day => value.Days + FormatText.Day,
+                TimeUnit.Month => throw new InvalidOperationException("不支持月份单位"),
+                TimeUnit.Year => GetYears(value) + FormatText.Year,
                 _ => throw new InvalidOperationException(),
             };
         }
