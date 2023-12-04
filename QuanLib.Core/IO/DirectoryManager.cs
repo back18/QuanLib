@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.IO
 {
-    public class DirectoryManager : IReadOnlyDictionary<string, DirectoryManager>
+    public class DirectoryManager
     {
         public DirectoryManager(string directory)
         {
@@ -27,13 +27,7 @@ namespace QuanLib.Core.IO
 
         public string DictionaryName { get; }
 
-        public IEnumerable<string> Keys => _items.Keys;
-
-        public IEnumerable<DirectoryManager> Values => _items.Values;
-
-        public int Count => _items.Count;
-
-        public DirectoryManager this[string key] => _items[key];
+        public DirectoryManager this[string name] => _items[name];
 
         public T AddDirectory<T>(string name) where T : DirectoryManager
         {
@@ -129,26 +123,6 @@ namespace QuanLib.Core.IO
         public override string ToString()
         {
             return FullPath;
-        }
-
-        public bool ContainsKey(string key)
-        {
-            return _items.ContainsKey(key);
-        }
-
-        public bool TryGetValue(string key, [MaybeNullWhen(false)] out DirectoryManager value)
-        {
-            return _items.TryGetValue(key, out value);
-        }
-
-        public IEnumerator<KeyValuePair<string, DirectoryManager>> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_items).GetEnumerator();
         }
     }
 }
