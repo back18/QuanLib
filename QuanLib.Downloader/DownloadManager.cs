@@ -34,6 +34,8 @@ namespace QuanLib.Downloader
 
         public int FailedCount => GetTaskCount(DownloadStatus.Failed);
 
+        public bool IsAllCompleted => CompletedCount == Count;
+
         public long TotalBytes
         {
             get
@@ -113,6 +115,12 @@ namespace QuanLib.Downloader
             var tasks = from task in _tasks
                         select task.Task;
             await Task.WhenAll(tasks);
+        }
+
+        public void RetryAllIfFailed()
+        {
+            foreach (var task in _tasks)
+                task.RetryIfFailed();
         }
 
         public IEnumerator<DownloadTask> GetEnumerator()

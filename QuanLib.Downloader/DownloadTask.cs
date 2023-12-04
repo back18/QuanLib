@@ -13,20 +13,25 @@ namespace QuanLib.Downloader
         {
             ArgumentException.ThrowIfNullOrEmpty(url, nameof(url));
 
-            var builder = DownloadBuilder.New().WithUrl(url);
-            if (!string.IsNullOrEmpty(path))
-                builder.WithFileLocation(path);
-            if (configuration is not null)
-                builder.WithConfiguration(configuration);
+            Url = url;
+            Path = path;
+            Configuration = configuration;
 
+            var builder = GetBuilder();
             Download = builder.Build();
             Download.DownloadProgressChanged += Download_DownloadProgressChanged;
             MemoryStream = new((int)Download.TotalFileSize);
         }
 
-        public IDownload Download { get; }
+        public string Url { get; }
 
-        public MemoryStream MemoryStream { get; }
+        public string? Path { get; }
+
+        public DownloadConfiguration? Configuration { get; }
+
+        public IDownload Download { get; private set; }
+
+        public MemoryStream MemoryStream { get; private set; }
 
         public Task<Stream> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
         private Task<Stream>? _Task;
@@ -44,8 +49,39 @@ namespace QuanLib.Downloader
 
         public async Task<Stream> StartAsync()
         {
-            _Task = GetTask();
-            return await _Task;
+            if (Download.Status == DownloadStatus.None)
+            {
+                _Task = GetTask();
+                return await _Task;
+            }
+
+            throw new InvalidOperationException("尝试重复启动下载任务");
+        }
+
+        public void RetryIfFailed()
+        {
+            if (Download.Status == DownloadStatus.Failed)
+            {
+                Download.Dispose();
+                MemoryStream.Dispose();
+
+                var builder = GetBuilder();
+                Download = builder.Build();
+                Download.DownloadProgressChanged += Download_DownloadProgressChanged;
+                MemoryStream = new((int)Download.TotalFileSize);
+                _Task = GetTask();
+            }
+        }
+
+        private DownloadBuilder GetBuilder()
+        {
+            DownloadBuilder builder = DownloadBuilder.New().WithUrl(Url);
+            if (!string.IsNullOrEmpty(Path))
+                builder.WithFileLocation(Path);
+            if (Configuration is not null)
+                builder.WithConfiguration(Configuration);
+
+            return builder;
         }
 
         private async Task<Stream> GetTask()
