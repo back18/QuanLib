@@ -21,6 +21,8 @@ namespace QuanLib.Core.Format
 
         public BytesUnit MinUnit { get; set; }
 
+        public string Format(long bytes) => Format(new BytesSpan(bytes));
+
         public string Format(BytesSpan value)
         {
             BytesUnit bytesUnit;
