@@ -41,6 +41,9 @@ namespace QuanLib.Core.Format
             else
                 bytesUnit = BytesUnit.EB;
 
+            if (bytesUnit < MinUnit)
+                bytesUnit = MinUnit;
+
             StringBuilder sb = new();
             for (int i = 0; i < UnitCount; i++)
             {

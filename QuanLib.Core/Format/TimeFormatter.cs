@@ -43,6 +43,9 @@ namespace QuanLib.Core.Format
             else
                 timeUnit = TimeUnit.Year;
 
+            if (timeUnit < MinUnit)
+                timeUnit = MinUnit;
+
             StringBuilder sb = new();
             for (int i = 0; i < UnitCount; i++)
             {
