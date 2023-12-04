@@ -21,9 +21,12 @@ namespace QuanLib.Downloader
 
             Download = builder.Build();
             Download.DownloadProgressChanged += Download_DownloadProgressChanged;
+            MemoryStream = new((int)Download.TotalFileSize);
         }
 
         public IDownload Download { get; }
+
+        public MemoryStream MemoryStream { get; }
 
         public Task<Stream> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
         private Task<Stream>? _Task;
@@ -36,17 +39,28 @@ namespace QuanLib.Downloader
         private void Download_DownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
         {
             _DownloadProgressChangedEventArgs = e;
+            MemoryStream.Write(e.ReceivedBytes);
         }
 
         public async Task<Stream> StartAsync()
         {
-            _Task = Download.StartAsync();
+            _Task = GetTask();
             return await _Task;
+        }
+
+        private async Task<Stream> GetTask()
+        {
+            Stream stream = await Download.StartAsync();
+            if (stream is not null)
+                return stream;
+            else
+                return MemoryStream;
         }
 
         public void Dispose()
         {
             Download.Dispose();
+            MemoryStream.Dispose();
             GC.SuppressFinalize(this);
         }
     }
