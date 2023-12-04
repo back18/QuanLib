@@ -31,6 +31,8 @@ namespace QuanLib.Downloader
         public DownloadProgressChangedEventArgs DownloadProgressChangedEventArgs => _DownloadProgressChangedEventArgs ?? throw new InvalidOperationException("下载任务未开始");
         private DownloadProgressChangedEventArgs? _DownloadProgressChangedEventArgs;
 
+        public bool DownloadProgressAvailable => _DownloadProgressChangedEventArgs is not null;
+
         private void Download_DownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
         {
             _DownloadProgressChangedEventArgs = e;
