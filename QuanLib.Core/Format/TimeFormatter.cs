@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.Format
 {
-    public class TimeSpanFormatter
+    public class TimeFormatter
     {
         private const long TicksPerYear = TimeSpan.TicksPerDay * 365;
 
-        public TimeSpanFormatter(TimeFormatText formatText)
+        public TimeFormatter(TimeFormatText formatText)
         {
             FormatText = formatText;
             UnitCount = 1;

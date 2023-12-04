@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.Format
 {
-    public class AbbreviationTimeSpanFormatText : TimeFormatText
+    public class AbbreviationTimeFormatText : TimeFormatText
     {
-        public static readonly AbbreviationTimeSpanFormatText Default = new();
+        public static readonly AbbreviationTimeFormatText Default = new();
 
         public override string Tikc => "t";
 
