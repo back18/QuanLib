@@ -20,8 +20,10 @@ namespace QuanLib.Downloader
             var builder = GetBuilder();
             Download = builder.Build();
             Download.DownloadProgressChanged += Download_DownloadProgressChanged;
-            MemoryStream = new((int)Download.TotalFileSize);
+            _buffer = new();
         }
+
+        private MemoryStream _buffer;
 
         public string Url { get; }
 
@@ -31,10 +33,8 @@ namespace QuanLib.Downloader
 
         public IDownload Download { get; private set; }
 
-        public MemoryStream MemoryStream { get; private set; }
-
-        public Task<Stream> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
-        private Task<Stream>? _Task;
+        public Task<Stream?> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
+        private Task<Stream?>? _Task;
 
         public DownloadProgressChangedEventArgs DownloadProgressChangedEventArgs => _DownloadProgressChangedEventArgs ?? throw new InvalidOperationException("下载任务未开始");
         private DownloadProgressChangedEventArgs? _DownloadProgressChangedEventArgs;
@@ -44,10 +44,10 @@ namespace QuanLib.Downloader
         private void Download_DownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs e)
         {
             _DownloadProgressChangedEventArgs = e;
-            MemoryStream.Write(e.ReceivedBytes);
+            _buffer.Write(e.ReceivedBytes);
         }
 
-        public async Task<Stream> StartAsync()
+        public async Task<Stream?> StartAsync()
         {
             if (Download.Status == DownloadStatus.None)
             {
@@ -63,12 +63,12 @@ namespace QuanLib.Downloader
             if (Download.Status == DownloadStatus.Failed)
             {
                 Download.Dispose();
-                MemoryStream.Dispose();
+                _buffer.Dispose();
 
                 var builder = GetBuilder();
                 Download = builder.Build();
                 Download.DownloadProgressChanged += Download_DownloadProgressChanged;
-                MemoryStream = new((int)Download.TotalFileSize);
+                _buffer = new();
                 _Task = GetTask();
             }
         }
@@ -84,19 +84,18 @@ namespace QuanLib.Downloader
             return builder;
         }
 
-        private async Task<Stream> GetTask()
+        private async Task<Stream?> GetTask()
         {
             Stream stream = await Download.StartAsync();
-            if (stream is not null)
-                return stream;
+            if (stream is null && _buffer.Length == Download.TotalFileSize)
+                return _buffer;
             else
-                return MemoryStream;
+                return stream;
         }
 
         public void Dispose()
         {
             Download.Dispose();
-            MemoryStream.Dispose();
             GC.SuppressFinalize(this);
         }
     }
