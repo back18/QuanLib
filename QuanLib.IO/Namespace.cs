@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core
+namespace QuanLib.IO
 {
     public static class Namespace
     {
@@ -64,7 +64,7 @@ namespace QuanLib.Core
 
             StringBuilder sb = new();
             sb.Append(paths[0].TrimEnd(CHAR));
-            for (int i = 1;  i < paths.Length - 1; i++)
+            for (int i = 1; i < paths.Length - 1; i++)
             {
                 sb.Append(CHAR);
                 sb.Append(paths[i].Trim(CHAR));

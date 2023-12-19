@@ -1,11 +1,12 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core
+namespace QuanLib.IO
 {
     public class StreamWriteQueue : RunnableBase
     {
