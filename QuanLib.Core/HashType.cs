@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.IO
+namespace QuanLib.Core
 {
     /// <summary>
     /// 哈希算法类型
