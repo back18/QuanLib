@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,24 +7,40 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public class StreamWriteQueue : StreamWriteQueueBase
+    public class StreamWriteQueue : RunnableBase
     {
         public StreamWriteQueue(Stream stream, ILogbuilder? logbuilder = null) : base(logbuilder)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
-            _func = () => stream;
+            BaseStream = stream;
+            _queue = new();
+            _enqueue = new(false);
         }
 
-        public StreamWriteQueue(Func<Stream> stream, ILogbuilder? logbuilder = null) : base(logbuilder)
+        private readonly ConcurrentQueue<byte[]> _queue;
+
+        private readonly AutoResetEvent _enqueue;
+
+        public Stream BaseStream { get; }
+
+        public void Submit(byte[] bytes)
         {
-            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+            ArgumentNullException.ThrowIfNull(bytes, nameof(bytes));
 
-            _func = stream;
+            _queue.Enqueue(bytes);
+            _enqueue.Set();
         }
 
-        private readonly Func<Stream> _func;
+        protected override void Run()
+        {
+            while (IsRunning)
+            {
+                while (_queue.TryDequeue(out var bytes))
+                    BaseStream.Write(bytes);
 
-        public override Stream BaseStream => _func.Invoke();
+                _enqueue.WaitOne(10);
+            }
+        }
     }
 }
