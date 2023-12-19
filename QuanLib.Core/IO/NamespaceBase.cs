@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.IO
 {
-    public class NamespaceManager
+    public class NamespaceBase
     {
-        public NamespaceManager(string @namespace)
+        public NamespaceBase(string @namespace)
         {
             ArgumentException.ThrowIfNullOrEmpty(@namespace, nameof(@namespace));
 
@@ -22,11 +22,11 @@ namespace QuanLib.Core.IO
 
         public string FullName { get; }
 
-        private readonly Dictionary<string, NamespaceManager> _items;
+        private readonly Dictionary<string, NamespaceBase> _items;
 
-        public NamespaceManager this[string name] => _items[name];
+        public NamespaceBase this[string name] => _items[name];
 
-        public T AddNamespace<T>(string name) where T : NamespaceManager
+        public T AddNamespace<T>(string name) where T : NamespaceBase
         {
             ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 

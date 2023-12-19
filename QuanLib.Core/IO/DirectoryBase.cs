@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.IO
 {
-    public class DirectoryManager
+    public class DirectoryBase
     {
-        public DirectoryManager(string directory)
+        public DirectoryBase(string directory)
         {
             ArgumentException.ThrowIfNullOrEmpty(directory, nameof(directory));
 
@@ -21,15 +21,15 @@ namespace QuanLib.Core.IO
             _items = new();
         }
 
-        private readonly Dictionary<string, DirectoryManager> _items;
+        private readonly Dictionary<string, DirectoryBase> _items;
 
         public string FullPath { get; }
 
         public string DictionaryName { get; }
 
-        public DirectoryManager this[string name] => _items[name];
+        public DirectoryBase this[string name] => _items[name];
 
-        public T AddDirectory<T>(string name) where T : DirectoryManager
+        public T AddDirectory<T>(string name) where T : DirectoryBase
         {
             ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
 
@@ -116,7 +116,7 @@ namespace QuanLib.Core.IO
         public void BuildDirectoryTree()
         {
             CreateIfNotExists();
-            foreach (DirectoryManager directory in _items.Values)
+            foreach (DirectoryBase directory in _items.Values)
                 directory.BuildDirectoryTree();
         }
 
