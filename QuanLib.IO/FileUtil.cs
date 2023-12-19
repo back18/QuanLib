@@ -1,11 +1,12 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.IO
+namespace QuanLib.IO
 {
     public static class FileUtil
     {

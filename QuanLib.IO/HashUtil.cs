@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.IO
+namespace QuanLib.IO
 {
     /// <summary>
     /// 哈希工具类

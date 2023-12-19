@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.IO
+namespace QuanLib.IO
 {
     public class ZipPack : IReadOnlyDictionary<string, ZipArchiveEntry>, IDisposable
     {

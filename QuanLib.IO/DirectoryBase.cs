@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.IO
+namespace QuanLib.IO
 {
     public class DirectoryBase
     {
