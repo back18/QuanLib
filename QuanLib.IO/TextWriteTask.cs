@@ -25,11 +25,13 @@ namespace QuanLib.IO
 
         public override void Run()
         {
+            FileUtil.CreateFileDirectoryIfNotExists(DestinationPath);
             File.WriteAllText(DestinationPath, _text, Encoding);
         }
 
         public override async Task RunAsync(CancellationToken cancellationToken = default)
         {
+            FileUtil.CreateFileDirectoryIfNotExists(DestinationPath);
             await File.WriteAllTextAsync(DestinationPath, _text, Encoding, cancellationToken);
         }
     }
