@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public static class NumberUtil
+    public static partial class NumberUtil
     {
         public static bool[] ToBitArray(byte value)
         {
@@ -198,5 +199,20 @@ namespace QuanLib.Core
             else
                 return left / right;
         }
+
+        public static int GetPrecision(decimal value)
+        {
+            string text = value.ToString();
+            int index = text.IndexOf('.');
+
+            if (index == -1)
+                return 0;
+
+            text = EndsWithZero().Replace(text, "$1");
+            return text.Length - index - 1;
+        }
+
+        [GeneratedRegex(@"(\.\d*?[1-9])0+$")]
+        private static partial Regex EndsWithZero();
     }
 }
