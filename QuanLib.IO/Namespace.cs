@@ -10,16 +10,16 @@ namespace QuanLib.IO
 {
     public static class Namespace
     {
-        private const char CHAR = '.';
+        private const char SEPARATOR_CHAR = '.';
+
+        private static readonly JoinHelper JoinHelper = new(SEPARATOR_CHAR);
 
         public static string Combine(string path1, string path2)
         {
             ArgumentException.ThrowIfNullOrEmpty(path1, nameof(path1));
             ArgumentException.ThrowIfNullOrEmpty(path2, nameof(path2));
 
-            path1 = path1.TrimEnd(CHAR);
-            path2 = path2.TrimStart(CHAR);
-            return $"{path1}.{path2}";
+            return JoinHelper.Combine(path1, path2);
         }
 
         public static string Combine(string path1, string path2, string path3)
@@ -28,10 +28,7 @@ namespace QuanLib.IO
             ArgumentException.ThrowIfNullOrEmpty(path2, nameof(path2));
             ArgumentException.ThrowIfNullOrEmpty(path3, nameof(path3));
 
-            path1 = path1.TrimEnd(CHAR);
-            path2 = path2.Trim(CHAR);
-            path3 = path3.TrimStart(CHAR);
-            return $"{path1}.{path2}.{path3}";
+            return JoinHelper.Combine(path1, path2, path3);
         }
 
         public static string Combine(string path1, string path2, string path3, string path4)
@@ -41,11 +38,7 @@ namespace QuanLib.IO
             ArgumentException.ThrowIfNullOrEmpty(path3, nameof(path3));
             ArgumentException.ThrowIfNullOrEmpty(path4, nameof(path4));
 
-            path1 = path1.TrimEnd(CHAR);
-            path2 = path2.Trim(CHAR);
-            path3 = path3.Trim(CHAR);
-            path4 = path4.TrimStart(CHAR);
-            return $"{path1}.{path2}.{path3}.{path4}";
+            return JoinHelper.Combine(path1, path2, path3, path4);
         }
 
         public static string Combine(params string[] paths)
@@ -62,17 +55,7 @@ namespace QuanLib.IO
                     throw new ArgumentException($"“{nameof(paths)}”的一个或多个子项为 null 或空", nameof(paths));
             }
 
-            StringBuilder sb = new();
-            sb.Append(paths[0].TrimEnd(CHAR));
-            for (int i = 1; i < paths.Length - 1; i++)
-            {
-                sb.Append(CHAR);
-                sb.Append(paths[i].Trim(CHAR));
-            }
-            sb.Append(CHAR);
-            sb.Append(paths[^1].TrimStart(CHAR));
-
-            return sb.ToString();
+            return JoinHelper.Combine(paths);
         }
     }
 }
