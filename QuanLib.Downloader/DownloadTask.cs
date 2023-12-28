@@ -51,7 +51,7 @@ namespace QuanLib.Downloader
         {
             if (Download.Status == DownloadStatus.None)
             {
-                _Task = GetTask();
+                _Task = DownloadAsync();
                 return await _Task;
             }
 
@@ -69,7 +69,7 @@ namespace QuanLib.Downloader
                 Download = builder.Build();
                 Download.DownloadProgressChanged += Download_DownloadProgressChanged;
                 _buffer = new();
-                _Task = GetTask();
+                _Task = DownloadAsync();
             }
         }
 
@@ -84,8 +84,20 @@ namespace QuanLib.Downloader
             return builder;
         }
 
-        private async Task<Stream?> GetTask()
+        private async Task<Stream?> DownloadAsync()
         {
+            if (Path is not null && File.Exists(Path))
+            {
+                try
+                {
+                    File.Delete(Path);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
             Stream stream = await Download.StartAsync();
             if (stream is null && _buffer.Length == Download.TotalFileSize)
                 return _buffer;
