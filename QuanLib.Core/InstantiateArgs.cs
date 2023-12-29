@@ -8,6 +8,6 @@ namespace QuanLib.Core
 {
     public class InstantiateArgs
     {
-        public readonly InstantiateArgs Empty = new();
+        public static readonly InstantiateArgs Empty = new();
     }
 }
