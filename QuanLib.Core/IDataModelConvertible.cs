@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface IDataModel<TSelf, TModel>
+    public interface IDataModelConvertible<TSelf, TModel>
     {
         public TModel ToDataModel();
 
