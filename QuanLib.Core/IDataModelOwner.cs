@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface IDataModelConvertible<TSelf, TModel>
+    public interface IDataModelOwner<TSelf, TModel> where TModel : IDataModel<TModel>
     {
         public TModel ToDataModel();
 
         public static abstract TSelf FromDataModel(TModel model);
-
-        public static abstract void ValidateDataModel(TModel model, string name);
     }
 }

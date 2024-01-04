@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,17 +16,13 @@ namespace QuanLib.IO
         public ZipPack(string path, Encoding? encoding = null)
         {
             _archive = ZipFile.Open(path, ZipArchiveMode.Read, encoding);
-            _items = new();
-            foreach (var entrie in _archive.Entries)
-                _items.Add(entrie.FullName, entrie);
+            _items = BuildItems(_archive);
         }
 
         public ZipPack(Stream stream)
         {
             _archive = new ZipArchive(stream);
-            _items = new();
-            foreach (var entrie in _archive.Entries)
-                _items.Add(entrie.FullName, entrie);
+            _items = BuildItems(_archive);
         }
 
         private const char SEPARATOR = '/';
@@ -145,6 +142,23 @@ namespace QuanLib.IO
         public bool ContainsKey(string key)
         {
             return _items.ContainsKey(key);
+        }
+
+        private static Dictionary<string, ZipArchiveEntry> BuildItems(ZipArchive archive)
+        {
+            ArgumentNullException.ThrowIfNull(archive, nameof(archive));
+
+            Type type = typeof(ZipArchive);
+            FieldInfo? field = type.GetField("_entriesDictionary", BindingFlags.NonPublic | BindingFlags.Instance);
+            Dictionary<string, ZipArchiveEntry>? result = field?.GetValue(archive) as Dictionary<string, ZipArchiveEntry>;
+            if (result is null || result.Count == 0)
+            {
+                result = [];
+                foreach (var entrie in archive.Entries)
+                    result.TryAdd(entrie.FullName, entrie);
+            }
+
+            return result;
         }
 
         public IEnumerator<KeyValuePair<string, ZipArchiveEntry>> GetEnumerator()
