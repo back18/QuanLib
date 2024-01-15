@@ -10,7 +10,7 @@ namespace QuanLib.IO.FileSystem
     {
         public abstract string Name { get; }
 
-        public virtual Node? ParentNode { get; internal set; }
+        public virtual ContainerNode? ParentNode { get; internal set; }
 
         public virtual string GetFullName(char separatorChar)
         {
@@ -18,6 +18,20 @@ namespace QuanLib.IO.FileSystem
                 return ParentNode.GetFullName(separatorChar) + separatorChar + Name;
             else
                 return Name;
+        }
+
+        public void Delete()
+        {
+            if (ParentNode is null)
+                return;
+
+            ParentNode.Remvoe(Name);
+            ParentNode = null;
+        }
+
+        public DeviceNode? AsDeviceNode()
+        {
+            return this as DeviceNode;
         }
 
         public DirectoryNode? AsDirectoryNode()

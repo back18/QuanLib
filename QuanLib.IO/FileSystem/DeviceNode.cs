@@ -18,7 +18,7 @@ namespace QuanLib.IO.FileSystem
 
         public override string Name { get; }
 
-        public override Node? ParentNode { get => null; internal set => throw new NotSupportedException("根节点不支持设置父级节点"); }
+        public override ContainerNode? ParentNode { get => null; internal set => throw new NotSupportedException("根节点不支持设置父级节点"); }
 
         public char SeparatorChar { get; }
 
@@ -75,6 +75,30 @@ namespace QuanLib.IO.FileSystem
 
             string[] keys = ToKeys(path);
             return GetFileNode(keys);
+        }
+
+        public DirectoryNode[] GetDirectoryNodes(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            string[] keys = ToKeys(path);
+            if (keys.Length == 0)
+                return GetDirectoryNodes();
+
+            DirectoryNode? directoryNode = GetDirectoryNode(keys);
+            return directoryNode is not null ? directoryNode.GetDirectoryNodes() : throw new ArgumentException($"路径“{path}”的文件夹不存在");
+        }
+
+        public FileNode[] GetFileNodes(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            string[] keys = ToKeys(path);
+            if (keys.Length == 0)
+                return GetFileNodes();
+
+            DirectoryNode? directoryNode = GetDirectoryNode(keys);
+            return directoryNode is not null ? directoryNode.GetFileNodes() : throw new ArgumentException($"路径“{path}”的文件夹不存在");
         }
 
         public bool ExistsDirectoryNode(string? path)
@@ -158,6 +182,22 @@ namespace QuanLib.IO.FileSystem
             return CreateFileNode(keys);
         }
 
+        public void DeleteDirectoryNode(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            DirectoryNode? directoryNode = GetDirectoryNode(path) ?? throw new ArgumentException($"路径“{path}”的文件夹不存在");
+            directoryNode.Delete();
+        }
+
+        public void DeleteFileNode(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            DirectoryNode? directoryNode = GetDirectoryNode(path) ?? throw new ArgumentException($"路径“{path}”的文件夹不存在");
+            directoryNode.Delete();
+        }
+
         private string[] ToKeys(string path)
         {
             if (!string.IsNullOrEmpty(Name))
@@ -169,6 +209,9 @@ namespace QuanLib.IO.FileSystem
             }
 
             path = path.TrimStart(SeparatorChar);
+            if (string.IsNullOrEmpty(path))
+                return [];
+
             string[] keys = path.Split(SeparatorChar);
             return keys;
         }
