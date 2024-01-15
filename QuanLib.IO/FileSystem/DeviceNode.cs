@@ -208,7 +208,7 @@ namespace QuanLib.IO.FileSystem
                 path = path[Name.Length..];
             }
 
-            path = path.TrimStart(SeparatorChar);
+            path = path.Trim(SeparatorChar);
             if (string.IsNullOrEmpty(path))
                 return [];
 
