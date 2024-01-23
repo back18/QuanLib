@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.IO", "QuanLib.IO\Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.TextFormat", "QuanLib.TextFormat\QuanLib.TextFormat.csproj", "{E568A88B-0528-4055-AC01-E6576069DF57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.Logging", "QuanLib.Logging\QuanLib.Logging.csproj", "{DAE7F388-48E1-4737-B425-FD04EAE30EA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{E568A88B-0528-4055-AC01-E6576069DF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E568A88B-0528-4055-AC01-E6576069DF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E568A88B-0528-4055-AC01-E6576069DF57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE7F388-48E1-4737-B425-FD04EAE30EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE7F388-48E1-4737-B425-FD04EAE30EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE7F388-48E1-4737-B425-FD04EAE30EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE7F388-48E1-4737-B425-FD04EAE30EA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
