@@ -51,7 +51,7 @@ namespace QuanLib.IO.Zip
 
         public bool ExistsFile(string? path)
         {
-            return _rootNode.ExistsDirectoryNode(path);
+            return _rootNode.ExistsFileNode(path);
         }
 
         public string[] GetDirectoryPaths(string path)
