@@ -57,37 +57,5 @@ namespace QuanLib.Core
 
             throw new ArgumentException(message.ToString().TrimEnd(), name);
         }
-
-        public static bool TryValidateObject<T>(IEnumerable<T> enumerable, out int[] nullValueIndexs)
-        {
-            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
-
-            List<int> nullValueIndexList = new();
-            int index = 0;
-            foreach(T? value in enumerable)
-            {
-                if (value is null)
-                    nullValueIndexList.Add(index);
-                index++;
-            }
-
-            nullValueIndexs = nullValueIndexList.ToArray();
-            return nullValueIndexs.Length == 0;
-        }
-
-        public static void ValidateObject<T>(IEnumerable<T> enumerable, string name)
-        {
-            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
-            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
-
-            if (TryValidateObject(enumerable, out var nullValueIndexs))
-                return;
-
-            List<string> indexs = new();
-            foreach (int index in nullValueIndexs)
-                indexs.Add($"[{index}]");
-
-            throw new ArgumentException("集合的一个或多个子项为null：" + string.Join(", ", indexs), name);
-        }
     }
 }
