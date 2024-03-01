@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace QuanLib.Logging
 {
@@ -103,7 +104,7 @@ namespace QuanLib.Logging
             }
         }
 
-        public void Initialize(string logFilePath, bool isSaveHistoricalLogFile)
+        public static void Initialize(string logFilePath, bool isSaveHistoricalLogFile)
         {
             ArgumentException.ThrowIfNullOrEmpty(logFilePath, nameof(logFilePath));
 
@@ -114,7 +115,7 @@ namespace QuanLib.Logging
                 File.Delete(logFilePath);
         }
 
-        private void SaveHistoricalLogFile(string logFilePath)
+        private static void SaveHistoricalLogFile(string logFilePath)
         {
             ArgumentException.ThrowIfNullOrEmpty(logFilePath, nameof(logFilePath));
 
@@ -125,7 +126,7 @@ namespace QuanLib.Logging
 
             string? directory = logFileInfo.DirectoryName;
             if (string.IsNullOrEmpty(directory))
-                throw new IOException($"找不到文件“{logFilePath}”的所在目录");
+                throw new IOException($"找不到文件“{logFilePath}”所在的目录");
 
             string? path = null;
             for (int i = 1; i <= 4096; i++)
@@ -144,6 +145,20 @@ namespace QuanLib.Logging
             using GZipStream gZipStream = new(fileStream, CompressionMode.Compress);
             byte[] bytes = File.ReadAllBytes(logFilePath);
             gZipStream.Write(bytes, 0, bytes.Length);
+        }
+
+        public static MemoryStream CreateDefaultXmlConfigStream()
+        {
+            XmlDocument xmlDocument = new();
+            XmlDeclaration xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "utf-8", null);
+            xmlDocument.AppendChild(xmlDeclaration);
+            XmlElement xmlElement = xmlDocument.CreateElement("log4net");
+            xmlDocument.AppendChild(xmlElement);
+
+            MemoryStream memoryStream = new();
+            xmlDocument.Save(memoryStream);
+
+            return memoryStream;
         }
 
         public LogImpl GetLogger()
