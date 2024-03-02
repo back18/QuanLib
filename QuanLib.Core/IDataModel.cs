@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface IDataModel<TSelf>
+    public interface IDataModel<TSelf> where TSelf : IDataModel<TSelf>
     {
         public static abstract TSelf CreateDefault();
 

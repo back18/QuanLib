@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface ISingleton<TSelf, TArgs> where TArgs : InstantiateArgs
+    public interface ISingleton<TSelf, TArgs> where TSelf : ISingleton<TSelf, TArgs> where TArgs : InstantiateArgs
     {
         public static abstract bool IsInstanceLoaded { get; }
 
