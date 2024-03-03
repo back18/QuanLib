@@ -157,6 +157,7 @@ namespace QuanLib.Logging
 
             MemoryStream memoryStream = new();
             xmlDocument.Save(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
             return memoryStream;
         }
