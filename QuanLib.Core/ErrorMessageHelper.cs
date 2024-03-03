@@ -35,5 +35,12 @@ namespace QuanLib.Core
         public const string EmailAddress = Prefix + "邮箱地址不合法";
 
         public const string Url = Prefix + "网址不合法";
+
+        public static string Format(string text)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
+
+            return Prefix + text;
+        }
     }
 }
