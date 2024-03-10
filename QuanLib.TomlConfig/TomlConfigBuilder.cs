@@ -51,57 +51,57 @@ namespace QuanLib.TomlConfig
                 {
                     if (attribute is RequiredAttribute requiredAttribute)
                     {
-                        tomlObject.AddComment("- 此项不能为空");
+                        tomlObject.AddComment("约束: 此项不能为空");
                     }
                     else if (attribute is RangeAttribute rangeAttribute)
                     {
-                        tomlObject.AddComment($"- 最小值: {Format(rangeAttribute.Minimum)}, 最大值: {Format(rangeAttribute.Maximum)}");
+                        tomlObject.AddComment($"约束: 最小值: {Format(rangeAttribute.Minimum)}, 最大值: {Format(rangeAttribute.Maximum)}");
                     }
                     else if (attribute is MinLengthAttribute minLengthAttribute)
                     {
-                        tomlObject.AddComment("- 最小长度为" + minLengthAttribute.Length);
+                        tomlObject.AddComment("约束: 最小长度为" + minLengthAttribute.Length);
                     }
                     else if (attribute is MaxLengthAttribute maxLengthAttribute)
                     {
-                        tomlObject.AddComment("- 最大长度为" + maxLengthAttribute.Length);
+                        tomlObject.AddComment("约束: 最大长度为" + maxLengthAttribute.Length);
                     }
                     else if (attribute is LengthAttribute lengthAttribute)
                     {
-                        tomlObject.AddComment("- 最小长度为" + lengthAttribute.MinimumLength);
-                        tomlObject.AddComment("- 最大长度为" + lengthAttribute.MaximumLength);
+                        tomlObject.AddComment("约束: 最小长度为" + lengthAttribute.MinimumLength);
+                        tomlObject.AddComment("约束: 最大长度为" + lengthAttribute.MaximumLength);
                     }
                     else if (attribute is StringLengthAttribute stringLengthAttribute)
                     {
-                        tomlObject.AddComment("- 文本最小长度为" + stringLengthAttribute.MinimumLength);
-                        tomlObject.AddComment("- 文本最大长度为" + stringLengthAttribute.MaximumLength);
+                        tomlObject.AddComment("约束: 文本最小长度为" + stringLengthAttribute.MinimumLength);
+                        tomlObject.AddComment("约束: 文本最大长度为" + stringLengthAttribute.MaximumLength);
                     }
                     else if (attribute is AllowedValuesAttribute allowedValuesAttribute)
                     {
-                        tomlObject.AddComment("- 允许的值: " + Format(allowedValuesAttribute.Values));
+                        tomlObject.AddComment("约束: 允许的值: " + Format(allowedValuesAttribute.Values));
                     }
                     else if (attribute is DeniedValuesAttribute deniedValuesAttribute)
                     {
-                        tomlObject.AddComment("- 不允许的值: " + Format(deniedValuesAttribute.Values));
+                        tomlObject.AddComment("约束: 不允许的值: " + Format(deniedValuesAttribute.Values));
                     }
                     else if (attribute is CompareAttribute compareAttribute)
                     {
-                        tomlObject.AddComment($"- 需要与“{compareAttribute.OtherProperty}”匹配");
+                        tomlObject.AddComment($"约束: 需要与“{compareAttribute.OtherProperty}”匹配");
                     }
                     else if (attribute is FileExtensionsAttribute fileExtensionsAttribute)
                     {
-                        tomlObject.AddComment($"- 只支持后缀为{fileExtensionsAttribute.Extensions}的文件");
+                        tomlObject.AddComment($"约束: 只支持后缀为{fileExtensionsAttribute.Extensions}的文件");
                     }
                     else if (attribute is PhoneAttribute phoneAttribute)
                     {
-                        tomlObject.AddComment("- 需要填写合法的号码");
+                        tomlObject.AddComment("约束: 需要填写合法的号码");
                     }
                     else if (attribute is EmailAddressAttribute emailAddressAttribute)
                     {
-                        tomlObject.AddComment("- 需要填写合法的邮箱地址");
+                        tomlObject.AddComment("约束: 需要填写合法的邮箱地址");
                     }
                     else if (attribute is UrlAttribute urlAttribute)
                     {
-                        tomlObject.AddComment("- 需要填写合法的网址");
+                        tomlObject.AddComment("约束: 需要填写合法的网址");
                     }
                 }
             }
