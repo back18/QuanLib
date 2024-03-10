@@ -10,7 +10,7 @@ namespace QuanLib.IO
 {
     public class StreamWriteQueue : RunnableBase
     {
-        public StreamWriteQueue(Stream stream, ILogbuilder? logbuilder = null) : base(logbuilder)
+        public StreamWriteQueue(Stream stream, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 

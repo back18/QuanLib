@@ -10,11 +10,11 @@ namespace QuanLib.Core
 {
     public abstract class RunnableBase : IRunnable
     {
-        protected RunnableBase(ILogbuilder? logbuilder = null)
+        protected RunnableBase(ILoggerGetter? loggerGetter = null)
         {
             Type type = GetType();
-            if (logbuilder is not null)
-                _logger = logbuilder.GetLogger(type);
+            if (loggerGetter is not null)
+                _logger = loggerGetter.GetLogger(type);
 
             IsRunning = false;
 

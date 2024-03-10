@@ -10,7 +10,7 @@ namespace QuanLib.IO
 {
     public class PollingTextFileListener : PollingFileListener, ITextListener
     {
-        public PollingTextFileListener(string path, Encoding encoding, ILogbuilder? logbuilder = null) : base(path, logbuilder)
+        public PollingTextFileListener(string path, Encoding encoding, ILoggerGetter? loggerGetter = null) : base(path, loggerGetter)
         {
             ArgumentNullException.ThrowIfNull(path, nameof(path));
             ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));

@@ -10,7 +10,7 @@ namespace QuanLib.IO
 {
     public class PollingFileListener : RunnableBase
     {
-        public PollingFileListener(string path, ILogbuilder? logbuilder = null) : base(logbuilder)
+        public PollingFileListener(string path, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException("需要倾听的文件不存在", path);

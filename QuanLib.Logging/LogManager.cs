@@ -52,7 +52,7 @@ namespace QuanLib.Logging
             };
             _fileAppender.ActivateOptions();
 
-            Logbuilder = new Logbuilder(this);
+            LoggerGetter = new LoggerGetter(this);
             _incrementId = 1;
             _loggers = [];
 
@@ -76,7 +76,7 @@ namespace QuanLib.Logging
 
         private readonly Dictionary<string, LogImpl> _loggers;
 
-        public ILogbuilder Logbuilder { get; }
+        public ILoggerGetter LoggerGetter { get; }
 
         public Level ConsoleThreshold
         {

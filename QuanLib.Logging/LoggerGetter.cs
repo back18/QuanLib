@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Logging
 {
-    public class Logbuilder : ILogbuilder
+    public class LoggerGetter : ILoggerGetter
     {
-        public Logbuilder(LogManager owner)
+        public LoggerGetter(LogManager owner)
         {
             ArgumentNullException.ThrowIfNull(owner, nameof(owner));
 
