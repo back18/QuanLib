@@ -85,7 +85,7 @@ namespace QuanLib.TomlConfig
                     }
                     else if (attribute is CompareAttribute compareAttribute)
                     {
-                        tomlObject.AddComment($"约束: 需要与“{compareAttribute.OtherProperty}”匹配");
+                        tomlObject.AddComment($"约束: 需要与属性“{compareAttribute.OtherPropertyDisplayName}”的值匹配");
                     }
                     else if (attribute is FileExtensionsAttribute fileExtensionsAttribute)
                     {
