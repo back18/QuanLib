@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.DataAnnotations
+namespace QuanLib.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
-    public class FileExistsAttribute : ValidationAttribute
+    public class DirectoryExistsAttribute : ValidationAttribute
     {
-        public FileExistsAttribute() : base(ErrorMessageHelper.FileExistsAttribute) { }
+        public DirectoryExistsAttribute() : base(ErrorMessageHelper.DirectoryExistsAttribute) { }
 
         public override bool IsValid(object? value)
         {
-            if (value is string text && File.Exists(text))
+            if (value is string text && Directory.Exists(text))
                 return true;
             else
                 return false;

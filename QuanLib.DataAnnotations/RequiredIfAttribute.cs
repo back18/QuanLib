@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -7,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.DataAnnotations
+namespace QuanLib.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class RequiredIfAttribute : ValidationAttribute

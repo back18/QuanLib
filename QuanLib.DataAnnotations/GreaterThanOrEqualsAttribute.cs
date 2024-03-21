@@ -1,10 +1,11 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.DataAnnotations
+namespace QuanLib.DataAnnotations
 {
     public class GreaterThanOrEqualsAttribute : CompareAttribute
     {

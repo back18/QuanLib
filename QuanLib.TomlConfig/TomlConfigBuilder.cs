@@ -1,6 +1,6 @@
 ﻿using Nett;
 using QuanLib.Core;
-using QuanLib.Core.DataAnnotations;
+using QuanLib.DataAnnotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;

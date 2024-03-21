@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core.DataAnnotations
+namespace QuanLib.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public abstract class CompareAttribute : ValidationAttribute
@@ -28,7 +28,7 @@ namespace QuanLib.Core.DataAnnotations
         public override string FormatErrorMessage(string name)
         {
             ArgumentNullException.ThrowIfNull(name, nameof(name));
-            
+
             return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, OtherPropertyDisplayName ?? OtherProperty);
         }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core
+namespace QuanLib.DataAnnotations
 {
     public static class ErrorMessageHelper
     {
