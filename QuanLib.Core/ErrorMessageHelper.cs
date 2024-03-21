@@ -10,37 +10,50 @@ namespace QuanLib.Core
     {
         private const string Prefix = "属性“{0}”的值验证失败：";
 
-        public const string Required = Prefix + "不能为空";
+        public const string RequiredAttribute = Prefix + "不能为空";
 
-        public const string Range = Prefix + "范围应该为{1}到{2}";
+        public const string RequiredIfAttribute = Prefix + "当另一个属性“{1}”的值 {2} {3} 时，当前属性的值不能为空";
 
-        public const string MinLength = Prefix + "长度最小为{1}";
+        public const string RangeAttribute = Prefix + "范围应该为{1}到{2}";
 
-        public const string MaxLength = Prefix + "长度最大为{1}";
+        public const string MinLengthAttribute = Prefix + "长度最小为{1}";
 
-        public const string Length = Prefix + "长度范围应该为{1}到{2}";
+        public const string MaxLengthAttribute = Prefix + "长度最大为{1}";
 
-        public const string StringLength = Prefix + "文本长度应该为{2}到{1}";
+        public const string LengthAttribute = Prefix + "长度范围应该为{1}到{2}";
 
-        public const string AllowedValues = Prefix + "不合法";
+        public const string StringLengthAttribute = Prefix + "文本长度范围应该为{2}到{1}";
 
-        public const string DeniedValues = Prefix + "不合法";
+        public const string AllowedValuesAttribute = Prefix + "无效的值";
 
-        public const string Compare = Prefix + "必须与另一个属性“{1}”的值匹配";
+        public const string DeniedValuesAttribute = Prefix + "无效的值";
 
-        public const string FileExtensions = Prefix + "文件扩展名只能为{1}";
+        public const string CompareAttribute = Prefix + "需要与另一个属性“{1}”的值匹配";
 
-        public const string Phone = Prefix + "号码不合法";
+        public const string EqualsAttribute = Prefix + "需要与另一个属性“{1}”的值相等";
 
-        public const string EmailAddress = Prefix + "邮箱地址不合法";
+        public const string NotEqualsAttribute = Prefix + "不能与另一个属性“{1}”的值相等";
 
-        public const string Url = Prefix + "网址不合法";
+        public const string LessThanAttribute = Prefix + "需要小于另一个属性“{1}”的值";
 
-        public static string Format(string text)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
+        public const string LessThanOrEqualsAttribute = Prefix + "需要小于或等于另一个属性“{1}”的值";
 
-            return Prefix + text;
-        }
+        public const string GreaterThanAttribute = Prefix + "需要大于另一个属性“{1}”的值";
+
+        public const string GreaterThanOrEqualsAttribute = Prefix + "需要大于或等于另一个属性“{1}”的值";
+
+        public const string UrlAttribute = Prefix + "URL格式不合法";
+
+        public const string EmailAddressAttribute = Prefix + "邮箱地址格式不合法";
+
+        public const string PhoneAttribute = Prefix + "电话号码格式不合法";
+
+        public const string CreditCardAttribute = Prefix + "信用卡号格式不合法";
+
+        public const string FileExistsAttribute = Prefix + "指定的路径文件不存在";
+
+        public const string DirectoryExistsAttribute = Prefix + "指定的路径目录不存在";
+
+        public const string FileExtensionsAttribute = Prefix + "文件扩展名只能为{1}";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Nett;
 using QuanLib.Core;
+using QuanLib.Core.DataAnnotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
 namespace QuanLib.TomlConfig
 {
@@ -51,7 +53,11 @@ namespace QuanLib.TomlConfig
                 {
                     if (attribute is RequiredAttribute requiredAttribute)
                     {
-                        tomlObject.AddComment("约束: 此项不能为空");
+                        tomlObject.AddComment("约束: 不能为空");
+                    }
+                    else if (attribute is RequiredIfAttribute requiredIfAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 当另一个属性“{requiredIfAttribute.OtherProperty}”的值 {requiredIfAttribute.CompareOperator.ToSymbol()} {Format(requiredIfAttribute.RightValue)} 时，当前属性的值不能为空");
                     }
                     else if (attribute is RangeAttribute rangeAttribute)
                     {
@@ -85,23 +91,59 @@ namespace QuanLib.TomlConfig
                     }
                     else if (attribute is CompareAttribute compareAttribute)
                     {
-                        tomlObject.AddComment($"约束: 需要与属性“{compareAttribute.OtherPropertyDisplayName}”的值匹配");
+                        tomlObject.AddComment($"约束: 需要与另一个属性“{compareAttribute.OtherProperty}”的值匹配");
                     }
-                    else if (attribute is FileExtensionsAttribute fileExtensionsAttribute)
+                    else if (attribute is EqualsAttribute equalsAttribute)
                     {
-                        tomlObject.AddComment($"约束: 只支持后缀为{fileExtensionsAttribute.Extensions}的文件");
+                        tomlObject.AddComment($"约束: 需要与另一个属性“{equalsAttribute.OtherProperty}”的值相等");
                     }
-                    else if (attribute is PhoneAttribute phoneAttribute)
+                    else if (attribute is NotEqualsAttribute notEqualsAttribute)
                     {
-                        tomlObject.AddComment("约束: 需要填写合法的号码");
+                        tomlObject.AddComment($"约束: 不能与另一个属性“{notEqualsAttribute.OtherProperty}”的值相等");
                     }
-                    else if (attribute is EmailAddressAttribute emailAddressAttribute)
+                    else if (attribute is LessThanAttribute lessThanAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 需要小于另一个属性“{lessThanAttribute.OtherProperty}”的值");
+                    }
+                    else if (attribute is LessThanOrEqualsAttribute lessThanOrEqualsAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 需要小于或等于另一个属性“{lessThanOrEqualsAttribute.OtherProperty}”的值");
+                    }
+                    else if (attribute is GreaterThanAttribute greaterThanAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 需要大于另一个属性“{greaterThanAttribute.OtherProperty}”的值");
+                    }
+                    else if (attribute is GreaterThanOrEqualsAttribute greaterThanOrEqualsAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 需要大于或等于另一个属性“{greaterThanOrEqualsAttribute.OtherProperty}”的值");
+                    }
+                    else if (attribute is UrlAttribute)
+                    {
+                        tomlObject.AddComment("约束: 需要填写合法的URL");
+                    }
+                    else if (attribute is PhoneAttribute)
+                    {
+                        tomlObject.AddComment("约束: 需要填写合法的电话号码");
+                    }
+                    else if (attribute is EmailAddressAttribute)
                     {
                         tomlObject.AddComment("约束: 需要填写合法的邮箱地址");
                     }
-                    else if (attribute is UrlAttribute urlAttribute)
+                    else if (attribute is CreditCardAttribute)
                     {
-                        tomlObject.AddComment("约束: 需要填写合法的网址");
+                        tomlObject.AddComment("约束: 需要填写合法的信用卡号");
+                    }
+                    else if (attribute is FileExistsAttribute)
+                    {
+                        tomlObject.AddComment("约束: 需要填写有效的文件路径");
+                    }
+                    else if (attribute is DirectoryExistsAttribute)
+                    {
+                        tomlObject.AddComment("约束: 需要填写有效的目录路径");
+                    }
+                    else if (attribute is FileExtensionsAttribute fileExtensionsAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 文件扩展名只能为“{fileExtensionsAttribute.Extensions}”");
                     }
                 }
             }
@@ -136,7 +178,7 @@ namespace QuanLib.TomlConfig
             }
         }
 
-        private static string Format<T>(T? value)
+        private static string Format(object? value)
         {
             if (value is null)
                 return "null";
