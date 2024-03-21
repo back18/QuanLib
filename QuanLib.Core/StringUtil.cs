@@ -158,21 +158,21 @@ namespace QuanLib.Core
         /// <returns></returns>
         /// <exception cref="FormatException"></exception>
         /// <exception cref="NotImplementedException"></exception>
-        public static bool Comparison(string arg1, string arg2, ComparisonSymbol compare)
+        public static bool Compare(string arg1, string arg2, CompareOperator compareOperator)
         {
             if (!decimal.TryParse(arg1, out decimal num1))
                 throw new FormatException($"\"{arg1}\"无法解析为decimal类型");
             if (!decimal.TryParse(arg2, out decimal num2))
                 throw new FormatException($"\"{arg2}\"无法解析为decimal类型");
 
-            return compare switch
+            return compareOperator switch
             {
-                ComparisonSymbol.Large => num1 > num2,
-                ComparisonSymbol.LargeEqual => num1 >= num2,
-                ComparisonSymbol.Small => num1 < num2,
-                ComparisonSymbol.SmallEqual => num1 <= num2,
-                ComparisonSymbol.Equal => num1 == num2,
-                ComparisonSymbol.NoEqual => num1 != num2,
+                CompareOperator.Equal => num1 == num2,
+                CompareOperator.NotEqual => num1 != num2,
+                CompareOperator.LessThan => num1 < num2,
+                CompareOperator.LessThanOrEquals => num1 <= num2,
+                CompareOperator.GreaterThan => num1 > num2,
+                CompareOperator.GreaterThanOrEquals => num1 >= num2,
                 _ => throw new NotImplementedException(),
             };
         }
