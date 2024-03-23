@@ -28,6 +28,14 @@ namespace QuanLib.DataAnnotations
 
         public const string DeniedValuesAttribute = Prefix + "无效的值";
 
+        public const string NewAllowedValuesAttribute = Prefix + "值只能为：{1}";
+
+        public const string NewDeniedValuesAttribute = Prefix + "值不为：{1}";
+
+        public const string AllowedValuesIfAttribute = Prefix + "当另一个属性“{1}”的值 {2} {3} 时，当前属性的值只能为：{4}";
+
+        public const string DeniedValuesIfAttribute = Prefix + "当另一个属性“{1}”的值 {2} {3} 时，当前属性的值不能为：{4}";
+
         public const string CompareAttribute = Prefix + "需要与另一个属性“{1}”的值匹配";
 
         public const string EqualsAttribute = Prefix + "需要与另一个属性“{1}”的值相等";

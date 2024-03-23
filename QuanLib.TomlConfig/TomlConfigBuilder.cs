@@ -46,7 +46,7 @@ namespace QuanLib.TomlConfig
                     }
                 }
 
-                tomlObject.AddComment("默认值: " + Format(memberInfo.GetValue(value)));
+                tomlObject.AddComment("默认值: " + ObjectFormatter.Format(memberInfo.GetValue(value)));
 
                 foreach (Attribute attribute in attributes)
                 {
@@ -56,11 +56,11 @@ namespace QuanLib.TomlConfig
                     }
                     else if (attribute is RequiredIfAttribute requiredIfAttribute)
                     {
-                        tomlObject.AddComment($"约束: 当另一个属性“{requiredIfAttribute.OtherProperty}”的值 {requiredIfAttribute.CompareOperator.ToSymbol()} {Format(requiredIfAttribute.RightValue)} 时，当前属性的值不能为空");
+                        tomlObject.AddComment($"约束: 当另一个属性“{requiredIfAttribute.OtherProperty}”的值 {requiredIfAttribute.CompareOperator.ToSymbol()} {ObjectFormatter.Format(requiredIfAttribute.RightValue)} 时，当前属性的值不能为空");
                     }
                     else if (attribute is RangeAttribute rangeAttribute)
                     {
-                        tomlObject.AddComment($"约束: 最小值: {Format(rangeAttribute.Minimum)}, 最大值: {Format(rangeAttribute.Maximum)}");
+                        tomlObject.AddComment($"约束: 最小值: {ObjectFormatter.Format(rangeAttribute.Minimum)}, 最大值: {ObjectFormatter.Format(rangeAttribute.Maximum)}");
                     }
                     else if (attribute is MinLengthAttribute minLengthAttribute)
                     {
@@ -82,11 +82,27 @@ namespace QuanLib.TomlConfig
                     }
                     else if (attribute is AllowedValuesAttribute allowedValuesAttribute)
                     {
-                        tomlObject.AddComment("约束: 允许的值: " + Format(allowedValuesAttribute.Values));
+                        tomlObject.AddComment("约束: 允许的值: " + ObjectFormatter.Format(allowedValuesAttribute.Values));
                     }
                     else if (attribute is DeniedValuesAttribute deniedValuesAttribute)
                     {
-                        tomlObject.AddComment("约束: 不允许的值: " + Format(deniedValuesAttribute.Values));
+                        tomlObject.AddComment("约束: 不允许的值: " + ObjectFormatter.Format(deniedValuesAttribute.Values));
+                    }
+                    else if (attribute is NewAllowedValuesAttribute newAllowedValuesAttribute)
+                    {
+                        tomlObject.AddComment("约束: 允许的值: " + ObjectFormatter.Format(newAllowedValuesAttribute.Values));
+                    }
+                    else if (attribute is NewDeniedValuesAttribute newDeniedValuesAttribute)
+                    {
+                        tomlObject.AddComment("约束: 不允许的值: " + ObjectFormatter.Format(newDeniedValuesAttribute.Values));
+                    }
+                    else if (attribute is AllowedValuesIfAttribute allowedValuesIfAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 当另一个属性“{allowedValuesIfAttribute.OtherProperty}”的值 {allowedValuesIfAttribute.CompareOperator.ToSymbol()} {ObjectFormatter.Format(allowedValuesIfAttribute.RightValue)} 时，当前属性的值只能为：{ObjectFormatter.Format(allowedValuesIfAttribute.Values)}");
+                    }
+                    else if (attribute is DeniedValuesIfAttribute deniedValuesIfAttribute)
+                    {
+                        tomlObject.AddComment($"约束: 当另一个属性“{deniedValuesIfAttribute.OtherProperty}”的值 {deniedValuesIfAttribute.CompareOperator.ToSymbol()} {ObjectFormatter.Format(deniedValuesIfAttribute.RightValue)} 时，当前属性的值不能为：{ObjectFormatter.Format(deniedValuesIfAttribute.Values)}");
                     }
                     else if (attribute is CompareAttribute compareAttribute)
                     {
@@ -175,25 +191,6 @@ namespace QuanLib.TomlConfig
                     return false;
                 }
             }
-        }
-
-        private static string Format(object? value)
-        {
-            if (value is null)
-                return "null";
-
-            if (value is string str)
-                return $"\"{str}\"";
-
-            if (value is IEnumerable enumerable)
-            {
-                List<string> list = [];
-                foreach (var item in enumerable)
-                    list.Add(Format(item));
-                return $"[{string.Join(", ", list)}]";
-            }
-
-            return value.ToString() ?? "null";
         }
     }
 }
