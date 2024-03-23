@@ -9,10 +9,7 @@ namespace QuanLib.DataAnnotations
 {
     public class NotEqualsAttribute : CompareAttribute
     {
-        public NotEqualsAttribute(string otherProperty) : base(otherProperty)
-        {
-            ErrorMessage = ErrorMessageHelper.NotEqualsAttribute;
-        }
+        public NotEqualsAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.NotEqualsAttribute) { }
 
         protected override bool Compare(object? value, object? other)
         {

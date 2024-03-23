@@ -9,10 +9,7 @@ namespace QuanLib.DataAnnotations
 {
     public class LessThanAttribute : CompareAttribute
     {
-        public LessThanAttribute(string otherProperty) : base(otherProperty)
-        {
-            ErrorMessage = ErrorMessageHelper.LessThanAttribute;
-        }
+        public LessThanAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.LessThanAttribute) { }
 
         protected override bool Compare(object? value, object? other)
         {

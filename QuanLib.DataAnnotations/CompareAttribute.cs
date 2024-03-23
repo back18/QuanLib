@@ -9,21 +9,10 @@ using System.Threading.Tasks;
 
 namespace QuanLib.DataAnnotations
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class CompareAttribute : ValidationAttribute
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    public abstract class CompareAttribute : PropertyValidationAttribute
     {
-        public CompareAttribute(string otherProperty) : base(ErrorMessageHelper.CompareAttribute)
-        {
-            ArgumentNullException.ThrowIfNull(otherProperty);
-
-            OtherProperty = otherProperty;
-        }
-
-        public string OtherProperty { get; }
-
-        public string? OtherPropertyDisplayName { get; private set; }
-
-        public override bool RequiresValidationContext => true;
+        public CompareAttribute(string otherProperty, string errorMessage) : base(otherProperty, errorMessage) { }
 
         public override string FormatErrorMessage(string name)
         {
@@ -32,16 +21,10 @@ namespace QuanLib.DataAnnotations
             return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name, OtherPropertyDisplayName ?? OtherProperty);
         }
 
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext, PropertyContext otherPropertyContext)
         {
-            ArgumentNullException.ThrowIfNull(validationContext, nameof(validationContext));
-
-            PropertyInfo? otherPropertyInfo = validationContext.ObjectType.GetRuntimeProperty(OtherProperty);
-            object? otherPropertyValue = otherPropertyInfo?.GetValue(validationContext.ObjectInstance, null);
-
-            if (!Compare(value, otherPropertyValue))
+            if (!Compare(value, otherPropertyContext.Value))
             {
-                OtherPropertyDisplayName ??= GetDisplayNameForProperty(otherPropertyInfo);
                 string[]? memberNames = validationContext.MemberName is not null ? [validationContext.MemberName] : null;
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName), memberNames);
             }
@@ -50,14 +33,5 @@ namespace QuanLib.DataAnnotations
         }
 
         protected abstract bool Compare(object? value, object? other);
-
-        private string? GetDisplayNameForProperty(PropertyInfo? propertyInfo)
-        {
-            DisplayAttribute? displayAttribute = propertyInfo?.GetCustomAttribute<DisplayAttribute>();
-            if (displayAttribute is not null)
-                return displayAttribute.GetName();
-            else
-                return OtherProperty;
-        }
     }
 }

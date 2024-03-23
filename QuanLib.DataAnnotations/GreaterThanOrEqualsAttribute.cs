@@ -9,10 +9,7 @@ namespace QuanLib.DataAnnotations
 {
     public class GreaterThanOrEqualsAttribute : CompareAttribute
     {
-        public GreaterThanOrEqualsAttribute(string otherProperty) : base(otherProperty)
-        {
-            ErrorMessage = ErrorMessageHelper.GreaterThanOrEqualsAttribute;
-        }
+        public GreaterThanOrEqualsAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.GreaterThanOrEqualsAttribute) { }
 
         protected override bool Compare(object? value, object? other)
         {
