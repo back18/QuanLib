@@ -13,7 +13,7 @@ namespace QuanLib.DataAnnotations
 {
     public class DeniedValuesIfAttribute : ConditionalValidationAttribute
     {
-        public DeniedValuesIfAttribute(string otherProperty, CompareOperator compareOperator, object? rightValue, params object?[] values) : base(otherProperty, compareOperator, rightValue, ErrorMessageHelper.AllowedValuesIfAttribute)
+        public DeniedValuesIfAttribute(string otherProperty, CompareOperator compareOperator, object? rightValue, params object?[] values) : base(otherProperty, compareOperator, rightValue, ErrorMessageHelper.DeniedValuesIfAttribute)
         {
             ArgumentNullException.ThrowIfNull(values, nameof(values));
 
