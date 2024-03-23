@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 namespace QuanLib.DataAnnotations
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public abstract class CompareAttribute : PropertyValidationAttribute
+    public abstract class CompareValidationAttribute : PropertyValidationAttribute
     {
-        public CompareAttribute(string otherProperty, string errorMessage) : base(otherProperty, errorMessage) { }
+        public CompareValidationAttribute(string otherProperty, string errorMessage) : base(otherProperty, errorMessage) { }
 
         public override string FormatErrorMessage(string name)
         {

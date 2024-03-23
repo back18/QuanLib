@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.DataAnnotations
 {
-    public class EqualsAttribute : CompareAttribute
+    public class EqualsAttribute : CompareValidationAttribute
     {
         public EqualsAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.EqualsAttribute) { }
 

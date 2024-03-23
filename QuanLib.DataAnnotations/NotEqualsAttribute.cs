@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.DataAnnotations
 {
-    public class NotEqualsAttribute : CompareAttribute
+    public class NotEqualsAttribute : CompareValidationAttribute
     {
         public NotEqualsAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.NotEqualsAttribute) { }
 

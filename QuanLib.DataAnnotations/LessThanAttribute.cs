@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.DataAnnotations
 {
-    public class LessThanAttribute : CompareAttribute
+    public class LessThanAttribute : CompareValidationAttribute
     {
         public LessThanAttribute(string otherProperty) : base(otherProperty, ErrorMessageHelper.LessThanAttribute) { }
 
