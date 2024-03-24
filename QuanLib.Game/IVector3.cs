@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.GenericVector
+namespace QuanLib.Game
 {
     public interface IVector3<T> where T : INumber<T>, IConvertible
     {

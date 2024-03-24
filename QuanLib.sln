@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.ConsoleUtil", "Quan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Core", "QuanLib.Core\QuanLib.Core.csproj", "{5BCC56AD-D552-402D-A5CC-18265771E704}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.GenericVector", "QuanLib.GenericVector\QuanLib.GenericVector.csproj", "{D746C865-2BBD-428E-956E-04CD1D81678A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Downloader", "QuanLib.Downloader\QuanLib.Downloader.csproj", "{7232DC7C-BD55-46FC-BF7A-F839D1D8C6B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.IO", "QuanLib.IO\QuanLib.IO.csproj", "{1378E624-8E20-403B-B417-E73397BDE088}"
@@ -23,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Logging", "QuanLib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.TomlConfig", "QuanLib.TomlConfig\QuanLib.TomlConfig.csproj", "{9B5D6C4A-44D7-4D33-8FB5-0998DEB7DB0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.DataAnnotations", "QuanLib.DataAnnotations\QuanLib.DataAnnotations.csproj", "{3A5CD101-A3AB-454C-8B13-9E2E01B74F54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.DataAnnotations", "QuanLib.DataAnnotations\QuanLib.DataAnnotations.csproj", "{3A5CD101-A3AB-454C-8B13-9E2E01B74F54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.Game", "QuanLib.Game\QuanLib.Game.csproj", "{F3324ACE-0095-42F7-A496-1F3647C4A310}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,6 @@ Global
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BCC56AD-D552-402D-A5CC-18265771E704}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D746C865-2BBD-428E-956E-04CD1D81678A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D746C865-2BBD-428E-956E-04CD1D81678A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D746C865-2BBD-428E-956E-04CD1D81678A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D746C865-2BBD-428E-956E-04CD1D81678A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7232DC7C-BD55-46FC-BF7A-F839D1D8C6B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7232DC7C-BD55-46FC-BF7A-F839D1D8C6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7232DC7C-BD55-46FC-BF7A-F839D1D8C6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +71,10 @@ Global
 		{3A5CD101-A3AB-454C-8B13-9E2E01B74F54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A5CD101-A3AB-454C-8B13-9E2E01B74F54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A5CD101-A3AB-454C-8B13-9E2E01B74F54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3324ACE-0095-42F7-A496-1F3647C4A310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3324ACE-0095-42F7-A496-1F3647C4A310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3324ACE-0095-42F7-A496-1F3647C4A310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3324ACE-0095-42F7-A496-1F3647C4A310}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

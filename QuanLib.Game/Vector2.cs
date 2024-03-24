@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.GenericVector
+namespace QuanLib.Game
 {
     public struct Vector2<T>(T x, T y) : IVector2<T>, IEquatable<Vector2<T>> where T : INumber<T>, IConvertible
     {
@@ -42,8 +42,8 @@ namespace QuanLib.GenericVector
 
         public static T Dot(Vector2<T> vector1, Vector2<T> vector2)
         {
-            return (vector1.X * vector2.X)
-                 + (vector1.Y * vector2.Y);
+            return vector1.X * vector2.X
+                 + vector1.Y * vector2.Y;
         }
 
         public static T DistanceSquared(Vector2<T> value1, Vector2<T> value2)
@@ -76,7 +76,7 @@ namespace QuanLib.GenericVector
 
         public override readonly bool Equals(object? obj)
         {
-            return (obj is Vector2 other) && Equals(other);
+            return obj is Vector2 other && Equals(other);
         }
 
         public override readonly int GetHashCode()
@@ -149,8 +149,8 @@ namespace QuanLib.GenericVector
 
         public static bool operator ==(Vector2<T> left, Vector2<T> right)
         {
-            return (left.X == right.X)
-                && (left.Y == right.Y);
+            return left.X == right.X
+                && left.Y == right.Y;
         }
 
         public static bool operator !=(Vector2<T> left, Vector2<T> right)

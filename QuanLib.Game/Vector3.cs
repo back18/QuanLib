@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.GenericVector
+namespace QuanLib.Game
 {
     public struct Vector3<T>(T x, T y, T z) : IVector3<T>, IEquatable<Vector3<T>> where T : INumber<T>, IConvertible
     {
@@ -48,17 +48,17 @@ namespace QuanLib.GenericVector
 
         public static T Dot(Vector3<T> vector1, Vector3<T> vector2)
         {
-            return (vector1.X * vector2.X)
-                 + (vector1.Y * vector2.Y)
-                 + (vector1.Z * vector2.Z);
+            return vector1.X * vector2.X
+                 + vector1.Y * vector2.Y
+                 + vector1.Z * vector2.Z;
         }
 
         public static Vector3<T> Cross(Vector3<T> vector1, Vector3<T> vector2)
         {
             return new(
-                (vector1.Y * vector2.Z) - (vector1.Z * vector2.Y),
-                (vector1.Z * vector2.X) - (vector1.X * vector2.Z),
-                (vector1.X * vector2.Y) - (vector1.Y * vector2.X));
+                vector1.Y * vector2.Z - vector1.Z * vector2.Y,
+                vector1.Z * vector2.X - vector1.X * vector2.Z,
+                vector1.X * vector2.Y - vector1.Y * vector2.X);
         }
 
         public static T DistanceSquared(Vector3<T> value1, Vector3<T> value2)
@@ -91,7 +91,7 @@ namespace QuanLib.GenericVector
 
         public override readonly bool Equals(object? obj)
         {
-            return (obj is Vector3 other) && Equals(other);
+            return obj is Vector3 other && Equals(other);
         }
 
         public override readonly int GetHashCode()
@@ -173,9 +173,9 @@ namespace QuanLib.GenericVector
 
         public static bool operator ==(Vector3<T> left, Vector3<T> right)
         {
-            return (left.X == right.X)
-                && (left.Y == right.Y)
-                && (left.Z == right.Z);
+            return left.X == right.X
+                && left.Y == right.Y
+                && left.Z == right.Z;
         }
 
         public static bool operator !=(Vector3<T> left, Vector3<T> right)
