@@ -84,6 +84,11 @@ namespace QuanLib.Game
             return HashCode.Combine(X, Y);
         }
 
+        public override readonly string ToString()
+        {
+            return $"[{X},{Y}]";
+        }
+
         public static Vector2<T> operator -(Vector2<T> value)
         {
             return new(
