@@ -105,7 +105,7 @@ namespace QuanLib.Core
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             if (!Directory.Exists(path))
-                throw new DirectoryNotFoundException($"路径“{path}”的目录不存在", path);
+                throw new DirectoryNotFoundException($"路径“{path}”的目录不存在");
         }
     }
 }
