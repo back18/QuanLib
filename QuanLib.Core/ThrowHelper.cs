@@ -91,5 +91,21 @@ namespace QuanLib.Core
             if (value is null || value.Length > maxLength)
                 throw new ArgumentOutOfRangeException(name, value, $"字符串“{name}”的长度应该小于或等于 {maxLength}");
         }
+
+        public static void FileNotFound(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"路径“{path}”的文件不存在", path);
+        }
+
+        public static void DirectoryNotFound(string path)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+
+            if (!Directory.Exists(path))
+                throw new DirectoryNotFoundException($"路径“{path}”的目录不存在", path);
+        }
     }
 }
