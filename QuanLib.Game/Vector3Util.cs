@@ -33,32 +33,26 @@ namespace QuanLib.Game
             return new(x, y, z);
         }
 
-        public static Vector3<T> Offset<T>(this Vector3<T> position, int facing, T offset) where T : INumber<T>, IConvertible
+        public static Vector3<T> Offset<T>(this Vector3<T> position, Facing facing, T offset) where T : INumber<T>, IConvertible
         {
             switch (facing)
             {
-                //case Facing.Xp:
-                case 1:
+                case Facing.Xp:
                     position.X += offset;
                     break;
-                //case Facing.Xm:
-                case -1:
+                case Facing.Xm:
                     position.X -= offset;
                     break;
-                //case Facing.Yp:
-                case 2:
+                case Facing.Yp:
                     position.Y += offset;
                     break;
-                //case Facing.Ym:
-                case -2:
+                case Facing.Ym:
                     position.Y -= offset;
                     break;
-                //case Facing.Zp:
-                case 3:
+                case Facing.Zp:
                     position.Z += offset;
                     break;
-                //case Facing.Zm:
-                case -3:
+                case Facing.Zm:
                     position.Z -= offset;
                     break;
                 default:
