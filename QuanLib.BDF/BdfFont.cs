@@ -119,7 +119,7 @@ namespace QuanLib.BDF
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
 
-            string[] lines = stream.ToUtf8TextLines();
+            string[] lines = stream.ReadAllLines();
             return Load(lines);
         }
 

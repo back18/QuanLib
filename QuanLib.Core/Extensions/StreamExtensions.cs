@@ -8,18 +8,15 @@ namespace QuanLib.Core.Extensions
 {
     public static class StreamExtensions
     {
-        public static string ToUtf8Text(this Stream stream)
+        public static string ReadAllText(this Stream stream)
         {
-            return stream.ToText(Encoding.UTF8);
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+            return stream.ReadAllText(Encoding.UTF8);
         }
 
-        public static string[] ToUtf8TextLines(this Stream stream)
+        public static string ReadAllText(this Stream stream, Encoding encoding)
         {
-            return stream.ToTextLines(Encoding.UTF8);
-        }
-
-        public static string ToText(this Stream stream, Encoding encoding)
-        {
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
             ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
             if (stream.CanSeek && stream.Position != 0)
@@ -29,15 +26,22 @@ namespace QuanLib.Core.Extensions
             return reader.ReadToEnd();
         }
 
-        public static string[] ToTextLines(this Stream stream, Encoding encoding)
+        public static string[] ReadAllLines(this Stream stream)
         {
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+            return stream.ReadAllLines(Encoding.UTF8);
+        }
+
+        public static string[] ReadAllLines(this Stream stream, Encoding encoding)
+        {
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
             ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);
 
             using StreamReader reader = new(stream, Encoding.UTF8);
-            List<string> lines = new();
+            List<string> lines = [];
             while (!reader.EndOfStream)
             {
                 string? line = reader.ReadLine();
