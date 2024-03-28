@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.Extensions
 {
-    public static class StreamExtension
+    public static class StreamExtensions
     {
         public static string ToUtf8Text(this Stream stream)
         {
