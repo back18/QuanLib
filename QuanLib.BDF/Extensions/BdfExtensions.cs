@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.BDF
+namespace QuanLib.BDF.Extensions
 {
-    public static class Extension
+    public static class BdfExtensions
     {
-        public static int GetLeftLayoutMaxCount(this BdfFont source, int maxWidth, string value)
+        public static int GetLeftLayoutMaxCount(this BdfFont bdfFont, int maxWidth, string value)
         {
+            ArgumentNullException.ThrowIfNull(bdfFont, nameof(bdfFont));
             ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int width = 0;
             for (int i = 0; i < value.Length; i++)
             {
-                width += source[value[i]].Width;
+                width += bdfFont[value[i]].Width;
                 if (width == maxWidth)
                     return i + 1;
                 else if (width > maxWidth)
@@ -24,14 +25,15 @@ namespace QuanLib.BDF
             return width;
         }
 
-        public static int GetRightLayoutMaxCount(this BdfFont source, int maxWidth, string value)
+        public static int GetRightLayoutMaxCount(this BdfFont bdfFont, int maxWidth, string value)
         {
+            ArgumentNullException.ThrowIfNull(bdfFont, nameof(bdfFont));
             ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int width = 0;
             for (int i = value.Length - 1; i >= 0; i--)
             {
-                width += source[value[i]].Width;
+                width += bdfFont[value[i]].Width;
                 if (width == maxWidth)
                     return value.Length - i + 1;
                 else if (width > maxWidth)
@@ -40,14 +42,15 @@ namespace QuanLib.BDF
             return width;
         }
 
-        public static int GetTopLayoutMaxCount(this BdfFont source, int maxHeight, string value)
+        public static int GetTopLayoutMaxCount(this BdfFont bdfFont, int maxHeight, string value)
         {
+            ArgumentNullException.ThrowIfNull(bdfFont, nameof(bdfFont));
             ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int height = 0;
             for (int i = 0; i < value.Length; i++)
             {
-                height += source[value[i]].Height;
+                height += bdfFont[value[i]].Height;
                 if (height == maxHeight)
                     return i + 1;
                 else if (height > maxHeight)
@@ -56,14 +59,15 @@ namespace QuanLib.BDF
             return height;
         }
 
-        public static int GetBottomLayoutMaxCount(this BdfFont source, int maxHeight, string value)
+        public static int GetBottomLayoutMaxCount(this BdfFont bdfFont, int maxHeight, string value)
         {
+            ArgumentNullException.ThrowIfNull(bdfFont, nameof(bdfFont));
             ArgumentNullException.ThrowIfNull(value, nameof(value));
 
             int height = 0;
             for (int i = value.Length - 1; i >= 0; i--)
             {
-                height += source[value[i]].Height;
+                height += bdfFont[value[i]].Height;
                 if (height == maxHeight)
                     return value.Length - i + 1;
                 else if (height > maxHeight)
