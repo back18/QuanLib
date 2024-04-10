@@ -104,7 +104,7 @@ namespace QuanLib.Core
                 if (!string.IsNullOrEmpty(threadOptions.Name))
                     Thread.Name = threadOptions.Name;
                 Thread.Start();
-                _stopTask = WaitAsync();
+                _stopTask = WaitSemaphoreAsync();
                 return true;
             }
         }
@@ -135,8 +135,7 @@ namespace QuanLib.Core
                 if (thread is null)
                     return;
 
-                foreach (IRunnable runnable in _subtasks)
-                    runnable.Stop();
+                StopSubTasks();
 
                 try
                 {
@@ -181,8 +180,7 @@ namespace QuanLib.Core
             {
                 Started.Invoke(this, EventArgs.Empty);
 
-                foreach (IRunnable runnable in _subtasks)
-                    runnable.Start();
+                StartSubTasks();
 
                 Run();
 
@@ -201,7 +199,44 @@ namespace QuanLib.Core
             }
         }
 
-        private async Task WaitAsync()
+        protected void CheckedException()
+        {
+            if (Exception is not null)
+                throw new AggregateException($"线程({GetThreadName(Thread)})抛出了异常", Exception);
+        }
+
+        protected void StartSubTasks()
+        {
+            foreach (IRunnable runnable in _subtasks)
+                runnable.Start();
+        }
+
+        protected void StopSubTasks()
+        {
+            foreach (IRunnable runnable in _subtasks)
+                runnable.Stop();
+        }
+
+        protected void CheckedSubtasksException()
+        {
+            List<Exception> exceptions = [];
+            foreach (RunnableBase runnable in _subtasks)
+            {
+                try
+                {
+                    runnable.CheckedException();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions.Count > 0)
+                throw new AggregateException($"线程({GetThreadName(Thread)})的一个或多个子任务抛出了异常", exceptions);
+        }
+
+        private async Task WaitSemaphoreAsync()
         {
             try
             {
@@ -220,31 +255,6 @@ namespace QuanLib.Core
             {
                 _stopTask = null;
             }
-        }
-
-        protected void CheckedException()
-        {
-            if (Exception is not null)
-                throw new AggregateException($"线程({GetThreadName(Thread)})抛出了异常", Exception);
-        }
-
-        protected void CheckedSubtaskException()
-        {
-            List<Exception> exceptions = [];
-            foreach (RunnableBase runnable in _subtasks)
-            {
-                try
-                {
-                    runnable.CheckedException();
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }
-
-            if (exceptions.Count > 0)
-                throw new AggregateException($"线程({GetThreadName(Thread)})的一个或多个子任务抛出了异常", exceptions);
         }
 
         private static string GetThreadName(Thread? thread)
