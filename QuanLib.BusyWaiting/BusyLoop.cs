@@ -10,7 +10,7 @@ namespace QuanLib.BusyWaiting
 {
     public class BusyLoop : RunnableBase
     {
-        public BusyLoop()
+        public BusyLoop(ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
             _pauseSemaphore = new(0);
             _pauseTask = WaitSemaphoreAsync();
