@@ -71,6 +71,15 @@ namespace QuanLib.BusyWaiting
             _pauseSemaphore.Release();
         }
 
+        public LoopTask Submit(Action action)
+        {
+            ArgumentNullException.ThrowIfNull(action, nameof(action));
+
+            LoopTask loopTask = new(action);
+            _loopTasks.Enqueue(loopTask);
+            return loopTask;
+        }
+
         public async Task<LoopTask> SubmitAndWaitAsync(Action action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
