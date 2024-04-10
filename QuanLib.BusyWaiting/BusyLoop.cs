@@ -12,15 +12,24 @@ namespace QuanLib.BusyWaiting
     {
         public BusyLoop()
         {
+            _pauseSemaphore = new(0);
+            _pauseTask = WaitSemaphoreAsync();
+
             _loopTasks = new();
             _waitTasks = new();
 
             Loop += OnLoop;
         }
 
+        private readonly SemaphoreSlim _pauseSemaphore;
+
+        private Task _pauseTask;
+
         private readonly ConcurrentQueue<LoopTask> _loopTasks;
 
         private readonly ConcurrentDictionary<Guid, WaitTask> _waitTasks;
+
+        public bool IsPaused { get; private set; }
 
         public event EventHandler<BusyLoop, EventArgs> Loop;
 
@@ -45,9 +54,21 @@ namespace QuanLib.BusyWaiting
                         _waitTasks.Remove(item.Key, out _);
                 }
 
+                _pauseTask.Wait();
+
                 Thread.Yield();
             }
             while (IsRunning);
+        }
+
+        public void Pause()
+        {
+            _pauseTask = WaitSemaphoreAsync();
+        }
+
+        public void Resume()
+        {
+            _pauseSemaphore.Release();
         }
 
         public async Task<LoopTask> SubmitAndWaitAsync(Action action)
@@ -68,6 +89,11 @@ namespace QuanLib.BusyWaiting
             WaitTask waitTask = new(expression);
             _waitTasks.TryAdd(guid, waitTask);
             await waitTask.WaitForSuccessAsync();
+        }
+
+        private async Task WaitSemaphoreAsync()
+        {
+            while (IsRunning && !await _pauseSemaphore.WaitAsync(10)) { }
         }
     }
 }
