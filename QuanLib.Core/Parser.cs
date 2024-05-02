@@ -55,12 +55,9 @@ namespace QuanLib.Core
             {
                 return _parseHandler.Invoke(s, provider);
             }
-            catch (TargetInvocationException targetInvocationException)
+            catch (TargetInvocationException targetInvocationException) when (targetInvocationException.InnerException is not null)
             {
-                if (targetInvocationException.InnerException is not null)
-                    throw targetInvocationException.InnerException;
-                else
-                    throw;
+                throw targetInvocationException.InnerException;
             }
         }
 
