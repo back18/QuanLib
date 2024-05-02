@@ -51,7 +51,17 @@ namespace QuanLib.Core
 
         public T Parse(string s, IFormatProvider? provider)
         {
-            return _parseHandler.Invoke(s, provider);
+            try
+            {
+                return _parseHandler.Invoke(s, provider);
+            }
+            catch (TargetInvocationException targetInvocationException)
+            {
+                if (targetInvocationException.InnerException is not null)
+                    throw targetInvocationException.InnerException;
+                else
+                    throw;
+            }
         }
 
         public bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out T result)
