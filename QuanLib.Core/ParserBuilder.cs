@@ -14,13 +14,24 @@ namespace QuanLib.Core
         {
             ArgumentNullException.ThrowIfNull(type, nameof(type));
 
-            MethodInfo? parseMethod = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, [typeof(string), typeof(IFormatProvider)], null);
-            if (parseMethod is null || parseMethod.ReturnType != type)
-                throw new InvalidOperationException($"在类型“{type}”中找不到合法的 Parse 方法");
+            if (type == typeof(string))
+                return new(StringParseHandler, StringTryParseHandler);
 
-            MethodInfo? tryParseMethod = type.GetMethod("TryParse", BindingFlags.Public | BindingFlags.Static, [typeof(string), typeof(IFormatProvider), type.MakeByRefType()]);
-            if (tryParseMethod is null || tryParseMethod.ReturnType != typeof(bool))
-                throw new InvalidOperationException($"在类型“{type}”中找不到合法的 TryParse 方法");
+            if (!IsImplIParsable(type))
+                throw new InvalidOperationException($"类型“{type}”未实现 IParsable<TSelf> 接口");
+
+            Type iParsableType = GetIParsableType(type);
+            InterfaceMapping interfaceMapping = type.GetInterfaceMap(iParsableType);
+
+            MethodInfo? parseMethod =
+                interfaceMapping.TargetMethods.Where(s => s.Name == "Parse").FirstOrDefault() ??
+                interfaceMapping.TargetMethods.Where(s => s.Name == $"System.IParsable<{type.Namespace}.{type.Name}>.Parse").FirstOrDefault() ??
+                throw new InvalidOperationException($"在类型“{type}”中找不到 Parse 方法");
+
+            MethodInfo? tryParseMethod =
+                interfaceMapping.TargetMethods.Where(s => s.Name == "TryParse").FirstOrDefault() ??
+                interfaceMapping.TargetMethods.Where(s => s.Name == $"System.IParsable<{type.Namespace}.{type.Name}>.TryParse").FirstOrDefault() ??
+                throw new InvalidOperationException($"在类型“{type}”中找不到 TryParse 方法");
 
             object parseHandler(string s, IFormatProvider? provider)
             {
@@ -41,38 +52,42 @@ namespace QuanLib.Core
             return new(parseHandler, tryParseHandler);
         }
 
-        public static Parser<T> FromType<T>()
+        public static Parser<T> FromType<T>() where T : IParsable<T>
         {
-            Type type = typeof(T);
+            return new(T.Parse, T.TryParse);
+        }
 
-            MethodInfo? parseMethod = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, [typeof(string), typeof(IFormatProvider)], null);
-            if (parseMethod is null || parseMethod.ReturnType != type)
-                throw new InvalidOperationException($"在类型“{type}”中找不到合法的 Parse 方法");
+        public static bool IsImplIParsable(Type type)
+        {
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
 
-            MethodInfo? tryParseMethod = type.GetMethod("TryParse", BindingFlags.Public | BindingFlags.Static, [typeof(string), typeof(IFormatProvider), type.MakeByRefType()]);
-            if (tryParseMethod is null || tryParseMethod.ReturnType != typeof(bool))
-                throw new InvalidOperationException($"在类型“{type}”中找不到合法的 TryParse 方法");
+            return type.GetInterfaces().Any(a => a.IsGenericType && a.GetGenericTypeDefinition() == typeof(IParsable<>));
+        }
 
-            T parseHandler(string s, IFormatProvider? provider)
+        public static Type GetIParsableType(Type type)
+        {
+            ArgumentNullException.ThrowIfNull(type, nameof(type));
+
+            return typeof(IParsable<>).MakeGenericType(type);
+        }
+
+        private static string StringParseHandler(string s, IFormatProvider? provider)
+        {
+            ArgumentNullException.ThrowIfNull(s, nameof(s));
+
+            return s;
+        }
+
+        private static bool StringTryParseHandler([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out object result)
+        {
+            if (s is null)
             {
-                return (T)(parseMethod!.Invoke(null, [s, provider]) ?? throw new FormatException());
+                result = null;
+                return false;
             }
 
-            bool tryParseHandler([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out T result)
-            {
-                object?[] parameters = [s, null, null];
-                object? returnValue = tryParseMethod!.Invoke(null, parameters);
-                if (parameters[2] is T t)
-                    result = t;
-                else
-                    result = default;
-                if (returnValue is bool b)
-                    return b;
-                else
-                    return false;
-            }
-
-            return new(parseHandler, tryParseHandler);
+            result = s;
+            return true;
         }
     }
 }
