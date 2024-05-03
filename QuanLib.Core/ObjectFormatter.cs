@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.DataAnnotations
+namespace QuanLib.Core
 {
     public static class ObjectFormatter
     {
@@ -17,7 +17,7 @@ namespace QuanLib.DataAnnotations
             if (obj is string text)
                 return Format(text);
 
-            if  (obj is Type type)
+            if (obj is Type type)
                 return Format(type);
 
             if (obj is Exception exception)
