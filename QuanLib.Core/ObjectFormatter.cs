@@ -29,16 +29,18 @@ namespace QuanLib.Core
             return obj?.ToString() ?? Format((object?)null);
         }
 
-        public static string Format(string text)
+        public static string Format(string? text)
         {
-            ArgumentNullException.ThrowIfNull(text, nameof(text));
+            if (text is null)
+                return Format((object?)null);
 
             return $"\"{text}\"";
         }
 
-        public static string Format(Type type)
+        public static string Format(Type? type)
         {
-            ArgumentNullException.ThrowIfNull(type, nameof(type));
+            if (type is null)
+                return Format((object?)null);
 
             StringBuilder stringBuilder = new();
 
@@ -56,9 +58,10 @@ namespace QuanLib.Core
             return stringBuilder.ToString();
         }
 
-        public static string Format(Exception exception)
+        public static string Format(Exception? exception)
         {
-            ArgumentNullException.ThrowIfNull(exception, nameof(exception));
+            if (exception is null)
+                return Format((object?)null);
 
             string s = $"{Format(exception.GetType())}: {Format(exception.Message)}";
             if (exception.InnerException is not null)
@@ -66,16 +69,18 @@ namespace QuanLib.Core
             return s;
         }
 
-        public static string Format<T>(IEnumerable<T> enumerable)
+        public static string Format<T>(IEnumerable<T>? enumerable)
         {
-            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
+            if (enumerable is null)
+                return Format((object?)null);
 
             return $"[{string.Join(", ", enumerable.Select(s => Format(s)))}]";
         }
 
-        public static string Format(IEnumerable enumerable)
+        public static string Format(IEnumerable? enumerable)
         {
-            ArgumentNullException.ThrowIfNull(enumerable, nameof(enumerable));
+            if (enumerable is null)
+                return Format((object?)null);
 
             List<string> list = [];
             foreach (var item in enumerable)
