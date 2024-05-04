@@ -22,8 +22,11 @@ namespace QuanLib.Core
             _stopSemaphore = new(0);
             StopTimeout = 5;
             Started += OnStarted;
+            Started += OnStartedLoggging;
             Stopped += OnStopped;
+            Stopped += OnStoppedLogging;
             ThrowException += OnThrowException;
+            ThrowException += OnThrowExceptionLogging;
         }
 
         private readonly object _lock = new();
@@ -52,17 +55,23 @@ namespace QuanLib.Core
 
         public event EventHandler<IRunnable, ExceptionEventArgs> ThrowException;
 
-        protected virtual void OnStarted(IRunnable sender, EventArgs e)
+        protected virtual void OnStarted(IRunnable sender, EventArgs e) { }
+
+        protected virtual void OnStopped(IRunnable sender, EventArgs e) { }
+
+        protected virtual void OnThrowException(IRunnable sender, ExceptionEventArgs e) { }
+
+        private void OnStartedLoggging(IRunnable sender, EventArgs e)
         {
             _logger?.Info($"线程({GetThreadName(Thread)})已启动");
         }
 
-        protected virtual void OnStopped(IRunnable sender, EventArgs e)
+        private void OnStoppedLogging(IRunnable sender, EventArgs e)
         {
             _logger?.Info($"线程({GetThreadName(Thread)})已停止");
         }
 
-        protected virtual void OnThrowException(IRunnable sender, ExceptionEventArgs e)
+        private void OnThrowExceptionLogging(IRunnable sender, ExceptionEventArgs e)
         {
             _logger?.Error($"线程({GetThreadName(Thread)})抛出了异常", e.Exception);
         }
