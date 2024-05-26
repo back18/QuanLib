@@ -21,7 +21,7 @@ namespace QuanLib.Core
                 return Format(type);
 
             if (obj is Exception exception)
-                return Format(exception.Message);
+                return Format(exception);
 
             if (obj is IEnumerable enumerable)
                 return Format(enumerable);
@@ -51,7 +51,7 @@ namespace QuanLib.Core
             if (type.GenericTypeArguments.Length > 0)
             {
                 stringBuilder.Append('<');
-                stringBuilder.AppendJoin(", ", type.GenericTypeArguments.Select(Format));
+                stringBuilder.AppendJoin(',', type.GenericTypeArguments.Select(Format));
                 stringBuilder.Append('>');
             }
 
