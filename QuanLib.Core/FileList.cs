@@ -65,17 +65,21 @@ namespace QuanLib.Core
             return _files[CurrentIndex];
         }
 
-        public static FileList LoadDirectory(string directory, IEnumerable<string> Extension)
+        public static FileList LoadDirectory(string directory, IEnumerable<string> extensions)
         {
-            if (!System.IO.Directory.Exists(directory))
-                throw new DirectoryNotFoundException();
+            ArgumentException.ThrowIfNullOrEmpty(directory, nameof(directory));
+            ThrowHelper.DirectoryNotFound(directory);
 
             string[] items = System.IO.Directory.GetFiles(directory);
-            List<string> extensionList = new(Extension);
-            List<string> files = new();
+            List<string> extensionList = new(extensions);
+            List<string> files = [];
+
             foreach (string item in items)
+            {
                 if (extensionList.Contains(Path.GetExtension(item).TrimStart('.')))
                     files.Add(item);
+            }
+
             int index;
             if (files.Count > 0)
                 index = 0;
@@ -85,19 +89,21 @@ namespace QuanLib.Core
             return new(directory, files, index);
         }
 
-        public static FileList LoadFile(string file, IEnumerable<string> Extension)
+        public static FileList LoadFile(string file, IEnumerable<string> extensions)
         {
-            if (!File.Exists(file))
-                throw new FileNotFoundException();
+            ArgumentException.ThrowIfNullOrEmpty(file, nameof(file));
+            ThrowHelper.FileNotFound(file);
 
-            string directory = Path.GetDirectoryName(file) ?? throw new DirectoryNotFoundException();
-
+            string directory = Path.GetDirectoryName(file) ?? throw new InvalidOperationException();
             string[] items = System.IO.Directory.GetFiles(directory);
-            List<string> extensionList = new(Extension);
+            List<string> extensionList = new(extensions);
             List<string> files = new();
+
             foreach (string item in items)
+            {
                 if (extensionList.Contains(Path.GetExtension(item).TrimStart('.')))
                     files.Add(item);
+            }
 
             int index = files.IndexOf(file);
 
