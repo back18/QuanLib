@@ -8,20 +8,18 @@ namespace QuanLib.Core
 {
     public static class EnumUtil
     {
-        public static T[] ToArray<T>() where T : Enum
+        public static T[] GetFlags<T>(T flags) where T : struct, Enum
         {
-            // 获取枚举的所有值
-            var enumValues = Enum.GetValues(typeof(T));
+            List<T> result = [];
+            T[] values = Enum.GetValues<T>();
 
-            // 创建一个T[]数组，并将枚举值转换为T类型
-            var result = new T[enumValues.Length];
-            for (int i = 0; i < enumValues.Length; i++)
+            foreach (T value in values)
             {
-                result[i] = (T)(enumValues.GetValue(i) ?? throw new InvalidOperationException());
+                if (flags.HasFlag(value))
+                    result.Add(value);
             }
 
-            // 返回结果
-            return result;
+            return result.ToArray();
         }
     }
 }
