@@ -34,7 +34,20 @@ namespace QuanLib.Core
             if (text is null)
                 return Format((object?)null);
 
-            return $"\"{text}\"";
+            StringBuilder stringBuilder = new(text);
+            stringBuilder.Replace("\\", "\\\\");
+            stringBuilder.Replace("\r\n", "\\r\\n");
+            stringBuilder.Replace("\r", "\\r");
+            stringBuilder.Replace("\n", "\\n");
+            stringBuilder.Replace("\t", "\\t");
+            stringBuilder.Replace("\v", "\\v");
+            stringBuilder.Replace("\f", "\\f");
+            stringBuilder.Replace("\'", "\\'");
+            stringBuilder.Replace("\"", "\\\"");
+            stringBuilder.Insert(0, '\"');
+            stringBuilder.Append('\"');
+
+            return stringBuilder.ToString();
         }
 
         public static string Format(Type? type)
@@ -46,7 +59,7 @@ namespace QuanLib.Core
 
             stringBuilder.Append(type.Namespace);
             stringBuilder.Append('.');
-            stringBuilder.Append(type.Name.Replace("`" + type.GenericTypeArguments.Length, string.Empty));
+            stringBuilder.Append(type.Name.TrimEnd('&').Replace("`" + type.GenericTypeArguments.Length, string.Empty));
 
             if (type.GenericTypeArguments.Length > 0)
             {
