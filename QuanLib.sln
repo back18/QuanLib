@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Game", "QuanLib.Gam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.BusyWaiting", "QuanLib.BusyWaiting\QuanLib.BusyWaiting.csproj", "{E42F4F89-E3EE-46EA-BDF4-3258FC0412FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.VisualObject", "QuanLib.VisualObject\QuanLib.VisualObject.csproj", "{9618CC0C-47D7-40CC-A083-82B26F3AFA55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{E42F4F89-E3EE-46EA-BDF4-3258FC0412FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E42F4F89-E3EE-46EA-BDF4-3258FC0412FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E42F4F89-E3EE-46EA-BDF4-3258FC0412FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9618CC0C-47D7-40CC-A083-82B26F3AFA55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9618CC0C-47D7-40CC-A083-82B26F3AFA55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9618CC0C-47D7-40CC-A083-82B26F3AFA55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9618CC0C-47D7-40CC-A083-82B26F3AFA55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
