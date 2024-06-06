@@ -168,15 +168,14 @@ namespace QuanLib.BDF
                 int height = default;
                 int xOffset = default;
                 int yOffset = default;
-                bool[][]? data = default;
+                List<bool> bits = [];
                 for (int i = start; i <= end; i++)
                 {
                     if (readmap)
                     {
                         int count = lines[i].Length / 2;
-                        data![mapindex] = new bool[count * 8];
                         for (int j = 0; j < count; j++)
-                            ByteBitMapping.FromUpper(lines[i].Substring(j * 2, 2)).CopyTo(data[mapindex], j * 8);
+                            bits.AddRange(ByteBitMapping.FromUpper(lines[i].Substring(j * 2, 2)));
                         mapindex++;
                     }
                     else if (lines[i].StartsWith("ENCODING"))
@@ -194,11 +193,10 @@ namespace QuanLib.BDF
                     else if (lines[i].StartsWith("BITMAP"))
                     {
                         readmap = true;
-                        data = new bool[end - i][];
                     }
                 }
 
-                return new(@char, width, height, xOffset, yOffset, data ?? Array.Empty<bool[]>());
+                return new(@char, width, height, xOffset, yOffset, new(bits.ToArray()));
             }
         }
     }

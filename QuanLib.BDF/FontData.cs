@@ -1,6 +1,7 @@
 ﻿using QuanLib.Core;
 using SixLabors.ImageSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,21 @@ namespace QuanLib.BDF
 {
     public class FontData
     {
-        public FontData(char @char, int width, int height, int xOffset, int yOffset, bool[][] data)
+        public FontData(char @char, int width, int height, int xOffset, int yOffset, BitArray bits)
         {
+            ArgumentNullException.ThrowIfNull(bits, nameof(bits));
+            if (bits.Count != width * height)
+                throw new ArgumentException("BitArray的位数应该为" + width * height);
+
             Char = @char;
             Width = width;
             Height = height;
             XOffset = xOffset;
             YOffset = yOffset;
-            _data = data;
+            _bits = bits;
         }
 
-        private readonly bool[][] _data;
+        private readonly BitArray _bits;
 
         public char Char { get; }
 
@@ -34,11 +39,13 @@ namespace QuanLib.BDF
 
         public bool[,] GetBitArray(bool isNegative = false)
         {
-            Func<int, int, bool> func = isNegative ? ((x, y) => !_data[y][x]) : ((x, y) => _data[y][x]);
             bool[,] result = new bool[Width, Height];
+            Func<int, int, bool> get = isNegative ? ((x, y) => !_bits[y * Width + x]) : ((x, y) => _bits[y * Width + x]);
+
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
-                    result[x, y] = func(x, y);
+                    result[x, y] = get(x, y);
+
             return result;
         }
 
@@ -49,13 +56,15 @@ namespace QuanLib.BDF
             if (pixelSize == 1)
                 return GetBitArray(isNegative);
 
-            Func<int, int, bool> func = isNegative ? ((x, y) => !_data[y][x]) : ((x, y) => _data[y][x]);
             Size size = new(Width * pixelSize, Height * pixelSize);
             bool[,] result = new bool[size.Width, size.Height];
+            Func<int, int, bool> get = isNegative ? ((x, y) => !_bits[y * Width + x]) : ((x, y) => _bits[y * Width + x]);
+
             for (int y1 = 0, y2 = 0; y1 < Height; y1++, y2 += pixelSize)
+            {
                 for (int x1 = 0, x2 = 0; x1 < Width; x1++, x2 += pixelSize)
                 {
-                    if (func(x1, y1))
+                    if (get(x1, y1))
                     {
                         int yend = y2 + pixelSize;
                         int xend = x2 + pixelSize;
@@ -64,6 +73,7 @@ namespace QuanLib.BDF
                                 result[x3, y3] = true;
                     }
                 }
+            }
 
             return result;
         }
