@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="High_Resolution_Sleep" Version="2.0.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\QuanLib.Core\QuanLib.Core.csproj" />
   </ItemGroup>
 

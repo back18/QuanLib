@@ -10,11 +10,13 @@ namespace QuanLib.BusyWaiting
 {
     public class BusyLoop : RunnableBase
     {
-        public BusyLoop(ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public BusyLoop(uint accuracy, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
+            Accuracy = accuracy;
+            IsPaused = false;
+
             _pauseSemaphore = new(0);
             _pauseTask = WaitSemaphoreAsync();
-
             _loopTasks = new();
             _waitTasks = new();
 
@@ -28,6 +30,8 @@ namespace QuanLib.BusyWaiting
         private readonly ConcurrentQueue<LoopTask> _loopTasks;
 
         private readonly ConcurrentDictionary<Guid, WaitTask> _waitTasks;
+
+        public uint Accuracy { get; }
 
         public bool IsPaused { get; private set; }
 
@@ -47,7 +51,7 @@ namespace QuanLib.BusyWaiting
 
                 _pauseTask.Wait();
 
-                Thread.Yield();
+                Delay.Sleep(Accuracy);
             }
             while (IsRunning);
         }
@@ -109,7 +113,9 @@ namespace QuanLib.BusyWaiting
 
         private async Task WaitSemaphoreAsync()
         {
+            IsPaused = true;
             while (IsRunning && !await _pauseSemaphore.WaitAsync(10)) { }
+            IsPaused = false;
         }
 
         private void HandleLoopTasks()
