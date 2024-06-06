@@ -6,24 +6,22 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public readonly struct IndexRange
+    public readonly struct IndexRange(int start, int end)
     {
-        public IndexRange(int start, int end)
-        {
-            ThrowHelper.ArgumentOutOfMin(0, start, nameof(start));
-            ThrowHelper.ArgumentOutOfMin(start, end, nameof(end));
+        public readonly int Start = start;
 
-            Start = start;
-            End = end;
-        }
+        public readonly int End = end;
 
-        public int Start { get; }
-
-        public int End { get; }
+        public int Count => End - Start + 1;
 
         public bool IsWithinRange(int index)
         {
             return index >= Start && index <= End;
+        }
+
+        public override string ToString()
+        {
+            return $"{Start}-{End}";
         }
     }
 }
