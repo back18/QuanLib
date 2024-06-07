@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace QuanLib.Core
 {
     [Flags]
-    public enum PlatformType
+    public enum Platforms
     {
         None = 0,
 
