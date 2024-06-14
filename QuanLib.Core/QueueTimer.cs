@@ -17,7 +17,7 @@ namespace QuanLib.Core
 
             _queue = new();
 
-            Added += OnAdded;
+            TimeUpdated += OnTimeUpdated;
         }
 
         private readonly Queue<TimeSpan> _queue;
@@ -36,18 +36,18 @@ namespace QuanLib.Core
             }
         }
 
-        public event EventHandler<QueueTimer, TimeSpanEventArgs> Added;
+        public event EventHandler<QueueTimer, TimeSpanEventArgs> TimeUpdated;
 
-        protected virtual void OnAdded(QueueTimer sender, TimeSpanEventArgs args) { }
+        protected virtual void OnTimeUpdated(QueueTimer sender, TimeSpanEventArgs args) { }
 
-        public void Append(TimeSpan time)
+        public void Update(TimeSpan time)
         {
             if (_queue.Count > MaxCount)
                 TotalTime -= _queue.Dequeue();
 
             TotalTime += time;
             _queue.Enqueue(time);
-            Added.Invoke(this, new(time));
+            TimeUpdated.Invoke(this, new(time));
         }
 
         public TimeSpan[] ToArray()
