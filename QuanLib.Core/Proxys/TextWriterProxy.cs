@@ -36,21 +36,21 @@ namespace QuanLib.Core.Proxys
 
         public bool RequestInterception { get; set; }
 
-        public event EventHandler<TextWriterProxy, ValueEventArgs<char>> CharWriting;
+        public event EventHandler<TextWriterProxy, EventArgs<char>> CharWriting;
 
-        public event EventHandler<TextWriterProxy, ValueEventArgs<string>> StringWriting;
+        public event EventHandler<TextWriterProxy, EventArgs<string>> StringWriting;
 
-        public event EventHandler<TextWriterProxy, ValueEventArgs<char>> CharWritten;
+        public event EventHandler<TextWriterProxy, EventArgs<char>> CharWritten;
 
-        public event EventHandler<TextWriterProxy, ValueEventArgs<string>> StringWritten;
+        public event EventHandler<TextWriterProxy, EventArgs<string>> StringWritten;
 
-        protected virtual void OnCharWriting(TextWriterProxy sender, ValueEventArgs<char> e) { }
+        protected virtual void OnCharWriting(TextWriterProxy sender, EventArgs<char> e) { }
 
-        protected virtual void OnStringWriting(TextWriterProxy sender, ValueEventArgs<string> e) { }
+        protected virtual void OnStringWriting(TextWriterProxy sender, EventArgs<string> e) { }
 
-        protected virtual void OnCharWritten(TextWriterProxy sender, ValueEventArgs<char> e) { }
+        protected virtual void OnCharWritten(TextWriterProxy sender, EventArgs<char> e) { }
 
-        protected virtual void OnStringWritten(TextWriterProxy sender, ValueEventArgs<string> e) { }
+        protected virtual void OnStringWritten(TextWriterProxy sender, EventArgs<string> e) { }
 
         private void TriggerWritingEvent(char value)
         {
