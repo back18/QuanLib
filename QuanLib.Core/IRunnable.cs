@@ -17,7 +17,7 @@ namespace QuanLib.Core
 
         public event EventHandler<IRunnable, EventArgs> Stopped;
 
-        public event EventHandler<IRunnable, ExceptionEventArgs> ThrowException;
+        public event EventHandler<IRunnable, EventArgs<Exception>> ThrowException;
 
         public bool Start();
 

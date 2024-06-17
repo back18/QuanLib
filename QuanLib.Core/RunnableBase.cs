@@ -53,13 +53,13 @@ namespace QuanLib.Core
 
         public event EventHandler<IRunnable, EventArgs> Stopped;
 
-        public event EventHandler<IRunnable, ExceptionEventArgs> ThrowException;
+        public event EventHandler<IRunnable, EventArgs<Exception>> ThrowException;
 
         protected virtual void OnStarted(IRunnable sender, EventArgs e) { }
 
         protected virtual void OnStopped(IRunnable sender, EventArgs e) { }
 
-        protected virtual void OnThrowException(IRunnable sender, ExceptionEventArgs e) { }
+        protected virtual void OnThrowException(IRunnable sender, EventArgs<Exception> e) { }
 
         private void OnStartedLoggging(IRunnable sender, EventArgs e)
         {
@@ -71,9 +71,9 @@ namespace QuanLib.Core
             _logger?.Info($"线程({GetThreadName(Thread)})已停止");
         }
 
-        private void OnThrowExceptionLogging(IRunnable sender, ExceptionEventArgs e)
+        private void OnThrowExceptionLogging(IRunnable sender, EventArgs<Exception> e)
         {
-            _logger?.Error($"线程({GetThreadName(Thread)})抛出了异常", e.Exception);
+            _logger?.Error($"线程({GetThreadName(Thread)})抛出了异常", e.Argument);
         }
 
         public void SetDefaultThreadOptions(ThreadOptions? threadOptions)

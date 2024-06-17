@@ -26,20 +26,20 @@ namespace QuanLib.IO
 
         public Encoding Encoding { get; }
 
-        public event EventHandler<ITextListener, TextEventArgs> WriteText;
+        public event EventHandler<ITextListener, EventArgs<string>> WriteText;
 
-        public event EventHandler<ITextListener, TextEventArgs> WriteLineText;
+        public event EventHandler<ITextListener, EventArgs<string>> WriteLineText;
 
-        protected override void OnWriteBytes(PollingFileListener sender, BytesEventArgs e)
+        protected override void OnWriteBytes(PollingFileListener sender, EventArgs<byte[]> e)
         {
             base.OnWriteBytes(sender, e);
 
-            WriteText.Invoke(this, new(Encoding.GetString(e.Bytes)));
+            WriteText.Invoke(this, new(Encoding.GetString(e.Argument)));
         }
 
-        protected virtual void OnWriteText(ITextListener sender, TextEventArgs e)
+        protected virtual void OnWriteText(ITextListener sender, EventArgs<string> e)
         {
-            string[] lines = e.Text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] lines = e.Argument.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             _temp.Append(lines[0]);
             if (lines.Length > 1)
             {
@@ -56,6 +56,6 @@ namespace QuanLib.IO
             }
         }
 
-        protected virtual void OnWriteLineText(ITextListener sender, TextEventArgs e) { }
+        protected virtual void OnWriteLineText(ITextListener sender, EventArgs<string> e) { }
     }
 }

@@ -36,9 +36,9 @@ namespace QuanLib.Core
             }
         }
 
-        public event EventHandler<QueueTimer, TimeSpanEventArgs> TimeUpdated;
+        public event EventHandler<QueueTimer, EventArgs<TimeSpan>> TimeUpdated;
 
-        protected virtual void OnTimeUpdated(QueueTimer sender, TimeSpanEventArgs args) { }
+        protected virtual void OnTimeUpdated(QueueTimer sender, EventArgs<TimeSpan> args) { }
 
         public void Update(TimeSpan time)
         {

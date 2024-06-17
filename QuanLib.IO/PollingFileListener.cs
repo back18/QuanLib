@@ -38,39 +38,39 @@ namespace QuanLib.IO
         }
         private int _TimeInterval;
 
-        public event EventHandler<PollingFileListener, FileInfoChangedEventArge> Polling;
+        public event EventHandler<PollingFileListener, ValueChangedEventArgs<FileInfo>> Polling;
 
-        public event EventHandler<PollingFileListener, FileInfoChangedEventArge> FileInfoChanged;
+        public event EventHandler<PollingFileListener, ValueChangedEventArgs<FileInfo>> FileInfoChanged;
 
-        public event EventHandler<PollingFileListener, BytesEventArgs> WriteBytes;
+        public event EventHandler<PollingFileListener, EventArgs<byte[]>> WriteBytes;
 
         public event EventHandler<PollingFileListener, EventArgs> FileReset;
 
         public event EventHandler<PollingFileListener, EventArgs> FileDeleted;
 
-        protected virtual void OnPolling(PollingFileListener sender, FileInfoChangedEventArge e)
+        protected virtual void OnPolling(PollingFileListener sender, ValueChangedEventArgs<FileInfo> e)
         {
-            if (e.NewFileInfo.LastWriteTime > e.OldFileInfo.LastWriteTime)
+            if (e.NewValue.LastWriteTime > e.OldValue.LastWriteTime)
             {
                 FileInfoChanged.Invoke(this, e);
             }
         }
 
-        protected virtual void OnFileInfoChanged(PollingFileListener sender, FileInfoChangedEventArge e)
+        protected virtual void OnFileInfoChanged(PollingFileListener sender, ValueChangedEventArgs<FileInfo> e)
         {
-            if (e.NewFileInfo.Length > e.OldFileInfo.Length)
+            if (e.NewValue.Length > e.OldValue.Length)
             {
                 FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Write | FileShare.Delete);
-                fs.Seek(e.OldFileInfo.Length, SeekOrigin.Begin);
-                byte[] buffer = new byte[e.NewFileInfo.Length - e.OldFileInfo.Length];
+                fs.Seek(e.OldValue.Length, SeekOrigin.Begin);
+                byte[] buffer = new byte[e.NewValue.Length - e.OldValue.Length];
                 fs.Read(buffer, 0, buffer.Length);
                 fs.Close();
                 WriteBytes.Invoke(this, new(buffer));
             }
-            else if (e.NewFileInfo.Length < e.NewFileInfo.Length / 2)
+            else if (e.NewValue.Length < e.NewValue.Length / 2)
             {
                 FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Write | FileShare.Delete);
-                byte[] buffer = new byte[e.NewFileInfo.Length];
+                byte[] buffer = new byte[e.NewValue.Length];
                 fs.Read(buffer, 0, buffer.Length);
                 fs.Close();
                 FileReset.Invoke(this, EventArgs.Empty);
@@ -78,7 +78,7 @@ namespace QuanLib.IO
             }
         }
 
-        protected virtual void OnWriteBytes(PollingFileListener sender, BytesEventArgs e) { }
+        protected virtual void OnWriteBytes(PollingFileListener sender, EventArgs<byte[]> e) { }
 
         protected virtual void OnFileReset(PollingFileListener sender, EventArgs e) { }
 
