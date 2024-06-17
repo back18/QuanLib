@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core.Events
 {
-    public class ValueChangedEventArgs<T> : EventArgs
+    public class ValueChangedEventArgs<T>(T oldValue, T newValue) : EventArgs
     {
-        public ValueChangedEventArgs(T oldValue, T newValue)
-        {
-            OldValue = oldValue;
-            NewValue = newValue;
-        }
+        public T OldValue { get; } = oldValue;
 
-        public T OldValue { get; }
-
-        public T NewValue { get; }
+        public T NewValue { get; } = newValue;
     }
 }
