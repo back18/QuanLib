@@ -70,7 +70,7 @@ namespace QuanLib.Core.Extensions
                 stream.Seek(position, SeekOrigin.Begin);
 
             long total = 0;
-            byte[] buffer = new byte[1];
+            byte[] buffer = new byte[4096];
             do
             {
                 int read = stream.Read(buffer, 0, (int)Math.Min(buffer.Length, length - total));
