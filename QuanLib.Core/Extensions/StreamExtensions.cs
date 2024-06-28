@@ -50,5 +50,35 @@ namespace QuanLib.Core.Extensions
             }
             return lines.ToArray();
         }
+
+        public static void CopyTo(this Stream stream, Stream destination, long position, long length)
+        {
+            ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+            ArgumentNullException.ThrowIfNull(destination, nameof(destination));
+
+            if (!stream.CanSeek)
+                throw new ArgumentException("流不支持查找", nameof(stream));
+            if (!stream.CanRead)
+                throw new ArgumentException("流不支持读取", nameof(stream));
+            if (!destination.CanWrite)
+                throw new ArgumentException("目标流不支持写入", nameof(destination));
+
+            ThrowHelper.ArgumentOutOfRange(0, stream.Length - 1, position, nameof(position));
+            ThrowHelper.ArgumentOutOfRange(0, stream.Length - position, length, nameof(length));
+
+            if (stream.Position != position)
+                stream.Seek(position, SeekOrigin.Begin);
+
+            long total = 0;
+            byte[] buffer = new byte[1];
+            do
+            {
+                int read = stream.Read(buffer, 0, (int)Math.Min(buffer.Length, length - total));
+                if (read <= 0)
+                    break;
+                destination.Write(buffer, 0, read);
+                total += read;
+            } while (total < length);
+        }
     }
 }
