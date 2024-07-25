@@ -23,6 +23,8 @@ namespace QuanLib.BusyWaiting
             Loop += OnLoop;
         }
 
+        private object _lock = new();
+
         private readonly SemaphoreSlim _pauseSemaphore;
 
         private Task _pauseTask;
@@ -65,12 +67,20 @@ namespace QuanLib.BusyWaiting
 
         public void Pause()
         {
-            _pauseTask = WaitSemaphoreAsync();
+            lock (_lock)
+            {
+                if (!IsPaused)
+                    _pauseTask = WaitSemaphoreAsync();
+            }
         }
 
         public void Resume()
         {
-            _pauseSemaphore.Release();
+            lock (_lock)
+            {
+                if (IsPaused)
+                    _pauseSemaphore.Release();
+            }
         }
 
         public LoopTask Submit(Action action)
