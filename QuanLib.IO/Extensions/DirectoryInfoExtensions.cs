@@ -29,6 +29,17 @@ namespace QuanLib.IO.Extensions
             return new(Path.Combine(source.FullName, path1, path2, path3));
         }
 
+        public static FileInfo CombineFile(this DirectoryInfo source, params string[] paths)
+        {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(paths, nameof(paths));
+
+            string[] allPaths = new string[paths.Length + 1];
+            allPaths[0] = source.FullName;
+            paths.CopyTo(allPaths, 1);
+            return new(Path.Combine(allPaths));
+        }
+
         public static DirectoryInfo CombineDirectory(this DirectoryInfo source, string path)
         {
             ArgumentNullException.ThrowIfNull(source, nameof(source));
@@ -48,6 +59,17 @@ namespace QuanLib.IO.Extensions
             ArgumentNullException.ThrowIfNull(source, nameof(source));
 
             return new(Path.Combine(source.FullName, path1, path2, path3));
+        }
+
+        public static DirectoryInfo CombineDirectory(this DirectoryInfo source, params string[] paths)
+        {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(paths, nameof(paths));
+
+            string[] allPaths = new string[paths.Length + 1];
+            allPaths[0] = source.FullName;
+            paths.CopyTo(allPaths, 1);
+            return new(Path.Combine(allPaths));
         }
 
         public static string[] GetFilePaths(this DirectoryInfo source)
