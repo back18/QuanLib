@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QuanLib.Core
+namespace QuanLib.Core.Extensions
 {
-    public static class EnumUtil
+    public static class EnumExtensions
     {
-        public static T[] GetFlags<T>(T flags) where T : struct, Enum
+        public static T[] GetFlags<T>(this T flags) where T : struct, Enum
         {
             List<T> result = [];
             T[] values = Enum.GetValues<T>();
