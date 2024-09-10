@@ -1,13 +1,14 @@
 ﻿using QuanLib.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public abstract class TimeFormatText
+    public abstract class TimeUnitText
     {
         public abstract string Tikc { get; }
 
@@ -40,7 +41,7 @@ namespace QuanLib.TextFormat
                 TimeUnit.Day => Day,
                 TimeUnit.Month => Month,
                 TimeUnit.Year => Year,
-                _ => throw new InvalidOperationException(),
+                _ => throw new InvalidEnumArgumentException(nameof(timeUnit), (int)timeUnit, typeof(TimeUnit)),
             };
         }
     }

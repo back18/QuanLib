@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public class EnglishTimeFormatText : TimeFormatText
+    public class EnglishTimeUnitText : TimeUnitText
     {
-        public static readonly EnglishTimeFormatText Default = new();
+        public static readonly EnglishTimeUnitText Default = new();
 
         public override string Tikc => "Tikcs";
 

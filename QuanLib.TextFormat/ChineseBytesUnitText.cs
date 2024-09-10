@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public class ChineseBytesFormatText : BytesFormatText
+    public class ChineseBytesUnitText : BytesUnitText
     {
-        public static readonly ChineseBytesFormatText Default = new();
+        public static readonly ChineseBytesUnitText Default = new();
 
         public override string B => "字节";
 

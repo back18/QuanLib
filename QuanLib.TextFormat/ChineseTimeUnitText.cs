@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public class ChineseTimeFormatText : TimeFormatText
+    public class ChineseTimeUnitText : TimeUnitText
     {
-        public static readonly ChineseTimeFormatText Default = new();
+        public static readonly ChineseTimeUnitText Default = new();
 
         public override string Year => "年";
 

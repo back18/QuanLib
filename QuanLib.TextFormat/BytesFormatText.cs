@@ -1,13 +1,14 @@
 ﻿using QuanLib.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public abstract class BytesFormatText
+    public abstract class BytesUnitText
     {
         public abstract string B { get; }
 
@@ -34,7 +35,7 @@ namespace QuanLib.TextFormat
                 BytesUnit.TB => TB,
                 BytesUnit.PB => PB,
                 BytesUnit.EB => EB,
-                _ => throw new InvalidOperationException(),
+                _ => throw new InvalidEnumArgumentException(nameof(bytesUnit), (int)bytesUnit, typeof(BytesUnit)),
             };
         }
     }

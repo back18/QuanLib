@@ -1,6 +1,7 @@
 ﻿using QuanLib.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,107 @@ namespace QuanLib.TextFormat
     {
         private const long TicksPerYear = TimeSpan.TicksPerDay * 365;
 
-        public TimeFormatter(TimeFormatText formatText)
+        public TimeFormatter(TimeUnitText formatText)
         {
-            FormatText = formatText;
-            UnitCount = 1;
-            MinUnit = TimeUnit.Tikc;
+            UnitText = formatText;
+            TextFormat = TextFormat.MultipleUnits;
+            MinUnit = TimeUnit.Second;
+            DigitCount = 2;
         }
 
-        public TimeFormatText FormatText { get; }
+        public TimeUnitText UnitText { get; }
 
-        public int UnitCount { get; set; }
+        public TextFormat TextFormat { get; set; }
 
         public TimeUnit MinUnit { get; set; }
 
-        public string Format(TimeSpan value)
+        public int DigitCount
+        {
+            get => _DigitCount;
+            set
+            {
+                ThrowHelper.ArgumentOutOfMin(0, value, nameof(value));
+                _DigitCount = value;
+            }
+        }
+        private int _DigitCount;
+
+        public string Format(long ticks) => Format(new TimeSpan(ticks));
+
+        public string Format(TimeSpan timeSpan)
+        {
+            TimeUnit timeUnit = GetMaxUnit(timeSpan);
+            if (timeUnit < MinUnit)
+                timeUnit = MinUnit;
+
+            return TextFormat switch
+            {
+                TextFormat.StaticDecimals => StaticDecimals(timeSpan, timeUnit),
+                TextFormat.DynamicDecimals => DynamicDecimals(timeSpan, timeUnit),
+                TextFormat.MultipleUnits => MultipleUnits(timeSpan, timeUnit),
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
+        private string StaticDecimals(TimeSpan timeSpan, TimeUnit timeUnit)
+        {
+            double value = GetTotalOfUnit(timeSpan, timeUnit);
+            value = Math.Round(value, DigitCount, MidpointRounding.ToNegativeInfinity);
+            return value + UnitText.Get(timeUnit);
+        }
+
+        private string DynamicDecimals(TimeSpan timeSpan, TimeUnit timeUnit)
+        {
+            double value = GetTotalOfUnit(timeSpan, timeUnit);
+            int digits = Math.Max(0, DigitCount - 1 - (int)Math.Floor(Math.Log10(Math.Abs(value))));
+            value = Math.Round(value, digits, MidpointRounding.ToNegativeInfinity);
+            return value + UnitText.Get(timeUnit);
+        }
+
+        private string MultipleUnits(TimeSpan timeSpan, TimeUnit timeUnit)
+        {
+            StringBuilder stringBuilder = new();
+            for (int i = 0; i < DigitCount && timeUnit >= MinUnit; i++, timeUnit--)
+            {
+                stringBuilder.Append(GetValueOfUnit(timeSpan, timeUnit));
+                stringBuilder.Append(UnitText.Get(timeUnit));
+            }
+            return stringBuilder.ToString();
+        }
+
+        private static int GetValueOfUnit(TimeSpan timeSpan, TimeUnit timeUnit)
+        {
+            return timeUnit switch
+            {
+                TimeUnit.Tikc => GetCurrentTicks(timeSpan),
+                TimeUnit.Microsecond => timeSpan.Microseconds,
+                TimeUnit.Millisecond => timeSpan.Milliseconds,
+                TimeUnit.Minute => timeSpan.Minutes,
+                TimeUnit.Second => timeSpan.Seconds,
+                TimeUnit.Hour => timeSpan.Hours,
+                TimeUnit.Day => timeSpan.Days,
+                TimeUnit.Year => GetTotalYears(timeSpan),
+                _ => throw new InvalidEnumArgumentException(nameof(timeUnit), (int)timeUnit, typeof(TimeUnit)),
+            };
+        }
+
+        private static double GetTotalOfUnit(TimeSpan timeSpan, TimeUnit timeUnit)
+        {
+            return timeUnit switch
+            {
+                TimeUnit.Tikc => timeSpan.Ticks,
+                TimeUnit.Microsecond => timeSpan.TotalMicroseconds,
+                TimeUnit.Millisecond => timeSpan.TotalMilliseconds,
+                TimeUnit.Minute => timeSpan.TotalMinutes,
+                TimeUnit.Second => timeSpan.TotalSeconds,
+                TimeUnit.Hour => timeSpan.TotalHours,
+                TimeUnit.Day => timeSpan.TotalDays,
+                TimeUnit.Year => GetTotalYears(timeSpan),
+                _ => throw new InvalidEnumArgumentException(nameof(timeUnit), (int)timeUnit, typeof(TimeUnit)),
+            };
+        }
+
+        private static TimeUnit GetMaxUnit(TimeSpan value)
         {
             TimeUnit timeUnit;
             if (value.Ticks < TimeSpan.TicksPerMicrosecond)
@@ -43,46 +131,11 @@ namespace QuanLib.TextFormat
                 timeUnit = TimeUnit.Day;
             else
                 timeUnit = TimeUnit.Year;
-
-            if (timeUnit < MinUnit)
-                timeUnit = MinUnit;
-
-            StringBuilder sb = new();
-            for (int i = 0; i < UnitCount; i++)
-            {
-                if (timeUnit == TimeUnit.Month)
-                    timeUnit--;
-
-                sb.Append(Format(value, timeUnit));
-
-                if (timeUnit == MinUnit)
-                    break;
-                else
-                    timeUnit--;
-            }
-
-            return sb.ToString();
+            return timeUnit;
         }
 
-        private string Format(TimeSpan value, TimeUnit timeUnit)
-        {
-            return timeUnit switch
-            {
-                TimeUnit.Tikc => GetTicks(value) + FormatText.Tikc,
-                TimeUnit.Microsecond => value.Microseconds + FormatText.Microsecond,
-                TimeUnit.Millisecond => value.Milliseconds + FormatText.Millisecond,
-                TimeUnit.Minute => value.Minutes + FormatText.Minute,
-                TimeUnit.Second => value.Seconds + FormatText.Second,
-                TimeUnit.Hour => value.Hours + FormatText.Hour,
-                TimeUnit.Day => value.Days + FormatText.Day,
-                TimeUnit.Month => throw new InvalidOperationException("不支持月份单位"),
-                TimeUnit.Year => GetYears(value) + FormatText.Year,
-                _ => throw new InvalidOperationException(),
-            };
-        }
+        private static int GetCurrentTicks(TimeSpan timeSpan) => (int)(timeSpan.Ticks % TimeSpan.TicksPerMicrosecond);
 
-        private static long GetYears(TimeSpan value) => value.Ticks / TicksPerYear;
-
-        private static long GetTicks(TimeSpan value) => value.Ticks % TimeSpan.TicksPerMicrosecond;
+        private static int GetTotalYears(TimeSpan timeSpan) => (int)(timeSpan.Ticks / TicksPerYear);
     }
 }

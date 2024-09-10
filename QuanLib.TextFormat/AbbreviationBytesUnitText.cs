@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace QuanLib.TextFormat
 {
-    public class AbbreviationBytesFormatText : BytesFormatText
+    public class AbbreviationBytesUnitText : BytesUnitText
     {
-        public static readonly AbbreviationBytesFormatText Default = new();
+        public static readonly AbbreviationBytesUnitText Default = new();
 
         public override string B => "B";
 
