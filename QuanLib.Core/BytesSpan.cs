@@ -11,8 +11,8 @@ namespace QuanLib.Core
         private const int BASE = 1024;
         public const long BytesPerKiloBytes = BASE;
         public const long BytesPerMegaBytes = BytesPerKiloBytes * BASE;
-        public const long BytesPerGigabytes = BytesPerMegaBytes * BASE;
-        public const long BytesPerTeraBytes = BytesPerGigabytes * BASE;
+        public const long BytesPerGigaBytes = BytesPerMegaBytes * BASE;
+        public const long BytesPerTeraBytes = BytesPerGigaBytes * BASE;
         public const long BytesPerPetaBytes = BytesPerTeraBytes * BASE;
         public const long BytesPerExaBytes = BytesPerPetaBytes * BASE;
 
@@ -39,7 +39,7 @@ namespace QuanLib.Core
         public BytesSpan(int gigaBytes, int megaBytes, int kiloBytes, int bytes)
         {
             _bytes =
-                gigaBytes * BytesPerGigabytes +
+                gigaBytes * BytesPerGigaBytes +
                 megaBytes * BytesPerMegaBytes +
                 kiloBytes * BytesPerKiloBytes +
                 bytes;
@@ -49,7 +49,7 @@ namespace QuanLib.Core
         {
             _bytes =
                 teraBytes * BytesPerTeraBytes +
-                gigaBytes * BytesPerGigabytes +
+                gigaBytes * BytesPerGigaBytes +
                 megaBytes * BytesPerMegaBytes +
                 kiloBytes * BytesPerKiloBytes +
                 bytes;
@@ -60,7 +60,7 @@ namespace QuanLib.Core
             _bytes =
                 petaBytes * BytesPerPetaBytes +
                 teraBytes * BytesPerTeraBytes +
-                gigaBytes * BytesPerGigabytes +
+                gigaBytes * BytesPerGigaBytes +
                 megaBytes * BytesPerMegaBytes +
                 kiloBytes * BytesPerKiloBytes +
                 bytes;
@@ -72,7 +72,7 @@ namespace QuanLib.Core
                 exaBytes * BytesPerExaBytes +
                 petaBytes * BytesPerPetaBytes +
                 teraBytes * BytesPerTeraBytes +
-                gigaBytes * BytesPerGigabytes +
+                gigaBytes * BytesPerGigaBytes +
                 megaBytes * BytesPerMegaBytes +
                 kiloBytes * BytesPerKiloBytes +
                 bytes;
@@ -86,7 +86,7 @@ namespace QuanLib.Core
 
         public int MegaBytes => (int)(_bytes / BytesPerMegaBytes % BASE);
 
-        public int Gigabytes => (int)(_bytes / BytesPerGigabytes % BASE);
+        public int Gigabytes => (int)(_bytes / BytesPerGigaBytes % BASE);
 
         public int TeraBytes => (int)(_bytes / BytesPerTeraBytes % BASE);
 
@@ -100,7 +100,7 @@ namespace QuanLib.Core
 
         public double TotalMegaBytes => (double)_bytes / BytesPerMegaBytes;
 
-        public double TotalGigaBytes => (double)_bytes / BytesPerGigabytes;
+        public double TotalGigaBytes => (double)_bytes / BytesPerGigaBytes;
 
         public double TotalTeraBytes => (double)_bytes / BytesPerTeraBytes;
 
