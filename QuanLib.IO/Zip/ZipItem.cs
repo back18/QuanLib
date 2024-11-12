@@ -37,6 +37,11 @@ namespace QuanLib.IO.Zip
             return result;
         }
 
+        public string ReadAllText()
+        {
+            return ReadAllText(Encoding.UTF8);
+        }
+
         public string ReadAllText(Encoding encoding)
         {
             using Stream stream = _entry.Open();
@@ -44,9 +49,22 @@ namespace QuanLib.IO.Zip
             return reader.ReadToEnd();
         }
 
-        public string ReadAllText()
+        public string[] ReadAllLines()
         {
-            return ReadAllText(Encoding.UTF8);
+            return ReadAllLines(Encoding.UTF8);
+        }
+
+        public string[] ReadAllLines(Encoding encoding)
+        {
+            using Stream stream = _entry.Open();
+            using StreamReader reader = new(stream, encoding);
+            List<string> lines = [];
+
+            string? line;
+            while ((line = reader.ReadLine()) is not null)
+                lines.Add(line);
+
+            return lines.ToArray();
         }
     }
 }
