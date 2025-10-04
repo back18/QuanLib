@@ -84,7 +84,7 @@ namespace QuanLib.Downloader
             return builder;
         }
 
-        private async Task<Stream?> DownloadAsync()
+        private async Task<Stream> DownloadAsync()
         {
             if (Path is not null && File.Exists(Path))
             {
@@ -94,12 +94,12 @@ namespace QuanLib.Downloader
                 }
                 catch
                 {
-                    return null;
+                    return Stream.Null;
                 }
             }
 
             Stream stream = await Download.StartAsync();
-            if (stream is null && _buffer.Length == Download.TotalFileSize)
+            if (stream == Stream.Null && _buffer.Length == Download.TotalFileSize)
                 return _buffer;
             else
                 return stream;
