@@ -27,14 +27,16 @@ namespace QuanLib.IO.Zip
 
         public ZipPack(string path) : this(path, ZipArchiveMode.Read) { }
 
-        public ZipPack(Stream stream, ZipArchiveMode mode, Encoding encoding)
+        public ZipPack(Stream stream, ZipArchiveMode mode, Encoding encoding, bool leaveOpen)
         {
             ArgumentNullException.ThrowIfNull(stream, nameof(stream));
             ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
-            _archive = new(stream, mode, true, encoding);
+            _archive = new(stream, mode, leaveOpen, encoding);
             _rootNode = BuildRootNode(_archive);
         }
+
+        public ZipPack(Stream stream, ZipArchiveMode mode, Encoding encoding) : this(stream, mode, encoding, true) { }
 
         public ZipPack(Stream stream, ZipArchiveMode mode) : this(stream, mode, Encoding.UTF8) { }
 
