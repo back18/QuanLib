@@ -1,6 +1,7 @@
 ﻿using Downloader;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace QuanLib.Downloader
             var builder = GetBuilder();
             Download = builder.Build();
             Download.DownloadProgressChanged += Download_DownloadProgressChanged;
+            Download.DownloadFileCompleted += Download_DownloadFileCompleted;
             _buffer = new();
         }
 
@@ -33,8 +35,8 @@ namespace QuanLib.Downloader
 
         public IDownload Download { get; private set; }
 
-        public Task<Stream?> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
-        private Task<Stream?>? _Task;
+        public Task<Stream> Task => _Task ?? throw new InvalidOperationException("下载任务未开始");
+        private Task<Stream>? _Task;
 
         public DownloadProgressChangedEventArgs DownloadProgressChangedEventArgs => _DownloadProgressChangedEventArgs ?? throw new InvalidOperationException("下载任务未开始");
         private DownloadProgressChangedEventArgs? _DownloadProgressChangedEventArgs;
@@ -47,7 +49,28 @@ namespace QuanLib.Downloader
             _buffer.Write(e.ReceivedBytes);
         }
 
-        public async Task<Stream?> StartAsync()
+        private void Download_DownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
+        {
+            if (_buffer.Length != Download.TotalFileSize && File.Exists(Path))
+            {
+                try
+                {
+                    using FileStream fileStream = File.OpenRead(Path);
+                    if (fileStream.Length == Download.TotalFileSize)
+                    {
+                        _buffer.Position = 0;
+                        _buffer.SetLength(0);
+                        fileStream.CopyTo(_buffer);
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        public async Task<Stream> StartAsync()
         {
             if (Download.Status == DownloadStatus.None)
             {
@@ -108,6 +131,7 @@ namespace QuanLib.Downloader
         public void Dispose()
         {
             Download.Dispose();
+            _buffer.Dispose();
             GC.SuppressFinalize(this);
         }
     }
