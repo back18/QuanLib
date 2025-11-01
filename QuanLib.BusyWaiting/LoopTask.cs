@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace QuanLib.BusyWaiting
 {
-    public class LoopTask
+    public class LoopTask : IDisposable
     {
         public LoopTask(Action action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
 
             _action = action;
-            _semaphore = new(0);
+            _waitSemaphore = new(0);
             _task = WaitSemaphoreAsync();
             State = LoopTaskState.NotStarted;
         }
 
-        private readonly SemaphoreSlim _semaphore;
+        private readonly SemaphoreSlim _waitSemaphore;
 
         private readonly Task _task;
 
@@ -43,7 +43,7 @@ namespace QuanLib.BusyWaiting
             }
             finally
             {
-                _semaphore.Release();
+                _waitSemaphore.Release();
             }
         }
 
@@ -54,7 +54,13 @@ namespace QuanLib.BusyWaiting
 
         private async Task WaitSemaphoreAsync()
         {
-            await _semaphore.WaitAsync();
+            await _waitSemaphore.WaitAsync();
+        }
+
+        public void Dispose()
+        {
+            _waitSemaphore.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.BusyWaiting
 {
-    public class WaitTask
+    public class WaitTask : IDisposable
     {
         public WaitTask(BusyLoop owner, Func<bool> expression)
         {
@@ -28,7 +28,7 @@ namespace QuanLib.BusyWaiting
 
         private readonly Task _waitTask;
 
-        internal bool CheckExpression()
+        internal bool CheckCondition()
         {
             try
             {
@@ -62,6 +62,12 @@ namespace QuanLib.BusyWaiting
         private async Task WaitSemaphoreAsync()
         {
             await _waitSemaphore.WaitAsync();
+        }
+
+        public void Dispose()
+        {
+            _waitSemaphore.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

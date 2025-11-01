@@ -10,9 +10,9 @@ namespace QuanLib.BusyWaiting
 {
     public class BusyLoop : RunnableBase
     {
-        public BusyLoop(uint accuracy, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public BusyLoop(uint delayMilliseconds, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
-            Accuracy = accuracy;
+            DelayMilliseconds = delayMilliseconds;
             IsPaused = false;
 
             _pauseSemaphore = new(0);
@@ -23,7 +23,7 @@ namespace QuanLib.BusyWaiting
             Loop += OnLoop;
         }
 
-        private object _lock = new();
+        private readonly object _lock = new();
 
         private readonly SemaphoreSlim _pauseSemaphore;
 
@@ -33,7 +33,7 @@ namespace QuanLib.BusyWaiting
 
         private readonly ConcurrentDictionary<Guid, WaitTask> _waitTasks;
 
-        public uint Accuracy { get; }
+        public uint DelayMilliseconds { get; }
 
         public bool IsPaused { get; private set; }
 
@@ -53,7 +53,7 @@ namespace QuanLib.BusyWaiting
 
                 _pauseTask.Wait();
 
-                Delay.Sleep(Accuracy);
+                Delay.Sleep(DelayMilliseconds);
             }
             while (IsRunning);
         }
@@ -86,9 +86,7 @@ namespace QuanLib.BusyWaiting
         public LoopTask Submit(Action action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
-
-            if (!IsRunning)
-                throw new InvalidOperationException("主循环未在运行，因此无法提交任务");
+            CheckIsRunning();
 
             LoopTask loopTask = new(action);
             _loopTasks.Enqueue(loopTask);
@@ -98,9 +96,7 @@ namespace QuanLib.BusyWaiting
         public async Task<LoopTask> SubmitAndWaitAsync(Action action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
-
-            if (!IsRunning)
-                throw new InvalidOperationException("主循环未在运行，因此无法提交任务");
+            CheckIsRunning();
 
             LoopTask loopTask = new(action);
             _loopTasks.Enqueue(loopTask);
@@ -111,9 +107,7 @@ namespace QuanLib.BusyWaiting
         public async Task SubmitAndWaitAsync(Func<bool> expression)
         {
             ArgumentNullException.ThrowIfNull(expression, nameof(expression));
-
-            if (!IsRunning)
-                throw new InvalidOperationException("主循环未在运行，因此无法提交任务");
+            CheckIsRunning();
 
             Guid guid = Guid.NewGuid();
             WaitTask waitTask = new(this, expression);
@@ -135,6 +129,7 @@ namespace QuanLib.BusyWaiting
                 loopTask.Start();
                 if (loopTask.State == LoopTaskState.Failed && loopTask.Exception is not null)
                     throw new AggregateException(loopTask.Exception);
+                loopTask.Dispose();
             }
         }
 
@@ -142,9 +137,19 @@ namespace QuanLib.BusyWaiting
         {
             foreach (var item in _waitTasks)
             {
-                if (item.Value.CheckExpression())
-                    _waitTasks.Remove(item.Key, out _);
+                WaitTask waitTask = item.Value;
+                if (waitTask.CheckCondition())
+                {
+                    if (_waitTasks.Remove(item.Key, out var value))
+                        value.Dispose();
+                }
             }
+        }
+
+        private void CheckIsRunning()
+        {
+            if (!IsRunning)
+                throw new InvalidOperationException("主循环已停止，无法继续操作");
         }
     }
 }
