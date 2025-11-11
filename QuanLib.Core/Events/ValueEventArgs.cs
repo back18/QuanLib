@@ -13,69 +13,69 @@ namespace QuanLib.Core.Events
 
     public readonly struct ValueEventArgs<T>(T argument) : IValueEventArgs
     {
-        public T Argument { get; } = argument;
+        public readonly T Argument = argument;
     }
 
     public readonly struct ValueEventArgs<T1, T2>(T1 argument1, T2 argument2) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3>(T1 argument1, T2 argument2, T3 argument3) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3, T4>(T1 argument1, T2 argument2, T3 argument3, T4 argument4) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
-        public T4 Argument4 { get; } = argument4;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
+        public readonly T4 Argument4 = argument4;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3, T4, T5>(T1 argument1, T2 argument2, T3 argument3, T4 argument4, T5 argument5) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
-        public T4 Argument4 { get; } = argument4;
-        public T5 Argument5 { get; } = argument5;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
+        public readonly T4 Argument4 = argument4;
+        public readonly T5 Argument5 = argument5;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3, T4, T5, T6>(T1 argument1, T2 argument2, T3 argument3, T4 argument4, T5 argument5, T6 argument6) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
-        public T4 Argument4 { get; } = argument4;
-        public T5 Argument5 { get; } = argument5;
-        public T6 Argument6 { get; } = argument6;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
+        public readonly T4 Argument4 = argument4;
+        public readonly T5 Argument5 = argument5;
+        public readonly T6 Argument6 = argument6;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3, T4, T5, T6, T7>(T1 argument1, T2 argument2, T3 argument3, T4 argument4, T5 argument5, T6 argument6, T7 argument7) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
-        public T4 Argument4 { get; } = argument4;
-        public T5 Argument5 { get; } = argument5;
-        public T6 Argument6 { get; } = argument6;
-        public T7 Argument7 { get; } = argument7;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
+        public readonly T4 Argument4 = argument4;
+        public readonly T5 Argument5 = argument5;
+        public readonly T6 Argument6 = argument6;
+        public readonly T7 Argument7 = argument7;
     }
 
     public readonly struct ValueEventArgs<T1, T2, T3, T4, T5, T6, T7, T8>(T1 argument1, T2 argument2, T3 argument3, T4 argument4, T5 argument5, T6 argument6, T7 argument7, T8 argument8) : IValueEventArgs
     {
-        public T1 Argument1 { get; } = argument1;
-        public T2 Argument2 { get; } = argument2;
-        public T3 Argument3 { get; } = argument3;
-        public T4 Argument4 { get; } = argument4;
-        public T5 Argument5 { get; } = argument5;
-        public T6 Argument6 { get; } = argument6;
-        public T7 Argument7 { get; } = argument7;
-        public T8 Argument8 { get; } = argument8;
+        public readonly T1 Argument1 = argument1;
+        public readonly T2 Argument2 = argument2;
+        public readonly T3 Argument3 = argument3;
+        public readonly T4 Argument4 = argument4;
+        public readonly T5 Argument5 = argument5;
+        public readonly T6 Argument6 = argument6;
+        public readonly T7 Argument7 = argument7;
+        public readonly T8 Argument8 = argument8;
     }
 }
