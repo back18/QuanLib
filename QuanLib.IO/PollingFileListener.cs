@@ -1,6 +1,8 @@
 ﻿using QuanLib.Core;
 using QuanLib.Core.Events;
+using QuanLib.IO.Events;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +12,13 @@ namespace QuanLib.IO
 {
     public class PollingFileListener : RunnableBase
     {
-        public PollingFileListener(string path, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public PollingFileListener(string path, int delayMilliseconds = 500, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException("需要倾听的文件不存在", path);
+            ThrowHelper.FileNotFound(path);
+            ThrowHelper.ArgumentOutOfMin(0, delayMilliseconds, nameof(delayMilliseconds));
 
             Path = path;
-            _TimeInterval = 500;
+            DelayMilliseconds = delayMilliseconds;
 
             Polling += OnPolling;
             FileInfoChanged += OnFileInfoChanged;
@@ -27,22 +29,13 @@ namespace QuanLib.IO
 
         public string Path { get; }
 
-        public int IntervalTime
-        {
-            get => _TimeInterval;
-            set
-            {
-                ThrowHelper.ArgumentOutOfMin(0, value, nameof(value));
-                _TimeInterval = value;
-            }
-        }
-        private int _TimeInterval;
+        public int DelayMilliseconds { get; }
 
         public event EventHandler<PollingFileListener, ValueChangedEventArgs<FileInfo>> Polling;
 
         public event EventHandler<PollingFileListener, ValueChangedEventArgs<FileInfo>> FileInfoChanged;
 
-        public event EventHandler<PollingFileListener, EventArgs<byte[]>> WriteBytes;
+        public event EventHandler<PollingFileListener, BytesEventArgs> WriteBytes;
 
         public event EventHandler<PollingFileListener, EventArgs> FileReset;
 
@@ -58,27 +51,48 @@ namespace QuanLib.IO
 
         protected virtual void OnFileInfoChanged(PollingFileListener sender, ValueChangedEventArgs<FileInfo> e)
         {
-            if (e.NewValue.Length > e.OldValue.Length)
+            FileInfo oldFile = e.OldValue;
+            FileInfo newFile = e.NewValue;
+
+            if (newFile.Length <= oldFile.Length && newFile.CreationTime <= oldFile.LastWriteTime)
+                return;
+
+            if (newFile.Length == 0)
+                return;
+
+            ArrayPool<byte> bytesPool = ArrayPool<byte>.Shared;
+            FileStream? fileStream = null;
+            byte[]? buffer = null;
+            int length;
+
+            try
             {
-                FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Write | FileShare.Delete);
-                fs.Seek(e.OldValue.Length, SeekOrigin.Begin);
-                byte[] buffer = new byte[e.NewValue.Length - e.OldValue.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                fs.Close();
-                WriteBytes.Invoke(this, new(buffer));
+                fileStream = new(Path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Write | FileShare.Delete);
+
+                if (newFile.Length > oldFile.Length)
+                {
+                    fileStream.Seek(oldFile.Length, SeekOrigin.Begin);
+                    length = (int)(newFile.Length - oldFile.Length);
+                }
+                else
+                {
+                    FileReset.Invoke(this, EventArgs.Empty);
+                    length = (int)newFile.Length;
+                }
+
+                buffer = bytesPool.Rent(length);
+                fileStream.Read(buffer, 0, length);
+                WriteBytes.Invoke(this, new(buffer, 0, length));
             }
-            else if (e.NewValue.Length < e.NewValue.Length / 2)
+            finally
             {
-                FileStream fs = new(Path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Write | FileShare.Delete);
-                byte[] buffer = new byte[e.NewValue.Length];
-                fs.Read(buffer, 0, buffer.Length);
-                fs.Close();
-                FileReset.Invoke(this, EventArgs.Empty);
-                WriteBytes.Invoke(this, new(buffer));
+                fileStream?.Close();
+                if (buffer is not null)
+                    bytesPool.Return(buffer);
             }
         }
 
-        protected virtual void OnWriteBytes(PollingFileListener sender, EventArgs<byte[]> e) { }
+        protected virtual void OnWriteBytes(PollingFileListener sender, BytesEventArgs e) { }
 
         protected virtual void OnFileReset(PollingFileListener sender, EventArgs e) { }
 
@@ -86,20 +100,30 @@ namespace QuanLib.IO
 
         protected override void Run()
         {
+            int fileNotFound = 0;
             FileInfo oldFile = new(Path);
+
             while (IsRunning)
             {
                 FileInfo newFile = new(Path);
                 if (!newFile.Exists)
                 {
+                    fileNotFound++;
+                    if (fileNotFound < 10)
+                    {
+                        Thread.Sleep(DelayMilliseconds / 10);
+                        continue;
+                    }
+
                     FileDeleted.Invoke(this, EventArgs.Empty);
                     break;
                 }
 
                 Polling.Invoke(this, new(oldFile, newFile));
                 oldFile = newFile;
+                fileNotFound = 0;
 
-                Thread.Sleep(IntervalTime);
+                Thread.Sleep(DelayMilliseconds);
             }
         }
     }

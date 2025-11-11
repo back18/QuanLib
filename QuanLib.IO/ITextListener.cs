@@ -12,8 +12,8 @@ namespace QuanLib.IO
     {
         public Encoding Encoding { get; }
 
-        public event EventHandler<ITextListener, EventArgs<string>> WriteText;
+        public event ValueEventHandler<ITextListener, ValueEventArgs<string>> WriteText;
 
-        public event EventHandler<ITextListener, EventArgs<string>> WriteLineText;
+        public event ValueEventHandler<ITextListener, ValueEventArgs<string>> WriteLineText;
     }
 }
