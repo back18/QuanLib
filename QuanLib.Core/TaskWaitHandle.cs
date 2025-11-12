@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public class TaskWaitHandle : IWaitible
+    public class TaskWaitHandle : IWaitable
     {
         public TaskWaitHandle(Task task)
         {

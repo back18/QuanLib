@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface IWaitible
+    public interface IWaitable
     {
         public void Wait();
 

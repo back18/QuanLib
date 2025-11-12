@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public class TaskSemaphore : IWaitible
+    public class TaskSemaphore : IWaitable
     {
         public TaskSemaphore()
         {
@@ -20,7 +20,7 @@ namespace QuanLib.Core
 
         public bool IsCompleted => _taskCompletionSource.Task.IsCompleted;
 
-        public IWaitible GetWaiter()
+        public IWaitable GetWaiter()
         {
             return _taskWaitHandle;
         }
