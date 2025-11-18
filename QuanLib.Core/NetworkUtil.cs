@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -29,6 +30,7 @@ namespace QuanLib.Core
             return connections.Any(s => s.LocalEndPoint.Port == port);
         }
 
+        [DebuggerStepThrough]
         public static bool TestTcpConnectivity(IPAddress address, int port)
         {
             ArgumentNullException.ThrowIfNull(address, nameof(address));
@@ -50,6 +52,7 @@ namespace QuanLib.Core
             }
         }
 
+        [DebuggerStepThrough]
         public static async Task<bool> TestTcpConnectivityAsync(IPAddress address, int port)
         {
             ArgumentNullException.ThrowIfNull(address, nameof(address));

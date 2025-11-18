@@ -24,10 +24,6 @@ namespace QuanLib.Core
             {
                 action.Invoke();
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 _semaphore.Release();
@@ -42,10 +38,6 @@ namespace QuanLib.Core
             try
             {
                 await func.Invoke();
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -62,10 +54,6 @@ namespace QuanLib.Core
             {
                 await func.Invoke();
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 _semaphore.Release();
@@ -80,10 +68,6 @@ namespace QuanLib.Core
             try
             {
                 return func.Invoke();
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -100,10 +84,6 @@ namespace QuanLib.Core
             {
                 return await func.Invoke();
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 _semaphore.Release();
@@ -118,10 +98,6 @@ namespace QuanLib.Core
             try
             {
                 return await func.Invoke();
-            }
-            catch
-            {
-                throw;
             }
             finally
             {

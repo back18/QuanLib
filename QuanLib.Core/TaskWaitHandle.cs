@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,21 +48,22 @@ namespace QuanLib.Core
             return _task.Wait(timeout, cancellationToken);
         }
 
-        public async Task WaitAsync()
+        public Task WaitAsync()
         {
-            await _task;
+            return _task;
         }
 
-        public async Task WaitAsync(CancellationToken cancellationToken)
+        public Task WaitAsync(CancellationToken cancellationToken)
         {
-            await _task.WaitAsync(cancellationToken);
+            return _task.WaitAsync(cancellationToken);
         }
 
+        [DebuggerStepThrough]
         public async Task<bool> WaitAsync(int millisecondsTimeout)
         {
             try
             {
-                await _task.WaitAsync(TimeSpan.FromMilliseconds(millisecondsTimeout));
+                await _task.WaitAsync(TimeSpan.FromMilliseconds(millisecondsTimeout)).ConfigureAwait(false);
                 return true;
             }
             catch (TimeoutException)
@@ -70,11 +72,12 @@ namespace QuanLib.Core
             }
         }
 
+        [DebuggerStepThrough]
         public async Task<bool> WaitAsync(int millisecondsTimeout, CancellationToken cancellationToken)
         {
             try
             {
-                await _task.WaitAsync(TimeSpan.FromMilliseconds(millisecondsTimeout), cancellationToken);
+                await _task.WaitAsync(TimeSpan.FromMilliseconds(millisecondsTimeout), cancellationToken).ConfigureAwait(false);
                 return true;
             }
             catch (TimeoutException)
@@ -83,11 +86,12 @@ namespace QuanLib.Core
             }
         }
 
+        [DebuggerStepThrough]
         public async Task<bool> WaitAsync(TimeSpan timeout)
         {
             try
             {
-                await _task.WaitAsync(timeout);
+                await _task.WaitAsync(timeout).ConfigureAwait(false);
                 return true;
             }
             catch (TimeoutException)
@@ -96,11 +100,12 @@ namespace QuanLib.Core
             }
         }
 
+        [DebuggerStepThrough]
         public async Task<bool> WaitAsync(TimeSpan timeout, CancellationToken cancellationToken)
         {
             try
             {
-                await _task.WaitAsync(timeout, cancellationToken);
+                await _task.WaitAsync(timeout, cancellationToken).ConfigureAwait(false);
                 return true;
             }
             catch (TimeoutException)
