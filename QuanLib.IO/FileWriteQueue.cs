@@ -10,7 +10,7 @@ namespace QuanLib.IO
 {
     public class FileWriteQueue : RunnableBase
     {
-        public FileWriteQueue()
+        public FileWriteQueue(ILoggerGetter? loggerGetter = null) : base(loggerGetter)
         {
             _queue = new();
             _enqueue = new(false);
