@@ -11,6 +11,8 @@ namespace QuanLib.Core
     {
         public Thread? Thread { get; }
 
+        public Exception? Exception { get; }
+
         public bool IsRunning { get; }
 
         public event EventHandler<IRunnable, EventArgs> Started;

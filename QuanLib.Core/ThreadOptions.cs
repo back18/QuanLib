@@ -8,7 +8,7 @@ namespace QuanLib.Core
 {
     public class ThreadOptions(string? name, bool isBackground, ThreadPriority priority)
     {
-        public ThreadOptions() : this(null, false, ThreadPriority.Normal) { }
+        public ThreadOptions() : this(null, true, ThreadPriority.Normal) { }
 
         public string? Name { get; set; } = name;
 

@@ -12,34 +12,33 @@ namespace QuanLib.Core
     {
         protected RunnableBase(ILoggerGetter? loggerGetter = null)
         {
-            Type type = GetType();
             if (loggerGetter is not null)
-                _logger = loggerGetter.GetLogger(type);
+            {
+                Type type = GetType();
+                Logger = loggerGetter.GetLogger(type);
+            }
 
             IsRunning = false;
+            StoppingRetryCount = 5;
 
-            _subtasks = [];
-            _stopSemaphore = new(0);
-            StopTimeout = 5;
             Started += OnStarted;
-            Started += OnStartedLoggging;
             Stopped += OnStopped;
-            Stopped += OnStoppedLogging;
             ThrowException += OnThrowException;
+
+            Started += OnStartedLoggging;
+            Stopped += OnStoppedLogging;
             ThrowException += OnThrowExceptionLogging;
         }
 
         private readonly object _lock = new();
 
-        private readonly ILogger? _logger;
-
-        private readonly List<RunnableBase> _subtasks;
-
-        private readonly SemaphoreSlim _stopSemaphore;
-
-        private Task? _stopTask;
+        private TaskSemaphore? _stopSemaphore;
 
         private ThreadOptions? _defaultThreadOptions;
+
+        protected virtual ILogger? Logger { get; private set; }
+
+        protected IWaitable? StopWaiter => _stopSemaphore?.GetWaiter();
 
         public virtual Thread? Thread { get; protected set; }
 
@@ -47,7 +46,7 @@ namespace QuanLib.Core
 
         public virtual bool IsRunning { get; protected set; }
 
-        public virtual int StopTimeout { get; protected set; }
+        public virtual int StoppingRetryCount { get; protected set; }
 
         public event EventHandler<IRunnable, EventArgs> Started;
 
@@ -63,38 +62,64 @@ namespace QuanLib.Core
 
         private void OnStartedLoggging(IRunnable sender, EventArgs e)
         {
-            _logger?.Info($"线程({GetThreadName(Thread)})已启动");
+            Logger?.Info($"线程({GetThreadName(Thread)})已启动");
         }
 
         private void OnStoppedLogging(IRunnable sender, EventArgs e)
         {
-            _logger?.Info($"线程({GetThreadName(Thread)})已停止");
+            Logger?.Info($"线程({GetThreadName(Thread)})已停止");
         }
 
         private void OnThrowExceptionLogging(IRunnable sender, EventArgs<Exception> e)
         {
-            _logger?.Error($"线程({GetThreadName(Thread)})抛出了异常", e.Argument);
+            Logger?.Error($"线程({GetThreadName(Thread)})抛出了异常", e.Argument);
         }
 
         public void SetDefaultThreadOptions(ThreadOptions? threadOptions)
         {
+            if (IsRunning)
+                throw new InvalidOperationException("线程正在运行，无法更改线程配置");
+
             _defaultThreadOptions = threadOptions;
         }
 
         public void SetDefaultThreadName(string threadName)
         {
+            ArgumentException.ThrowIfNullOrEmpty(threadName, nameof(threadName));
+            if (IsRunning)
+                throw new InvalidOperationException("线程正在运行，无法更改线程配置");
+
             _defaultThreadOptions ??= new();
             _defaultThreadOptions.Name = threadName;
         }
 
-        protected void AddSubtask(RunnableBase runnable)
-        {
-            ArgumentNullException.ThrowIfNull(runnable, nameof(runnable));
-
-            _subtasks.Add(runnable);
-        }
-
         protected abstract void Run();
+
+        private void ThreadStart()
+        {
+            Started.Invoke(this, EventArgs.Empty);
+
+            try
+            {
+                Run();
+            }
+            catch (ThreadInterruptedException ex)
+            {
+                Logger?.Warn($"线程({GetThreadName(Thread)})已被强制中断", ex);
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+                ThrowException.Invoke(this, new(ex));
+            }
+            finally
+            {
+                IsRunning = false;
+                _stopSemaphore?.Release();
+                _stopSemaphore = null;
+                Stopped.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public virtual bool Start(ThreadOptions threadOptions)
         {
@@ -105,15 +130,19 @@ namespace QuanLib.Core
                 if (IsRunning)
                     return false;
 
+                _stopSemaphore = new();
                 IsRunning = true;
                 Exception = null;
-                Thread = new(ThreadStart);
-                Thread.IsBackground = threadOptions.IsBackground;
-                Thread.Priority = threadOptions.Priority;
+                Thread = new(ThreadStart)
+                {
+                    IsBackground = threadOptions.IsBackground,
+                    Priority = threadOptions.Priority
+                };
+
                 if (!string.IsNullOrEmpty(threadOptions.Name))
                     Thread.Name = threadOptions.Name;
+
                 Thread.Start();
-                _stopTask = WaitSemaphoreAsync();
                 return true;
             }
         }
@@ -121,8 +150,10 @@ namespace QuanLib.Core
         public virtual bool Start(string threadName)
         {
             ArgumentException.ThrowIfNullOrEmpty(threadName, nameof(threadName));
+
             ThreadOptions threadOptions = _defaultThreadOptions ?? new();
             threadOptions.Name = threadName;
+
             return Start(threadOptions);
         }
 
@@ -144,126 +175,72 @@ namespace QuanLib.Core
                 if (thread is null)
                     return;
 
-                StopSubTasks();
+                if (thread == Thread.CurrentThread)
+                {
+                    Logger?.Warn($"尝试使用当前线程停止当前线程({GetThreadName(thread)})，将立即中断当前线程");
+                    throw new ThreadInterruptedException();
+                }
 
                 try
                 {
-                    for (int i = 1; i <= StopTimeout; i++)
+                    for (int i = 1; i <= StoppingRetryCount; i++)
                     {
                         if (thread.Join(1000))
                             return;
 
-                        _logger?.Warn($"正在等待线程({GetThreadName(thread)})停止，已等待{i}秒");
+                        Logger?.Warn($"正在等待线程({GetThreadName(thread)})停止，已等待{i}秒");
                     }
 
-                    _logger?.Warn($"即将强行停止线程({GetThreadName(thread)})");
-                    thread.Abort();
+                    Logger?.Warn($"即将强行中断线程({GetThreadName(thread)})");
+                    thread.Interrupt();
+                }
+                catch (ThreadInterruptedException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {
                     Exception = ex;
-                    _logger?.Error($"无法停止线程({GetThreadName(thread)})", ex);
+                    Logger?.Error($"无法停止线程({GetThreadName(thread)})", ex);
                 }
             }
         }
 
-        public void WaitForStop()
+        public virtual void WaitForStop()
         {
-            if (_stopTask is null)
+            IWaitable? waiter = StopWaiter;
+            if (waiter is null)
                 return;
 
-            _stopTask.Wait();
+            do
+            {
+                ThrowIfException();
+            } while (!waiter.Wait(1000));
+
+            ThrowIfException();
         }
 
-        public async Task WaitForStopAsync()
+        public virtual async Task WaitForStopAsync()
         {
-            if (_stopTask is null)
+            IWaitable? waiter = StopWaiter;
+            if (waiter is null)
                 return;
 
-            await _stopTask;
+            await Task.Yield();
+
+            do
+            {
+                ThrowIfException();
+            } while (!(await waiter.WaitAsync(1000).ConfigureAwait(false)));
+
+            ThrowIfException();
         }
 
-        protected void ThreadStart()
+        protected virtual void ThrowIfException()
         {
-            try
-            {
-                Started.Invoke(this, EventArgs.Empty);
-
-                StartSubTasks();
-
-                Run();
-
-                Task.WaitAll(_subtasks.Select(s => s.WaitForStopAsync()).ToArray());
-            }
-            catch (Exception ex)
-            {
-                Exception = ex;
-                ThrowException.Invoke(this, new(ex));
-            }
-            finally
-            {
-                IsRunning = false;
-                _stopSemaphore.Release();
-                Stopped.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        protected void CheckedException()
-        {
-            if (Exception is not null)
-                throw new AggregateException($"线程({GetThreadName(Thread)})抛出了异常", Exception);
-        }
-
-        protected void StartSubTasks()
-        {
-            foreach (IRunnable runnable in _subtasks)
-                runnable.Start();
-        }
-
-        protected void StopSubTasks()
-        {
-            foreach (IRunnable runnable in _subtasks)
-                runnable.Stop();
-        }
-
-        protected void CheckedSubtasksException()
-        {
-            List<Exception> exceptions = [];
-            foreach (RunnableBase runnable in _subtasks)
-            {
-                try
-                {
-                    runnable.CheckedException();
-                }
-                catch (Exception ex)
-                {
-                    exceptions.Add(ex);
-                }
-            }
-
-            if (exceptions.Count > 0)
-                throw new AggregateException($"线程({GetThreadName(Thread)})的一个或多个子任务抛出了异常", exceptions);
-        }
-
-        private async Task WaitSemaphoreAsync()
-        {
-            try
-            {
-                while (true)
-                {
-                    CheckedException();
-
-                    if (await _stopSemaphore.WaitAsync(1000))
-                    {
-                        CheckedException();
-                        break;
-                    }
-                }
-            }
-            finally
-            {
-                _stopTask = null;
-            }
+            Exception? exception = Exception;
+            if (exception is not null)
+                throw new AggregateException($"线程({GetThreadName(Thread)})抛出了异常", exception);
         }
 
         private static string GetThreadName(Thread? thread)
