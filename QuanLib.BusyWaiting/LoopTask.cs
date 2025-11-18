@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuanLib.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,21 +7,18 @@ using System.Threading.Tasks;
 
 namespace QuanLib.BusyWaiting
 {
-    public class LoopTask : IDisposable
+    public class LoopTask
     {
         public LoopTask(Action action)
         {
             ArgumentNullException.ThrowIfNull(action, nameof(action));
 
             _action = action;
-            _waitSemaphore = new(0);
-            _task = WaitSemaphoreAsync();
+            _waitSemaphore = new();
             State = LoopTaskState.NotStarted;
         }
 
-        private readonly SemaphoreSlim _waitSemaphore;
-
-        private readonly Task _task;
+        private readonly TaskSemaphore _waitSemaphore;
 
         private readonly Action _action;
 
@@ -30,6 +28,9 @@ namespace QuanLib.BusyWaiting
 
         internal void Start()
         {
+            if (State != LoopTaskState.NotStarted)
+                return;
+
             try
             {
                 State = LoopTaskState.Running;
@@ -47,20 +48,22 @@ namespace QuanLib.BusyWaiting
             }
         }
 
+        public void WaitForComplete()
+        {
+            _waitSemaphore.Wait();
+            ThrowIfException();
+        }
+
         public async Task WaitForCompleteAsync()
         {
-            await _task;
+            await _waitSemaphore.WaitAsync().ConfigureAwait(false);
+            ThrowIfException();
         }
 
-        private async Task WaitSemaphoreAsync()
+        private void ThrowIfException()
         {
-            await _waitSemaphore.WaitAsync();
-        }
-
-        public void Dispose()
-        {
-            _waitSemaphore.Dispose();
-            GC.SuppressFinalize(this);
+            if (State == LoopTaskState.Failed)
+                throw new TaskFailedException(Exception);
         }
     }
 }

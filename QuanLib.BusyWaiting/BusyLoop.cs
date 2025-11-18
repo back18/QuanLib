@@ -15,8 +15,8 @@ namespace QuanLib.BusyWaiting
             DelayMilliseconds = delayMilliseconds;
             IsPaused = false;
 
-            _pauseSemaphore = new(0);
-            _pauseTask = WaitSemaphoreAsync();
+            _pauseSemaphore = new();
+            _pauseSemaphore.Release();
             _loopTasks = new();
             _waitTasks = new();
 
@@ -25,9 +25,7 @@ namespace QuanLib.BusyWaiting
 
         private readonly object _lock = new();
 
-        private readonly SemaphoreSlim _pauseSemaphore;
-
-        private Task _pauseTask;
+        private TaskSemaphore _pauseSemaphore;
 
         private readonly ConcurrentQueue<LoopTask> _loopTasks;
 
@@ -41,28 +39,29 @@ namespace QuanLib.BusyWaiting
 
         protected virtual void OnLoop(BusyLoop sender, EventArgs e) { }
 
-        protected override void Run()
-        {
-            do
-            {
-                Loop.Invoke(this, EventArgs.Empty);
-
-                HandleLoopTasks();
-
-                HandleWaitTasks();
-
-                _pauseTask.Wait();
-
-                Delay.Sleep(DelayMilliseconds);
-            }
-            while (IsRunning);
-        }
-
         protected override void OnStopped(IRunnable sender, EventArgs e)
         {
             base.OnStopped(sender, e);
 
-            HandleWaitTasks();
+            CleanupTasks();
+        }
+
+        protected override void Run()
+        {
+            while (IsRunning)
+            {
+                if (!_pauseSemaphore.Wait(100))
+                    continue;
+
+                Loop.Invoke(this, EventArgs.Empty);
+
+                int handled = 0;
+                handled += HandleLoopTasks();
+                handled += HandleWaitTasks();
+
+                if (IsRunning && handled == 0)
+                    Delay.Sleep(DelayMilliseconds);
+            }
         }
 
         public void Pause()
@@ -70,7 +69,10 @@ namespace QuanLib.BusyWaiting
             lock (_lock)
             {
                 if (!IsPaused)
-                    _pauseTask = WaitSemaphoreAsync();
+                {
+                    IsPaused = true;
+                    _pauseSemaphore = new();
+                }
             }
         }
 
@@ -79,7 +81,23 @@ namespace QuanLib.BusyWaiting
             lock (_lock)
             {
                 if (IsPaused)
+                {
+                    IsPaused = false;
                     _pauseSemaphore.Release();
+                }
+            }
+        }
+
+        public void HandleSingleLoop()
+        {
+            lock (_lock)
+            {
+                if (IsRunning && !IsPaused)
+                    return;
+
+                Loop.Invoke(this, EventArgs.Empty);
+                HandleLoopTasks();
+                HandleWaitTasks();
             }
         }
 
@@ -93,57 +111,75 @@ namespace QuanLib.BusyWaiting
             return loopTask;
         }
 
-        public async Task<LoopTask> SubmitAndWaitAsync(Action action)
+        public void SubmitAndWait(Action action)
         {
-            ArgumentNullException.ThrowIfNull(action, nameof(action));
-            CheckIsRunning();
-
-            LoopTask loopTask = new(action);
-            _loopTasks.Enqueue(loopTask);
-            await loopTask.WaitForCompleteAsync();
-            return loopTask;
+            Submit(action).WaitForComplete();
         }
 
-        public async Task SubmitAndWaitAsync(Func<bool> expression)
+        public Task SubmitAndWaitAsync(Action action)
+        {
+            return Submit(action).WaitForCompleteAsync();
+        }
+
+        public WaitTask Submit(Func<bool> expression)
         {
             ArgumentNullException.ThrowIfNull(expression, nameof(expression));
             CheckIsRunning();
 
             Guid guid = Guid.NewGuid();
-            WaitTask waitTask = new(this, expression);
+            WaitTask waitTask = new(expression);
             _waitTasks.TryAdd(guid, waitTask);
-            await waitTask.WaitForSuccessAsync();
+            return waitTask;
         }
 
-        private async Task WaitSemaphoreAsync()
+        public void SubmitAndWait(Func<bool> expression)
         {
-            IsPaused = true;
-            while (IsRunning && !await _pauseSemaphore.WaitAsync(10)) { }
-            IsPaused = false;
+            Submit(expression).WaitForComplete();
         }
 
-        private void HandleLoopTasks()
+        public Task SubmitAndWaitAsync(Func<bool> expression)
         {
+            return Submit(expression).WaitForCompleteAsync();
+        }
+
+        private int HandleLoopTasks()
+        {
+            int count = 0;
             while (_loopTasks.TryDequeue(out var loopTask))
             {
                 loopTask.Start();
-                if (loopTask.State == LoopTaskState.Failed && loopTask.Exception is not null)
-                    throw new AggregateException(loopTask.Exception);
-                loopTask.Dispose();
+                count++;
             }
+            return count;
         }
 
-        private void HandleWaitTasks()
+        private int HandleWaitTasks()
         {
+            int count = 0;
             foreach (var item in _waitTasks)
             {
                 WaitTask waitTask = item.Value;
-                if (waitTask.CheckCondition())
+                if (waitTask.CheckCondition() || waitTask.IsFailed || waitTask.IsCanceled)
                 {
-                    if (_waitTasks.Remove(item.Key, out var value))
-                        value.Dispose();
+                    _waitTasks.Remove(item.Key, out _);
+                    count++;
                 }
             }
+            return count;
+        }
+
+        private void CleanupTasks()
+        {
+            IsRunning = false;
+            Thread.Sleep(1);
+
+            HandleLoopTasks();
+            HandleWaitTasks();
+
+            foreach (WaitTask waitTask in _waitTasks.Values)
+                waitTask.Cancel();
+
+            _waitTasks.Clear();
         }
 
         private void CheckIsRunning()

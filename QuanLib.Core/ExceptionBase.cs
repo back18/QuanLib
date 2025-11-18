@@ -18,9 +18,14 @@ namespace QuanLib.Core
             InitialMessage = messge;
         }
 
-        public ExceptionBase(string? messge, Exception innerException) : base(null, innerException)
+        public ExceptionBase(string? messge, Exception? innerException) : base(null, innerException)
         {
             InitialMessage = messge;
+        }
+
+        public ExceptionBase(Exception? innerException) : base(null, innerException)
+        {
+            InitialMessage = DefaultMessage;
         }
 
         public override string Message

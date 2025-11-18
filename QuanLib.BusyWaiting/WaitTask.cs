@@ -7,67 +7,71 @@ using System.Threading.Tasks;
 
 namespace QuanLib.BusyWaiting
 {
-    public class WaitTask : IDisposable
+    public class WaitTask
     {
-        public WaitTask(BusyLoop owner, Func<bool> expression)
+        public WaitTask(Func<bool> expression)
         {
             ArgumentNullException.ThrowIfNull(expression, nameof(expression));
-            ArgumentNullException.ThrowIfNull(owner, nameof(owner));
 
-            _owner = owner;
             _expression = expression;
-            _waitSemaphore = new(0);
-            _waitTask = WaitSemaphoreAsync();
+            _waitSemaphore = new();
         }
-
-        private readonly BusyLoop _owner;
 
         private readonly Func<bool> _expression;
 
-        private readonly SemaphoreSlim _waitSemaphore;
+        private readonly TaskSemaphore _waitSemaphore;
 
-        private readonly Task _waitTask;
+        public bool IsFailed { get; private set; }
+
+        public bool IsCanceled { get; private set; }
+
+        public Exception? Exception { get; private set; }
 
         internal bool CheckCondition()
         {
             try
             {
-                if (!_waitTask.IsCompleted && _expression.Invoke())
+                if (!IsFailed && !IsCanceled && _expression.Invoke())
                 {
                     _waitSemaphore.Release();
                     return true;
-                }
-                else if (!_owner.IsRunning)
-                {
-                    _waitSemaphore.Release();
-                    return false;
                 }
                 else
                 {
                     return false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                IsFailed = true;
+                Exception = ex;
                 _waitSemaphore.Release();
                 return false;
             }
         }
 
-        public async Task WaitForSuccessAsync()
+        public void Cancel()
         {
-            await _waitTask;
+            IsCanceled = true;
+            _waitSemaphore.Release();
         }
 
-        private async Task WaitSemaphoreAsync()
+        public void WaitForComplete()
         {
-            await _waitSemaphore.WaitAsync();
+            _waitSemaphore.Wait();
+            ThrowIfException();
         }
 
-        public void Dispose()
+        public async Task WaitForCompleteAsync()
         {
-            _waitSemaphore.Dispose();
-            GC.SuppressFinalize(this);
+            await _waitSemaphore.WaitAsync().ConfigureAwait(false);
+            ThrowIfException();
+        }
+
+        private void ThrowIfException()
+        {
+            if (IsFailed)
+                throw new TaskFailedException(Exception);
         }
     }
 }
