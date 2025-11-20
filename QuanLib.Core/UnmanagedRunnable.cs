@@ -8,7 +8,7 @@ namespace QuanLib.Core
 {
     public abstract class UnmanagedRunnable : RunnableBase, IDisposable
     {
-        protected UnmanagedRunnable(ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        protected UnmanagedRunnable(ILoggerProvider? loggerProvider = null) : base(loggerProvider)
         {
             IsDisposed = false;
         }

@@ -10,7 +10,7 @@ namespace QuanLib.Core
 {
     public abstract class MultitaskRunnable : UnmanagedRunnable
     {
-        public MultitaskRunnable(ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public MultitaskRunnable(ILoggerProvider? loggerProvider = null) : base(loggerProvider)
         {
             _subtasks = [];
 

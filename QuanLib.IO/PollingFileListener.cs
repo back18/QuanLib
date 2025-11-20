@@ -12,7 +12,7 @@ namespace QuanLib.IO
 {
     public class PollingFileListener : RunnableBase
     {
-        public PollingFileListener(string path, int delayMilliseconds = 500, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public PollingFileListener(string path, int delayMilliseconds = 500, ILoggerProvider? loggerProvider = null) : base(loggerProvider)
         {
             ThrowHelper.FileNotFound(path);
             ThrowHelper.ArgumentOutOfMin(0, delayMilliseconds, nameof(delayMilliseconds));

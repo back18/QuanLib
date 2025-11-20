@@ -11,7 +11,7 @@ namespace QuanLib.IO
 {
     public class PollingTextFileListener : PollingFileListener, ITextListener
     {
-        public PollingTextFileListener(string path, Encoding encoding, int delayMilliseconds = 500, ILoggerGetter? loggerGetter = null) : base(path, delayMilliseconds, loggerGetter)
+        public PollingTextFileListener(string path, Encoding encoding, int delayMilliseconds = 500, ILoggerProvider? loggerProvider = null) : base(path, delayMilliseconds, loggerProvider)
         {
             ArgumentNullException.ThrowIfNull(path, nameof(path));
             ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));

@@ -10,7 +10,7 @@ namespace QuanLib.BusyWaiting
 {
     public class BusyLoop : RunnableBase
     {
-        public BusyLoop(uint delayMilliseconds, ILoggerGetter? loggerGetter = null) : base(loggerGetter)
+        public BusyLoop(uint delayMilliseconds, ILoggerProvider? loggerProvider = null) : base(loggerProvider)
         {
             DelayMilliseconds = delayMilliseconds;
             IsPaused = false;
