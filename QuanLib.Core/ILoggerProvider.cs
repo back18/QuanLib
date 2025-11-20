@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface ILoggerGetter
+    public interface ILoggerProvider
     {
         public ILogger GetLogger();
 
