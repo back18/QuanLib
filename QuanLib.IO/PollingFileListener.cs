@@ -81,7 +81,7 @@ namespace QuanLib.IO
                 }
 
                 buffer = bytesPool.Rent(length);
-                fileStream.Read(buffer, 0, length);
+                fileStream.ReadExactly(buffer, 0, length);
                 WriteBytes.Invoke(this, new(buffer, 0, length));
             }
             finally

@@ -60,8 +60,8 @@ namespace QuanLib.Core.Proxys
 
         private void TriggerWrittenEvent(char value)
         {
-            StringWriting.Invoke(this, new(value.ToString()));
-            CharWriting.Invoke(this, new(value));
+            StringWritten.Invoke(this, new(value.ToString()));
+            CharWritten.Invoke(this, new(value));
         }
 
         private void TriggerWritingEvent(string? value)
@@ -69,9 +69,9 @@ namespace QuanLib.Core.Proxys
             if (string.IsNullOrEmpty(value))
                 return;
 
-            StringWriting.Invoke(this, new(value));
+            StringWritten.Invoke(this, new(value));
             foreach (char c in value)
-                CharWriting.Invoke(this, new(c));
+                CharWritten.Invoke(this, new(c));
         }
 
         private void TriggerWrittenEvent(string? value)

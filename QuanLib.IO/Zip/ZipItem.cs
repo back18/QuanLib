@@ -33,7 +33,7 @@ namespace QuanLib.IO.Zip
         {
             using Stream stream = _entry.Open();
             byte[] result = new byte[stream.Length];
-            stream.Read(result, 0, result.Length);
+            stream.ReadExactly(result, 0, result.Length);
             return result;
         }
 
