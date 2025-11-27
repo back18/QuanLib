@@ -22,7 +22,7 @@ namespace QuanLib.Core
             Stopped += MultitaskRunnable_Stopped;
         }
 
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         private readonly List<IRunnable> _subtasks;
 

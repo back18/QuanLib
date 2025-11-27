@@ -30,7 +30,7 @@ namespace QuanLib.Core
             ThrowException += OnThrowExceptionLogging;
         }
 
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         private TaskSemaphore? _stopSemaphore;
 

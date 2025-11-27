@@ -23,7 +23,7 @@ namespace QuanLib.BusyWaiting
             Loop += OnLoop;
         }
 
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         private TaskSemaphore _pauseSemaphore;
 

@@ -21,7 +21,9 @@ namespace QuanLib.Logging
             _consoleAppenders = [];
         }
 
-        private static readonly object _slock = new();
+        private static readonly Lock _slock = new();
+
+        private readonly Lock _lock = new();
 
         private readonly ILog4NetProvider _provider;
 
@@ -58,7 +60,7 @@ namespace QuanLib.Logging
             if (consoleAppenders.Length == 0)
                 return;
 
-            lock (_consoleAppenders)
+            lock (_lock)
             {
                 foreach (ConsoleAppender consoleAppender in consoleAppenders)
                 {
@@ -77,7 +79,7 @@ namespace QuanLib.Logging
             if (_consoleAppenders.Count == 0)
                 return;
 
-            lock (_consoleAppenders)
+            lock (_lock)
             {
                 foreach ((ConsoleAppender Appender, Level Original) in _consoleAppenders)
                     Appender.Threshold = Original;

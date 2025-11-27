@@ -24,6 +24,8 @@ namespace QuanLib.Core.Proxys
             StringWritten += OnStringWritten;
         }
 
+        private readonly Lock _lock = new();
+
         private readonly TextWriter _owner;
 
         private readonly StringBuilder _interceptionText;
@@ -36,21 +38,21 @@ namespace QuanLib.Core.Proxys
 
         public bool RequestInterception { get; set; }
 
-        public event EventHandler<TextWriterProxy, EventArgs<char>> CharWriting;
+        public event EventHandler<TextWriterProxy, ValueEventArgs<char>> CharWriting;
 
-        public event EventHandler<TextWriterProxy, EventArgs<string>> StringWriting;
+        public event EventHandler<TextWriterProxy, ValueEventArgs<string>> StringWriting;
 
-        public event EventHandler<TextWriterProxy, EventArgs<char>> CharWritten;
+        public event EventHandler<TextWriterProxy, ValueEventArgs<char>> CharWritten;
 
-        public event EventHandler<TextWriterProxy, EventArgs<string>> StringWritten;
+        public event EventHandler<TextWriterProxy, ValueEventArgs<string>> StringWritten;
 
-        protected virtual void OnCharWriting(TextWriterProxy sender, EventArgs<char> e) { }
+        protected virtual void OnCharWriting(TextWriterProxy sender, ValueEventArgs<char> e) { }
 
-        protected virtual void OnStringWriting(TextWriterProxy sender, EventArgs<string> e) { }
+        protected virtual void OnStringWriting(TextWriterProxy sender, ValueEventArgs<string> e) { }
 
-        protected virtual void OnCharWritten(TextWriterProxy sender, EventArgs<char> e) { }
+        protected virtual void OnCharWritten(TextWriterProxy sender, ValueEventArgs<char> e) { }
 
-        protected virtual void OnStringWritten(TextWriterProxy sender, EventArgs<string> e) { }
+        protected virtual void OnStringWritten(TextWriterProxy sender, ValueEventArgs<string> e) { }
 
         private void TriggerWritingEvent(char value)
         {
@@ -86,7 +88,7 @@ namespace QuanLib.Core.Proxys
 
         public string GetInterceptionText()
         {
-            lock (_interceptionText)
+            lock (_lock)
             {
                 string text = _interceptionText.ToString();
                 _interceptionText.Clear();
@@ -104,14 +106,14 @@ namespace QuanLib.Core.Proxys
             _owner.Write(value);
         }
 
-        public async Task WriteOnlyAsync(char value)
+        public Task WriteOnlyAsync(char value)
         {
-            await _owner.WriteAsync(value);
+            return _owner.WriteAsync(value);
         }
 
-        public async Task WriteOnlyAsync(string value)
+        public Task WriteOnlyAsync(string value)
         {
-            await _owner.WriteAsync(value);
+            return _owner.WriteAsync(value);
         }
 
         public void WriteLineOnly()
@@ -129,19 +131,19 @@ namespace QuanLib.Core.Proxys
             _owner.WriteLine(value);
         }
 
-        public async Task WriteLineOnlyAsync()
+        public Task WriteLineOnlyAsync()
         {
-            await _owner.WriteLineAsync();
+            return _owner.WriteLineAsync();
         }
 
-        public async Task WriteLineOnlyAsync(char value)
+        public Task WriteLineOnlyAsync(char value)
         {
-            await _owner.WriteLineAsync(value);
+            return _owner.WriteLineAsync(value);
         }
 
-        public async Task WriteLineOnlyAsync(string value)
+        public Task WriteLineOnlyAsync(string value)
         {
-            await _owner.WriteLineAsync(value);
+            return _owner.WriteLineAsync(value);
         }
 
         public override void Write(char value)
@@ -149,7 +151,7 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value);
                 return;
             }
@@ -163,7 +165,7 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value);
                 return;
             }
@@ -177,12 +179,12 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value);
                 return;
             }
 
-            await _owner.WriteAsync(value);
+            await _owner.WriteAsync(value).ConfigureAwait(false);
             TriggerWrittenEvent(value);
         }
 
@@ -191,12 +193,12 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value);
                 return;
             }
 
-            await _owner.WriteAsync(value);
+            await _owner.WriteAsync(value).ConfigureAwait(false);
             TriggerWrittenEvent(value);
         }
 
@@ -205,7 +207,7 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(NewLine);
                 return;
             }
@@ -219,7 +221,7 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value + NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value + NewLine);
                 return;
             }
@@ -233,7 +235,7 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value + NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value + NewLine);
                 return;
             }
@@ -247,12 +249,12 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(NewLine);
                 return;
             }
 
-            await _owner.WriteLineAsync();
+            await _owner.WriteLineAsync().ConfigureAwait(false);
             TriggerWrittenEvent(NewLine);
         }
 
@@ -261,12 +263,12 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value + NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value + NewLine);
                 return;
             }
 
-            await _owner.WriteLineAsync(value);
+            await _owner.WriteLineAsync(value).ConfigureAwait(false);
             TriggerWrittenEvent(value + NewLine);
         }
 
@@ -275,12 +277,12 @@ namespace QuanLib.Core.Proxys
             TriggerWritingEvent(value + NewLine);
             if (RequestInterception)
             {
-                lock (_interceptionText)
+                lock (_lock)
                     _interceptionText.Append(value + NewLine);
                 return;
             }
 
-            await _owner.WriteLineAsync(value);
+            await _owner.WriteLineAsync(value).ConfigureAwait(false);
             TriggerWrittenEvent(value + NewLine);
         }
 
@@ -306,13 +308,16 @@ namespace QuanLib.Core.Proxys
 
         public override async ValueTask DisposeAsync()
         {
-            await _owner.DisposeAsync();
+            await _owner.DisposeAsync().ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
 
         public override bool Equals(object? obj)
         {
-            return _owner.Equals(obj);
+            if (obj is not TextWriterProxy)
+                return false;
+
+            return ReferenceEquals(this, obj);
         }
 
         public override int GetHashCode()

@@ -31,6 +31,8 @@ namespace QuanLib.Logging
             _incrementId = 1;
         }
 
+        private readonly Lock _lock = new();
+
         private readonly ILoggerRepository _repository;
 
         private readonly Dictionary<string, Log4NetLogger> _loggers;
@@ -89,7 +91,7 @@ namespace QuanLib.Logging
             if (_loggers.TryGetValue(name, out var logger))
                 return logger;
 
-            lock (_loggers)
+            lock (_lock)
             {
                 if (_loggers.TryGetValue(name, out logger))
                     return logger;

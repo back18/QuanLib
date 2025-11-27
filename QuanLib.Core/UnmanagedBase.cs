@@ -13,7 +13,7 @@ namespace QuanLib.Core
             IsDisposed = false;
         }
 
-        private readonly object _lock = new();
+        private readonly Lock _lock = new();
 
         public bool IsDisposed { get; protected set; }
 
