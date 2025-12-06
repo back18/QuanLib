@@ -50,20 +50,23 @@ namespace QuanLib.TomlConfig
             ArgumentNullException.ThrowIfNull(memberInfo, nameof(memberInfo));
 
             IEnumerable<Attribute> attributes = memberInfo.MemberInfo.GetCustomAttributes();
-            foreach (Attribute attribute in attributes)
+
+            tomlObject.AddComment(string.Empty);
+
+            if (attributes.OfType<DisplayAttribute>().FirstOrDefault() is DisplayAttribute displayAttribute)
             {
-                if (attribute is DisplayAttribute displayAttribute)
+                string? name = displayAttribute.GetName();
+                string? description = displayAttribute.GetDescription();
+
+                if (!string.IsNullOrEmpty(name))
+                    tomlObject.AddComment("名称: " + name);
+
+                if (!string.IsNullOrEmpty(description))
                 {
-                    if (!string.IsNullOrEmpty(displayAttribute.Name))
-                        tomlObject.AddComment("名称: " + displayAttribute.Name);
-                    if (!string.IsNullOrEmpty(displayAttribute.Description))
-                    {
-                        string[] lines = displayAttribute.Description.Split('\n');
-                        tomlObject.AddComment("描述: " + lines[0]);
-                        for (int i = 1; i < lines.Length; i++)
-                            tomlObject.AddComment("      " + lines[i]);
-                    }
-                    break;
+                    string[] lines = description.Split('\n');
+                    tomlObject.AddComment("描述: " + lines[0]);
+                    for (int i = 1; i < lines.Length; i++)
+                        tomlObject.AddComment("      " + lines[i]);
                 }
             }
 
