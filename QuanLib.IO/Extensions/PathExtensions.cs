@@ -8,39 +8,42 @@ namespace QuanLib.IO.Extensions
 {
     public static class PathExtensions
     {
-        public static string PathCombine(this string source, string path)
+        extension(string source)
         {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public string PathCombine(string path)
+            {
+                return Path.Combine(source, path);
+            }
 
-            return Path.Combine(source, path);
-        }
+            public string PathCombine(string path1, string path2)
+            {
+                return Path.Combine(source, path1, path2);
+            }
 
-        public static string PathCombine(this string source, string path1, string path2)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public string PathCombine(string path1, string path2, string path3)
+            {
+                return Path.Combine(source, path1, path2, path3);
+            }
 
-            return Path.Combine(source, path1, path2);
-        }
+            public string PathCombine(params string[] paths)
+            {
+                ArgumentNullException.ThrowIfNull(paths, nameof(paths));
 
-        public static string PathCombine(this string source, string path1, string path2, string path3)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+                string[] allPaths = new string[paths.Length + 1];
+                allPaths[0] = source;
+                paths.CopyTo(allPaths, 1);
+                return Path.Combine(allPaths);
+            }
 
-            return Path.Combine(source, path1, path2, path3);
-        }
+            public FileInfo CreateFileInfo()
+            {
+                return new(source);
+            }
 
-        public static FileInfo CreateFileInfo(this string source)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return new(source);
-        }
-
-        public static DirectoryInfo CreateDirectoryInfo(this string source)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return new(source);
+            public DirectoryInfo CreateDirectoryInfo()
+            {
+                return new(source);
+            }
         }
     }
 }

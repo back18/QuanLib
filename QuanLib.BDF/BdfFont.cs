@@ -1,5 +1,5 @@
 ﻿using QuanLib.Core;
-using QuanLib.Core.Extensions;
+using QuanLib.IO.Extensions;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections;

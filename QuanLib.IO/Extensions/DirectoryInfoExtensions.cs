@@ -8,132 +8,103 @@ namespace QuanLib.IO.Extensions
 {
     public static class DirectoryInfoExtensions
     {
-        public static FileInfo CombineFile(this DirectoryInfo source, string path)
+        extension(DirectoryInfo source)
         {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public FileInfo CombineFile(string path)
+            {
+                return new(Path.Combine(source.FullName, path));
+            }
 
-            return new(Path.Combine(source.FullName, path));
-        }
+            public FileInfo CombineFile(string path1, string path2)
+            {
+                return new(Path.Combine(source.FullName, path1, path2));
+            }
 
-        public static FileInfo CombineFile(this DirectoryInfo source, string path1, string path2)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public FileInfo CombineFile(string path1, string path2, string path3)
+            {
+                return new(Path.Combine(source.FullName, path1, path2, path3));
+            }
 
-            return new(Path.Combine(source.FullName, path1, path2));
-        }
+            public FileInfo CombineFile(params string[] paths)
+            {
+                ArgumentNullException.ThrowIfNull(paths, nameof(paths));
 
-        public static FileInfo CombineFile(this DirectoryInfo source, string path1, string path2, string path3)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+                string[] allPaths = new string[paths.Length + 1];
+                allPaths[0] = source.FullName;
+                paths.CopyTo(allPaths, 1);
+                return new(Path.Combine(allPaths));
+            }
 
-            return new(Path.Combine(source.FullName, path1, path2, path3));
-        }
+            public DirectoryInfo CombineDirectory(string path)
+            {
+                return new(Path.Combine(source.FullName, path));
+            }
 
-        public static FileInfo CombineFile(this DirectoryInfo source, params string[] paths)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-            ArgumentNullException.ThrowIfNull(paths, nameof(paths));
+            public DirectoryInfo CombineDirectory(string path1, string path2)
+            {
+                return new(Path.Combine(source.FullName, path1, path2));
+            }
 
-            string[] allPaths = new string[paths.Length + 1];
-            allPaths[0] = source.FullName;
-            paths.CopyTo(allPaths, 1);
-            return new(Path.Combine(allPaths));
-        }
+            public DirectoryInfo CombineDirectory(string path1, string path2, string path3)
+            {
+                return new(Path.Combine(source.FullName, path1, path2, path3));
+            }
 
-        public static DirectoryInfo CombineDirectory(this DirectoryInfo source, string path)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public DirectoryInfo CombineDirectory(params string[] paths)
+            {
+                ArgumentNullException.ThrowIfNull(paths, nameof(paths));
 
-            return new(Path.Combine(source.FullName, path));
-        }
+                string[] allPaths = new string[paths.Length + 1];
+                allPaths[0] = source.FullName;
+                paths.CopyTo(allPaths, 1);
+                return new(Path.Combine(allPaths));
+            }
 
-        public static DirectoryInfo CombineDirectory(this DirectoryInfo source, string path1, string path2)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public string[] GetFilePaths()
+            {
+                return Directory.GetFiles(source.FullName);
+            }
 
-            return new(Path.Combine(source.FullName, path1, path2));
-        }
+            public string[] GetFilePaths(string searchPattern)
+            {
+                return Directory.GetFiles(source.FullName, searchPattern);
+            }
 
-        public static DirectoryInfo CombineDirectory(this DirectoryInfo source, string path1, string path2, string path3)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public string[] GetFilePaths(string searchPattern, SearchOption searchOption)
+            {
+                return Directory.GetFiles(source.FullName, searchPattern, searchOption);
+            }
 
-            return new(Path.Combine(source.FullName, path1, path2, path3));
-        }
+            public string[] GetFilePaths(string searchPattern, EnumerationOptions enumerationOptions)
+            {
+                return Directory.GetFiles(source.FullName, searchPattern, enumerationOptions);
+            }
 
-        public static DirectoryInfo CombineDirectory(this DirectoryInfo source, params string[] paths)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-            ArgumentNullException.ThrowIfNull(paths, nameof(paths));
+            public string[] GetDirectoriePaths()
+            {
+                return Directory.GetDirectories(source.FullName);
+            }
 
-            string[] allPaths = new string[paths.Length + 1];
-            allPaths[0] = source.FullName;
-            paths.CopyTo(allPaths, 1);
-            return new(Path.Combine(allPaths));
-        }
+            public string[] GetDirectoriePaths(string searchPattern)
+            {
+                return Directory.GetDirectories(source.FullName, searchPattern);
+            }
 
-        public static string[] GetFilePaths(this DirectoryInfo source)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            public string[] GetDirectoriePaths(string searchPattern, SearchOption searchOption)
+            {
+                return Directory.GetDirectories(source.FullName, searchPattern, searchOption);
+            }
 
-            return Directory.GetFiles(source.FullName);
-        }
+            public string[] GetDirectoriePaths(string searchPattern, EnumerationOptions enumerationOptions)
+            {
+                return Directory.GetDirectories(source.FullName, searchPattern, enumerationOptions);
+            }
 
-        public static string[] GetFilePaths(this DirectoryInfo source, string searchPattern)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetFiles(source.FullName, searchPattern);
-        }
-
-        public static string[] GetFilePaths(this DirectoryInfo source, string searchPattern, EnumerationOptions enumerationOptions)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetFiles(source.FullName, searchPattern, enumerationOptions);
-        }
-
-        public static string[] GetFilePaths(this DirectoryInfo source, string searchPattern, SearchOption searchOption)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetFiles(source.FullName, searchPattern, searchOption);
-        }
-
-        public static string[] GetDirectoriePaths(this DirectoryInfo source)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetDirectories(source.FullName);
-        }
-
-        public static string[] GetDirectoriePaths(this DirectoryInfo source, string searchPattern)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetDirectories(source.FullName, searchPattern);
-        }
-
-        public static string[] GetDirectoriePaths(this DirectoryInfo source, string searchPattern, EnumerationOptions enumerationOptions)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetDirectories(source.FullName, searchPattern, enumerationOptions);
-        }
-
-        public static string[] GetDirectoriePaths(this DirectoryInfo source, string searchPattern, SearchOption searchOption)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            return Directory.GetDirectories(source.FullName, searchPattern, searchOption);
-        }
-
-        public static void CreateIfNotExists(this DirectoryInfo source)
-        {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            if (!source.Exists)
-                source.Create();
+            public void CreateIfNotExists()
+            {
+                if (!source.Exists)
+                    source.Create();
+            }
         }
     }
 }
