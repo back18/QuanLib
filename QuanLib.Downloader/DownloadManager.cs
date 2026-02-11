@@ -1,136 +1,191 @@
 ﻿using Downloader;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QuanLib.Downloader
 {
-    public class DownloadManager : IReadOnlyList<DownloadTask>
+    public class DownloadManager : INotifyPropertyChanged
     {
-        public DownloadManager(DownloadConfiguration? configuration = null)
+        public DownloadManager(DownloadConfiguration? configuration = null, int maximumParallel = -1)
         {
-            _configuration = configuration;
-            _tasks = [];
+            _downloads = [];
+            Downloads = new(_downloads);
+            Configuration = configuration ?? new DownloadConfiguration();
+            MaximumParallel = maximumParallel <= 0 ? -1 : maximumParallel;
         }
 
-        private readonly DownloadConfiguration? _configuration;
+        private readonly Lock _lock = new();
+        private readonly ObservableCollection<IDownload> _downloads;
 
-        private readonly List<DownloadTask> _tasks;
+        public ReadOnlyObservableCollection<IDownload> Downloads { get; }
 
-        public DownloadTask this[int index] => _tasks[index];
+        public DownloadConfiguration Configuration { get; }
 
-        public int Count => _tasks.Count;
+        public int MaximumParallel { get; }
 
-        public int RunningCount => GetTaskCount(DownloadStatus.Running);
-
-        public int StoppedCount => GetTaskCount(DownloadStatus.Stopped);
-
-        public int PausedCount => GetTaskCount(DownloadStatus.Paused);
-
-        public int CompletedCount => GetTaskCount(DownloadStatus.Completed);
-
-        public int FailedCount => GetTaskCount(DownloadStatus.Failed);
-
-        public bool IsAllCompleted => CompletedCount == Count;
-
-        public long TotalBytes
+        public int TotalCount
         {
-            get
+            get => field;
+            set
             {
-                long count = 0;
-                foreach (var task in _tasks)
-                    count += task.Download.TotalFileSize;
-                return count;
+                if (value != field)
+                    OnPropertyChanged(ref field, value);
             }
         }
 
-        public long DownloadedBytes
+        public int RunningCount
         {
-            get
+            get => field;
+            set
             {
-                long count = 0;
-                foreach (var task in _tasks)
-                    count += task.Download.DownloadedFileSize;
-                return count;
+                if (value != field)
+                    OnPropertyChanged(ref field, value);
             }
         }
 
-        public int GetTaskCount(DownloadStatus status) => GetTasks(status).Count();
-
-        public IEnumerable<DownloadTask> GetTasks(DownloadStatus status)
+        public int CompletedCount
         {
-            return (from task in _tasks
-                    where task.Download.Status == status
-                    select task);
-        }
-
-        public IEnumerable<DownloadTask> GetRunningTasks() => GetTasks(DownloadStatus.Running);
-
-        public IEnumerable<DownloadTask> GetPausedTasks() => GetTasks(DownloadStatus.Paused);
-
-        public IEnumerable<DownloadTask> GetStoppedTasks() => GetTasks(DownloadStatus.Stopped);
-
-        public IEnumerable<DownloadTask> GetCompletedTasks() => GetTasks(DownloadStatus.Completed);
-
-        public IEnumerable<DownloadTask> GetFailedTasks() => GetTasks(DownloadStatus.Failed);
-
-        public void Add(string url, string? path)
-        {
-            DownloadTask task = new(url, path, _configuration);
-            _ = task.StartAsync();
-            _tasks.Add(task);
-        }
-
-        public void ClearAll()
-        {
-            while (_tasks.Count > 0)
+            get => field;
+            set
             {
-                var task = _tasks[0];
-                task.Dispose();
-                _tasks.RemoveAt(0);
+                if (value != field)
+                    OnPropertyChanged(ref field, value);
             }
         }
 
-        public void ClearTasks(DownloadStatus status)
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void Submit(DownloadItem downloadItem) => Submit(downloadItem.Url, downloadItem.Path);
+
+        public void Submit(string url, string path)
         {
-            var tasks = GetTasks(status);
-            foreach (var task in tasks)
+            ArgumentException.ThrowIfNullOrWhiteSpace(url, nameof(url));
+            ArgumentException.ThrowIfNullOrWhiteSpace(path, nameof(path));
+
+            IDownload download = EnhancedDownloadBuilder.New()
+                .WithConfiguration(Configuration)
+                .WithUrl(url)
+                .WithFileLocation(path)
+                .Build();
+
+            Submit(download);
+        }
+
+        public void Submit(IDownload download)
+        {
+            ArgumentNullException.ThrowIfNull(download, nameof(download));
+
+            lock (_lock)
             {
-                task.Dispose();
-                _tasks.Remove(task);
+                if (_downloads.Contains(download))
+                    return;
+
+                download.DownloadFileCompleted += Download_DownloadFileCompleted;
+                _downloads.Add(download);
+                Update();
             }
         }
 
-        public void ClearCompleted() => ClearTasks(DownloadStatus.Completed);
-
-        public void ClearStopped() => ClearTasks(DownloadStatus.Stopped);
-
-        public void ClearFailed() => ClearTasks(DownloadStatus.Failed);
-
-        public async Task WaitAllTaskCompletedAsync()
+        public void ClearCompleted()
         {
-            var tasks = from task in _tasks
-                        select task.Task;
-            await Task.WhenAll(tasks);
+            lock (_lock)
+            {
+                foreach (var download in _downloads.Where(s => s.Status is DownloadStatus.Completed or DownloadStatus.Stopped or DownloadStatus.Failed).ToArray())
+                {
+                    download.DownloadFileCompleted -= Download_DownloadFileCompleted;
+                    download.Dispose();
+                    _downloads.Remove(download);
+                }
+            }
         }
 
-        public void RetryAllIfFailed()
+        public void StopForAll()
         {
-            foreach (var task in _tasks)
-                task.RetryIfFailed();
+            lock (_lock)
+            {
+                foreach (IDownload download in _downloads)
+                {
+                    if (download.Status is DownloadStatus.Running or DownloadStatus.Paused)
+                        download.Stop();
+                }
+            }
         }
 
-        public IEnumerator<DownloadTask> GetEnumerator()
+        public void PauseForAll()
         {
-            return _tasks.GetEnumerator();
+            lock ( _lock)
+            {
+                foreach (var download in _downloads)
+                {
+                    if (download.Status is DownloadStatus.Running)
+                        download.Pause();
+                }
+            }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void ResumeForAll()
         {
-            return ((IEnumerable)_tasks).GetEnumerator();
+            lock (_lock)
+            {
+                foreach (var download in _downloads)
+                {
+                    if (download.Status is DownloadStatus.Paused)
+                        download.Resume();
+                }
+            }
+        }
+
+        private void Download_DownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
+        {
+            if (sender is IDownload download && _downloads.Contains(download))
+            {
+                lock (_lock)
+                    Update();
+            }
+        }
+
+        private void Update()
+        {
+            TotalCount = _downloads.Count;
+            CompletedCount = _downloads.Count(s => s.Status is DownloadStatus.Completed or DownloadStatus.Stopped or DownloadStatus.Failed);
+            RunningCount = TotalCount - CompletedCount;
+
+            var created = _downloads.Where(s => s.Status is DownloadStatus.None or DownloadStatus.Created);
+            if (created.Any())
+            {
+                //受限并发
+                if (MaximumParallel > 0)
+                {
+                    int downloadingCount = _downloads.Count(s => s.Status is DownloadStatus.Running or DownloadStatus.Paused);
+                    int idleCount = MaximumParallel - downloadingCount;
+                    if (idleCount > 0)
+                    {
+                        IDownload[] downloads = created.ToArray();
+                        int maxCount = Math.Min(idleCount, downloads.Length);
+                        for (int i = 0; i < maxCount; i++)
+                            downloads[i].StartAsync();
+                    }
+                }
+                //无限并发
+                else
+                {
+                    foreach (IDownload download in created)
+                        download.StartAsync();
+                }
+            }
+        }
+
+        protected virtual void OnPropertyChanged<T>(ref T field, T newValue, [CallerMemberName] string? name = null)
+        {
+            if (Equals(field, newValue))
+                return;
+
+            field = newValue;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
