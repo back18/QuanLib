@@ -13,14 +13,14 @@ namespace QuanLib.Core
             InitialMessage = DefaultMessage;
         }
 
-        public ExceptionBase(string? messge) : base(null)
+        public ExceptionBase(string? message) : base(null)
         {
-            InitialMessage = messge;
+            InitialMessage = message;
         }
 
-        public ExceptionBase(string? messge, Exception? innerException) : base(null, innerException)
+        public ExceptionBase(string? message, Exception? innerException) : base(null, innerException)
         {
-            InitialMessage = messge;
+            InitialMessage = message;
         }
 
         public ExceptionBase(Exception? innerException) : base(null, innerException)
