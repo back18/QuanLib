@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Logging
 {
-    public class Log4NetManager : ILoggerProvider, ISingleton<Log4NetManager, Log4NetManager.InstantiateArgs>
+    public class Log4NetManager : ILoggerProvider, ISingleton<Log4NetManager>, ISingletonFactory<Log4NetManager, Log4NetManager.InstantiateArgs>
     {
         private Log4NetManager(ILog4NetProvider provider)
         {
@@ -29,7 +29,7 @@ namespace QuanLib.Logging
 
         private readonly List<AppenderLevel> _consoleAppenders;
 
-        public static bool IsInstanceLoaded => _Instance is not null;
+        public static bool IsLoaded => _Instance is not null;
 
         public static Log4NetManager Instance => _Instance ?? throw new InvalidOperationException("实例未加载");
         private static Log4NetManager? _Instance;
