@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuanLib.Core
 {
-    public interface ISingleton<TSelf, TArgs> where TSelf : ISingleton<TSelf, TArgs> where TArgs : InstantiateArgs
+    public interface ISingleton<out TSelf> where TSelf : ISingleton<TSelf>
     {
-        public static abstract bool IsInstanceLoaded { get; }
+        public static abstract bool IsLoaded { get; }
 
         public static abstract TSelf Instance { get; }
-
-        public static abstract TSelf LoadInstance(TArgs args);
     }
 }
