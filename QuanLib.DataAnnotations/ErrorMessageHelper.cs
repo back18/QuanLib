@@ -63,5 +63,9 @@ namespace QuanLib.DataAnnotations
         public const string DirectoryExistsAttribute = Prefix + "指定的路径目录不存在";
 
         public const string FileExtensionsAttribute = Prefix + "文件扩展名只能为{1}";
+
+        public const string FileNameAttribute = Prefix + @"文件名不能包含下列任何字符: \ / : * ? "" < > |";
+
+        public const string FileSystemPathAttribute = Prefix + @"文件系统路径不能包含下列任何字符：包括 ASCII/Unicode 字符 1 到 31，以及管道 (|) 和 null (\0) ";
     }
 }
