@@ -79,6 +79,9 @@ namespace QuanLib.IO.FileSystem
 
         public DirectoryNode[] GetDirectoryNodes(string path)
         {
+            if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(path))
+                return GetDirectoryNodes();
+
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
             string[] keys = ToKeys(path);
@@ -91,7 +94,8 @@ namespace QuanLib.IO.FileSystem
 
         public FileNode[] GetFileNodes(string path)
         {
-            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+            if (string.IsNullOrEmpty(Name) && string.IsNullOrEmpty(path))
+                return GetFileNodes();
 
             string[] keys = ToKeys(path);
             if (keys.Length == 0)
@@ -101,12 +105,12 @@ namespace QuanLib.IO.FileSystem
             return directoryNode is not null ? directoryNode.GetFileNodes() : throw new ArgumentException($"路径“{path}”的文件夹不存在");
         }
 
-        public bool ExistsDirectoryNode(string? path)
+        public bool DirectoryNodeExists(string? path)
         {
             return GetDirectoryNode(path) is not null;
         }
 
-        public bool ExistsFileNode(string? path)
+        public bool FileNodeExists(string? path)
         {
             return GetFileNode(path) is not null;
         }
