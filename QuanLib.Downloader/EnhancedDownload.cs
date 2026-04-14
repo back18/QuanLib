@@ -199,7 +199,7 @@ namespace QuanLib.Downloader
 
         public async Task<Stream> StartAsync(CancellationToken cancellationToken = default)
         {
-            if (_downloadService.Status is not DownloadStatus.None or DownloadStatus.Created)
+            if (_downloadService.Status is not (DownloadStatus.None or DownloadStatus.Created))
                 Reset();
 
             SyncStatus();

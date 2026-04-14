@@ -5,26 +5,26 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace QuanLib.Downloader.Services
+namespace QuanLib.Downloader.Services.Implementations
 {
     public class DownloadService : IDownloadService
     {
-        public DownloadService(ILoggerFactory loggerFactory, DownloadConfiguration? configuration = null)
+        public DownloadService(IDownloadConfigurationProvider configurationProvider, ILoggerFactory? loggerFactory)
         {
-            ArgumentNullException.ThrowIfNull(loggerFactory, nameof(loggerFactory));
+            ArgumentNullException.ThrowIfNull(configurationProvider, nameof(configurationProvider));
 
+            _configurationProvider = configurationProvider;
             _loggerFactory = loggerFactory;
-            _logger = loggerFactory.CreateLogger<DownloadService>();
-            Configuration = configuration ?? CreateDefaultConfiguration();
+            _logger = loggerFactory?.CreateLogger<DownloadService>();
+
             MaxTryAgainOnFailure = int.MaxValue;
             AgainDelayMilliseconds = 3000;
             MinProgressInterval = 1000;
         }
 
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<DownloadService> _logger;
-
-        public DownloadConfiguration Configuration { get; }
+        private readonly IDownloadConfigurationProvider _configurationProvider;
+        private readonly ILoggerFactory? _loggerFactory;
+        private readonly ILogger<DownloadService>? _logger;
 
         public int MaxTryAgainOnFailure { get; set; }
 
@@ -61,18 +61,21 @@ namespace QuanLib.Downloader.Services
             int failureCount = 0;
             while (true)
             {
-                _logger.LogInformation("开始下载: {0}", download.Url);
+                if (_logger?.IsEnabled(LogLevel.Information) == true)
+                    _logger.LogInformation("开始下载: {Url}", download.Url);
                 Stream stream = await download.StartAsync(cancellationToken).ConfigureAwait(false);
 
                 if (download.Status is DownloadStatus.None or DownloadStatus.Failed)
                 {
                     Exception? error = download.Error;
-                    _logger.LogWarning("下载失败: {0}", ObjectFormatter.Format(error));
+                    _logger?.LogWarning("下载失败: {Error}", ObjectFormatter.Format(error));
 
                     if (failureCount++ < MaxTryAgainOnFailure)
                     {
                         int delayMilliseconds = Math.Max(0, AgainDelayMilliseconds);
-                        _logger.LogInformation("{0}ms后重试...", delayMilliseconds);
+                        if (_logger?.IsEnabled(LogLevel.Information) == true)
+                            _logger.LogInformation("{DelayMilliseconds}ms后重试...", delayMilliseconds);
+
                         await Task.Delay(delayMilliseconds, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
@@ -85,10 +88,13 @@ namespace QuanLib.Downloader.Services
                     }
                 }
 
-                _logger.LogInformation("下载完成: {0}", download.Url);
-                string fileLocation = download.FileLocation;
-                if (!string.IsNullOrEmpty(fileLocation))
-                    _logger.LogInformation("文件已保存到: {0}",  fileLocation);
+                if (_logger?.IsEnabled(LogLevel.Information) == true)
+                {
+                    _logger.LogInformation("下载完成: {Url}", download.Url);
+                    string fileLocation = download.FileLocation;
+                    if (!string.IsNullOrEmpty(fileLocation))
+                        _logger.LogInformation("文件已保存到: {FileLocation}", fileLocation);
+                }
 
                 return stream;
             }
@@ -99,7 +105,7 @@ namespace QuanLib.Downloader.Services
             ArgumentException.ThrowIfNullOrEmpty(url, nameof(url));
 
             EnhancedDownload download = EnhancedDownloadBuilder.New()
-                .WithConfiguration(Configuration)
+                .WithConfiguration(_configurationProvider.GlobalConfiguration)
                 .WithUrl(url)
                 .WithProgress(progress)
                 .WithMinProgressInterval(MinProgressInterval)
@@ -114,25 +120,18 @@ namespace QuanLib.Downloader.Services
             ArgumentException.ThrowIfNullOrEmpty(url, nameof(url));
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
 
-            EnhancedDownload download = EnhancedDownloadBuilder.New()
-                .WithConfiguration(Configuration)
+            EnhancedDownloadBuilder builder = EnhancedDownloadBuilder.New()
+                .WithConfiguration(_configurationProvider.GlobalConfiguration)
                 .WithUrl(url)
                 .WithFileLocation(path)
                 .WithProgress(progress)
                 .WithMinProgressInterval(MinProgressInterval)
-                .WithLogging(_loggerFactory)
-                .OpenFileStreamAfterCompletion()
-                .Build();
+                .WithLogging(_loggerFactory);
 
-            return download;
-        }
+            if (openFileStream)
+                builder.OpenFileStreamAfterCompletion();
 
-        private static DownloadConfiguration CreateDefaultConfiguration()
-        {
-            return new DownloadConfiguration()
-            {
-                ClearPackageOnCompletionWithFailure = true
-            };
+            return builder.Build();
         }
     }
 }
