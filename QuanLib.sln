@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11505.172 d18.3
+VisualStudioVersion = 18.3.11505.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuanLib.Excel", "QuanLib.Excel\QuanLib.Excel.csproj", "{434342A3-E08F-472C-8BF0-9B8DEA08DB4F}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.Clipping", "QuanLib.Clipping\QuanLib.Clipping.csproj", "{F27E23BD-CFD0-44AF-8A17-A18B0DC6F7B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.Parsing", "QuanLib.Parsing\QuanLib.Parsing.csproj", "{8B222400-7AAC-42FC-8E61-F77F4D0CD6B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLib.ClocAnalyzer", "QuanLib.ClocAnalyzer\QuanLib.ClocAnalyzer.csproj", "{F803B346-BE54-49DB-90BC-C90879A5A91B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{8B222400-7AAC-42FC-8E61-F77F4D0CD6B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B222400-7AAC-42FC-8E61-F77F4D0CD6B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B222400-7AAC-42FC-8E61-F77F4D0CD6B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F803B346-BE54-49DB-90BC-C90879A5A91B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F803B346-BE54-49DB-90BC-C90879A5A91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F803B346-BE54-49DB-90BC-C90879A5A91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F803B346-BE54-49DB-90BC-C90879A5A91B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
