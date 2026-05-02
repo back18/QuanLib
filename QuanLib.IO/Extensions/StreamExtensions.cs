@@ -9,9 +9,19 @@ namespace QuanLib.IO.Extensions
     {
         extension(Stream source)
         {
+            public byte[] ReadAllBytes()
+            {
+                ResetStreamPosition(source);
+                byte[] result = new byte[source.Length];
+                source.ReadExactly(result, 0, result.Length);
+                return result;
+            }
+
             public string ReadAllText()
             {
-                return source.ReadAllText(Encoding.UTF8);
+                ResetStreamPosition(source);
+                using StreamReader reader = new(source);
+                return reader.ReadToEnd();
             }
 
             public string ReadAllText(Encoding encoding)
@@ -25,7 +35,13 @@ namespace QuanLib.IO.Extensions
 
             public string[] ReadAllLines()
             {
-                return source.ReadAllLines(Encoding.UTF8);
+                ResetStreamPosition(source);
+                using StreamReader reader = new(source);
+                List<string> lines = [];
+                while (reader.ReadLine() is string line)
+                    lines.Add(line);
+
+                return lines.ToArray();
             }
 
             public string[] ReadAllLines(Encoding encoding)
@@ -41,23 +57,39 @@ namespace QuanLib.IO.Extensions
                 return lines.ToArray();
             }
 
-            public Task<string> ReadAllTextAsync()
+            public async Task<byte[]> ReadAllBytesAsync()
             {
-                return source.ReadAllTextAsync(Encoding.UTF8); 
+                ResetStreamPosition(source);
+                byte[] result = new byte[source.Length];
+                await source.ReadExactlyAsync(result, 0, result.Length);
+                return result;
             }
 
-            public Task<string> ReadAllTextAsync(Encoding encoding)
+            public async Task<string> ReadAllTextAsync()
+            {
+                ResetStreamPosition(source);
+                using StreamReader reader = new(source);
+                return await reader.ReadToEndAsync();
+            }
+
+            public async Task<string> ReadAllTextAsync(Encoding encoding)
             {
                 ArgumentNullException.ThrowIfNull(encoding, nameof(encoding));
 
                 ResetStreamPosition(source);
                 using StreamReader reader = new(source, encoding);
-                return reader.ReadToEndAsync();
+                return await reader.ReadToEndAsync();
             }
 
-            public Task<string[]> ReadAllLinesAsync()
+            public async Task<string[]> ReadAllLinesAsync()
             {
-                return source.ReadAllLinesAsync(Encoding.UTF8);
+                ResetStreamPosition(source);
+                using StreamReader reader = new(source);
+                List<string> lines = [];
+                while ((await reader.ReadLineAsync().ConfigureAwait(false)) is string line)
+                    lines.Add(line);
+
+                return lines.ToArray();
             }
 
             public async Task<string[]> ReadAllLinesAsync(Encoding encoding)
