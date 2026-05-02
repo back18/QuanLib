@@ -93,8 +93,8 @@ namespace QuanLib.IO.Zip
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
 
-            ZipItem zipItem = ReadZipItem(path);
-            return zipItem.OpenStream();
+            ZipArchiveEntry zipEntry = ReadZipItem(path);
+            return zipEntry.Open();
         }
 
         public bool TryReadFile([NotNullWhen(true)] string? path, [MaybeNullWhen(false)] out Stream outputStream)
@@ -258,7 +258,7 @@ namespace QuanLib.IO.Zip
             entry.Delete();
         }
 
-        public ZipItem ReadZipItem(string path)
+        public ZipArchiveEntry ReadZipItem(string path)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
             ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
@@ -267,13 +267,11 @@ namespace QuanLib.IO.Zip
                 ?? throw new FileNotFoundException($"未找到路径“{path}”的文件");
 
             string fullPath = fileNode.GetFullName(SeparatorChar).TrimStart(SeparatorChar);
-            ZipArchiveEntry? entry = _archive.GetEntry(fullPath)
+            return _archive.GetEntry(fullPath)
                 ?? throw new FileNotFoundException($"未找到路径“{fullPath}”的文件");
-
-            return new ZipItem(entry);
         }
 
-        public bool TryReadZipItem([NotNullWhen(true)] string? path, [MaybeNullWhen(false)] out ZipItem result)
+        public bool TryReadZipItem([NotNullWhen(true)] string? path, [MaybeNullWhen(false)] out ZipArchiveEntry result)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -285,21 +283,15 @@ namespace QuanLib.IO.Zip
                 goto failed;
 
             string fullPath = fileNode.GetFullName(SeparatorChar).TrimStart(SeparatorChar);
-            ZipArchiveEntry? entry;
             try
             {
-                entry = _archive.GetEntry(fullPath);
+                result = _archive.GetEntry(fullPath);
+                return result is not null;
             }
             catch
             {
                 goto failed;
             }
-
-            if (entry is null)
-                goto failed;
-
-            result = new ZipItem(entry);
-            return true;
 
             failed:
             result = null;
